@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Games</title>
+    <style>
+        body { background:#111; color:#fff; font-family:Arial; padding:20px; }
+        h1 { color:#4af; }
+        .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; }
+        a { background:#222; color:#4af; padding:15px; border-radius:8px; text-align:center; text-decoration:none; display:block; }
+        a:hover { background:#333; }
+    </style>
+</head>
+<body>
+    <h1>Games</h1>
+    <div class="grid" id="grid"></div>
+    <script>
+        const games = Array.from({length:825}, (_,i) => i+1);
+        const grid = document.getElementById('grid');
+        games.forEach(n => {
+            const a = document.createElement('a');
+            a.href = '/html/html-main/' + n + '.html';
+            a.textContent = 'Game ' + n;
+            a.target = '_self';
+            grid.appendChild(a);
+        });
+    </script>
+</body>
+</html>
