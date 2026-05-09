@@ -5,14 +5,31 @@
     <style>
         body { background:#111; color:#fff; font-family:Arial; padding:20px; }
         h1 { color:#4af; }
-        .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:10px; }
-        a { background:#222; color:#4af; padding:15px; border-radius:8px; text-align:center; text-decoration:none; display:block; font-size:13px; }
+        .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:12px; }
+        a {
+            background:#222; color:#fff; padding:10px;
+            border-radius:10px; text-align:center;
+            text-decoration:none; display:block;
+            font-size:12px; transition:background 0.2s;
+        }
         a:hover { background:#333; }
+        a img {
+            width:100%; aspect-ratio:16/9;
+            object-fit:cover; border-radius:6px;
+            margin-bottom:6px; background:#333;
+        }
+        a .no-cover {
+            width:100%; aspect-ratio:16/9;
+            background:#2a2a2a; border-radius:6px;
+            margin-bottom:6px; display:flex;
+            align-items:center; justify-content:center;
+            color:#555; font-size:11px;
+        }
     </style>
 </head>
 <body>
     <h1>Games</h1>
-    <p id="status" style="color:#888">Loading game names...</p>
+    <p id="status" style="color:#888">Loading games...</p>
     <div class="grid" id="grid"></div>
     <script>
         const grid = document.getElementById('grid');
@@ -25,12 +42,26 @@
                 if (!res.ok) return;
                 const text = await res.text();
                 const match = text.match(/<title>(.*?)<\/title>/i);
+                const name = match ? match[1] : 'Game ' + n;
+
                 const a = document.createElement('a');
                 a.href = '/html/html-main/' + n + '.html';
-                a.textContent = match ? match[1] : 'Game ' + n;
+
+                const img = document.createElement('img');
+                img.src = '/covers/covers-main/' + n + '.png';
+                img.alt = name;
+                img.onerror = function() {
+                    this.outerHTML = '<div class="no-cover">No Cover</div>';
+                };
+
+                const label = document.createElement('div');
+                label.textContent = name;
+
+                a.appendChild(img);
+                a.appendChild(label);
                 grid.appendChild(a);
             } catch {
-                // file doesn't exist, skip it
+                // skip
             }
         }
 
