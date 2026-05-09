@@ -1,0 +1,15 @@
+{
+  "name": "fakeschooltool",
+  "version": "1.0.0",
+  "description": "A static HTML site with Vercel Speed Insights",
+  "scripts": {
+    "build": "echo 'Static site - no build required'",
+    "lint": "echo 'No linter configured for static HTML'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vercel/speed-insights": "^1.0.12"
+  }
+}
