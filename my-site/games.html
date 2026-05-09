@@ -401,29 +401,32 @@
     document.getElementById('s-icon').value = s.icon || defaultSettings.icon;
     document.getElementById('s-label').value = s.label || defaultSettings.label;
     document.getElementById('s-search').value = s.search || defaultSettings.search;
-    const ab = document.getElementById('s-ablank');
-    if (ab) {
-      ab.checked = s.ablank || false;
-      const ts = document.getElementById('toggle-span');
-      const tk = document.getElementById('toggle-knob');
-      if (ts) ts.style.background = s.ablank ? '#1a6bba' : '#ccc';
-      if (tk) tk.style.transform = s.ablank ? 'translateX(20px)' : 'translateX(0)';
-    }
+    ablankEnabled = s.ablank || false;
+    const track = document.getElementById('toggle-track');
+    const knob = document.getElementById('toggle-knob');
+    if (track) track.style.background = ablankEnabled ? '#1a6bba' : '#ccc';
+    if (knob) knob.style.transform = ablankEnabled ? 'translateX(20px)' : 'translateX(0)';
+  }
+
+  let ablankEnabled = JSON.parse(localStorage.getItem('siteSettings') || '{}').ablank || false;
+
+  function toggleAblank() {
+    ablankEnabled = !ablankEnabled;
+    const track = document.getElementById('toggle-track');
+    const knob = document.getElementById('toggle-knob');
+    track.style.background = ablankEnabled ? '#1a6bba' : '#ccc';
+    knob.style.transform = ablankEnabled ? 'translateX(20px)' : 'translateX(0)';
+    applySettings();
   }
 
   function applySettings() {
-    const ablank = document.getElementById('s-ablank').checked;
-    const ts = document.getElementById('toggle-span');
-    const tk = document.getElementById('toggle-knob');
-    if (ts) { ts.style.background = ablank ? '#1a6bba' : '#ccc'; }
-    if (tk) { tk.style.transform = ablank ? 'translateX(20px)' : 'translateX(0)'; }
     const s = {
       bg: document.getElementById('s-bg').value,
       bar: document.getElementById('s-bar').value,
       icon: document.getElementById('s-icon').value,
       label: document.getElementById('s-label').value,
       search: document.getElementById('s-search').value,
-      ablank: ablank,
+      ablank: ablankEnabled,
     };
     localStorage.setItem('siteSettings', JSON.stringify(s));
     applyCSS(s);
@@ -495,8 +498,7 @@
   }
 
   function openGame(n) {
-    const s = JSON.parse(localStorage.getItem('siteSettings') || '{}');
-    if (s.ablank) {
+    if (ablankEnabled) {
       const w = window.open('about:blank', '_blank');
       w.document.write('<html><head><title>Loading...</title></head><body style="margin:0;padding:0;overflow:hidden;"><iframe src="/html/html-main/' + n + '.html" style="width:100vw;height:100vh;border:none;"></iframe></body></html>');
       w.document.close();
@@ -637,12 +639,10 @@
           <label style="font-size:13px;font-weight:bold;color:#333;">Open games in about:blank</label>
           <div style="font-size:11px;color:#888;">Hides URL from address bar</div>
         </div>
-        <label style="position:relative;display:inline-block;width:44px;height:24px;">
-          <input type="checkbox" id="s-ablank" onchange="applySettings()" style="opacity:0;width:0;height:0;"/>
-          <span onclick="document.getElementById('s-ablank').click()" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#ccc;border-radius:24px;transition:.3s;"
-            id="toggle-span"></span>
-          <span id="toggle-knob" style="position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:white;border-radius:50%;transition:.3s;pointer-events:none;"></span>
-        </label>
+        <div id="toggle-track" onclick="toggleAblank()"
+          style="position:relative;display:inline-block;width:44px;height:24px;background:#ccc;border-radius:24px;cursor:pointer;transition:.3s;">
+          <div id="toggle-knob" style="position:absolute;height:18px;width:18px;left:3px;top:3px;background:white;border-radius:50%;transition:.3s;"></div>
+        </div>
       </div>
 
     </div>
