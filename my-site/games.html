@@ -186,6 +186,7 @@
     <div class="top-icon" onclick="openBrowser()">&#127760;</div>
     <div class="top-icon" onclick="openChat()">&#128101;</div>
     <div class="top-icon">&#9881;&#65039;</div>
+    <div class="top-icon" onclick="window.open('https://discord.gg/ZUeXWHkA','_blank')">&#128172;</div>
   </div>
   <div class="top-right-clock">
     <span>&#128267;</span>
@@ -374,7 +375,7 @@
   }
 
   function openSoundboard() {
-    document.getElementById('game-frame').src = '/soundboard-main/index.html';
+    document.getElementById('game-frame').src = '/soundboard/index.html';
     document.getElementById('game-frame').style.display = 'block';
     document.getElementById('close-btn').style.display = 'flex';
   }
