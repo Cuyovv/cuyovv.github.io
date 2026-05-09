@@ -185,7 +185,7 @@
     <div class="top-icon" onclick="openSoundboard()">&#127925;</div>
     <div class="top-icon" onclick="openBrowser()">&#127760;</div>
     <div class="top-icon" onclick="openChat()">&#128101;</div>
-    <div class="top-icon">&#9881;&#65039;</div>
+    <div class="top-icon" onclick="openSettings()">&#9881;&#65039;</div>
     <div class="top-icon" onclick="window.open('https://discord.gg/ZUeXWHkA','_blank')">&#128172;</div>
   </div>
   <div class="top-right-clock">
@@ -380,6 +380,114 @@
     document.getElementById('close-btn').style.display = 'flex';
   }
 
+
+  function openSettings() {
+    document.getElementById('settingsPopup').classList.add('show');
+    loadSettingsInputs();
+  }
+  function closeSettings(e) {
+    if (!e || e.target === document.getElementById('settingsPopup'))
+      document.getElementById('settingsPopup').classList.remove('show');
+  }
+
+  const defaultSettings = {
+    bg: '#c8c8d4', bar: '#d8d8d8', icon: '#e8e8e8', label: '#333333', search: '#ffffff'
+  };
+
+  function loadSettingsInputs() {
+    const s = JSON.parse(localStorage.getItem('siteSettings') || '{}');
+    document.getElementById('s-bg').value = s.bg || defaultSettings.bg;
+    document.getElementById('s-bar').value = s.bar || defaultSettings.bar;
+    document.getElementById('s-icon').value = s.icon || defaultSettings.icon;
+    document.getElementById('s-label').value = s.label || defaultSettings.label;
+    document.getElementById('s-search').value = s.search || defaultSettings.search;
+    const ab = document.getElementById('s-ablank');
+    if (ab) {
+      ab.checked = s.ablank || false;
+      const ts = document.getElementById('toggle-span');
+      const tk = document.getElementById('toggle-knob');
+      if (ts) ts.style.background = s.ablank ? '#1a6bba' : '#ccc';
+      if (tk) tk.style.transform = s.ablank ? 'translateX(20px)' : 'translateX(0)';
+    }
+  }
+
+  function applySettings() {
+    const ablank = document.getElementById('s-ablank').checked;
+    const ts = document.getElementById('toggle-span');
+    const tk = document.getElementById('toggle-knob');
+    if (ts) { ts.style.background = ablank ? '#1a6bba' : '#ccc'; }
+    if (tk) { tk.style.transform = ablank ? 'translateX(20px)' : 'translateX(0)'; }
+    const s = {
+      bg: document.getElementById('s-bg').value,
+      bar: document.getElementById('s-bar').value,
+      icon: document.getElementById('s-icon').value,
+      label: document.getElementById('s-label').value,
+      search: document.getElementById('s-search').value,
+      ablank: ablank,
+    };
+    localStorage.setItem('siteSettings', JSON.stringify(s));
+    applyCSS(s);
+  }
+
+  function uploadBgImage() {
+    const file = document.getElementById('s-bgimg').files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      localStorage.setItem('siteBgImage', e.target.result);
+      document.querySelector('.main').style.backgroundImage = 'url(' + e.target.result + ')';
+      document.querySelector('.main').style.backgroundSize = 'cover';
+      document.querySelector('.main').style.backgroundPosition = 'center';
+      document.body.style.backgroundImage = 'url(' + e.target.result + ')';
+      document.body.style.backgroundSize = 'cover';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function clearBgImage() {
+    localStorage.removeItem('siteBgImage');
+    document.querySelector('.main').style.backgroundImage = '';
+    document.body.style.backgroundImage = '';
+    const s = JSON.parse(localStorage.getItem('siteSettings') || '{}');
+    applyCSS({...defaultSettings, ...s});
+  }
+
+  function applyCSS(s) {
+    document.querySelector('.main').style.background = s.bg;
+    document.body.style.background = s.bg;
+    document.querySelectorAll('.top-bar, .bottom-bar, .search-row').forEach(el => {
+      el.style.background = s.bar;
+    });
+    document.querySelectorAll('.top-icon').forEach(el => {
+      el.style.background = s.icon;
+    });
+    document.querySelectorAll('.game-label').forEach(el => {
+      el.style.color = s.label;
+    });
+    const si = document.getElementById('search');
+    if (si) si.style.background = s.search;
+  }
+
+  function resetSettings() {
+    localStorage.removeItem('siteSettings');
+    applyCSS(defaultSettings);
+    loadSettingsInputs();
+  }
+
+  // Apply on load
+  (function() {
+    const s = JSON.parse(localStorage.getItem('siteSettings') || '{}');
+    if (Object.keys(s).length) applyCSS({...defaultSettings, ...s});
+    const bgImg = localStorage.getItem('siteBgImage');
+    if (bgImg) {
+      document.querySelector('.main').style.backgroundImage = 'url(' + bgImg + ')';
+      document.querySelector('.main').style.backgroundSize = 'cover';
+      document.querySelector('.main').style.backgroundPosition = 'center';
+      document.body.style.backgroundImage = 'url(' + bgImg + ')';
+      document.body.style.backgroundSize = 'cover';
+    }
+  })();
+
   function openBrowser() {
     document.getElementById('game-frame').src = '/GUST.html';
     document.getElementById('game-frame').style.display = 'block';
@@ -387,9 +495,16 @@
   }
 
   function openGame(n) {
-    document.getElementById('game-frame').src = '/html/html-main/' + n + '.html';
-    document.getElementById('game-frame').style.display = 'block';
-    document.getElementById('close-btn').style.display = 'flex';
+    const s = JSON.parse(localStorage.getItem('siteSettings') || '{}');
+    if (s.ablank) {
+      const w = window.open('about:blank', '_blank');
+      w.document.write('<html><head><title>Loading...</title></head><body style="margin:0;padding:0;overflow:hidden;"><iframe src="/html/html-main/' + n + '.html" style="width:100vw;height:100vh;border:none;"></iframe></body></html>');
+      w.document.close();
+    } else {
+      document.getElementById('game-frame').src = '/html/html-main/' + n + '.html';
+      document.getElementById('game-frame').style.display = 'block';
+      document.getElementById('close-btn').style.display = 'flex';
+    }
   }
 
   function closeGame() {
@@ -463,5 +578,80 @@
     });
   }
 </script>
+
+<!-- SETTINGS POPUP -->
+<div class="popup-overlay" id="settingsPopup" onclick="closeSettings(event)">
+  <div class="popup-box" style="max-width:380px;max-height:85vh;overflow-y:auto;">
+    <button class="popup-close" onclick="closeSettings()">&#x2715;</button>
+    <div style="font-size:36px;margin-bottom:8px;">&#9881;&#65039;</div>
+    <h2 style="margin-bottom:16px;">Settings</h2>
+    <hr/>
+    <div style="display:flex;flex-direction:column;gap:14px;text-align:left;margin-top:12px;">
+
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <label style="font-size:13px;font-weight:bold;color:#333;">Background Color</label>
+        <input type="color" id="s-bg" value="#c8c8d4" oninput="applySettings()"
+          style="width:48px;height:32px;border:none;border-radius:6px;cursor:pointer;"/>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <label style="font-size:13px;font-weight:bold;color:#333;">Top &amp; Bottom Bar Color</label>
+        <input type="color" id="s-bar" value="#d8d8d8" oninput="applySettings()"
+          style="width:48px;height:32px;border:none;border-radius:6px;cursor:pointer;"/>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <label style="font-size:13px;font-weight:bold;color:#333;">Icon Background Color</label>
+        <input type="color" id="s-icon" value="#e8e8e8" oninput="applySettings()"
+          style="width:48px;height:32px;border:none;border-radius:6px;cursor:pointer;"/>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <label style="font-size:13px;font-weight:bold;color:#333;">Game Label Color</label>
+        <input type="color" id="s-label" value="#333333" oninput="applySettings()"
+          style="width:48px;height:32px;border:none;border-radius:6px;cursor:pointer;"/>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <label style="font-size:13px;font-weight:bold;color:#333;">Search Bar Color</label>
+        <input type="color" id="s-search" value="#ffffff" oninput="applySettings()"
+          style="width:48px;height:32px;border:none;border-radius:6px;cursor:pointer;"/>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <label style="font-size:13px;font-weight:bold;color:#333;">Background Image</label>
+          <div style="font-size:11px;color:#888;">Replaces background color</div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <label style="background:#1a6bba;color:#fff;padding:6px 10px;border-radius:6px;font-size:12px;cursor:pointer;font-weight:bold;">
+            Upload
+            <input type="file" id="s-bgimg" accept="image/*" onchange="uploadBgImage()" style="display:none;"/>
+          </label>
+          <button onclick="clearBgImage()" style="background:#e0e0e0;border:none;padding:6px 10px;border-radius:6px;font-size:12px;cursor:pointer;">Clear</button>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <label style="font-size:13px;font-weight:bold;color:#333;">Open games in about:blank</label>
+          <div style="font-size:11px;color:#888;">Hides URL from address bar</div>
+        </div>
+        <label style="position:relative;display:inline-block;width:44px;height:24px;">
+          <input type="checkbox" id="s-ablank" onchange="applySettings()" style="opacity:0;width:0;height:0;"/>
+          <span onclick="document.getElementById('s-ablank').click()" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#ccc;border-radius:24px;transition:.3s;"
+            id="toggle-span"></span>
+          <span id="toggle-knob" style="position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:white;border-radius:50%;transition:.3s;pointer-events:none;"></span>
+        </label>
+      </div>
+
+    </div>
+    <hr style="margin-top:16px;"/>
+    <button onclick="resetSettings()"
+      style="width:100%;padding:9px;background:#e0e0e0;color:#333;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-weight:bold;margin-top:8px;">
+      Reset to Default
+    </button>
+  </div>
+</div>
 </body>
 </html>
