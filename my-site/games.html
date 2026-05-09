@@ -182,7 +182,7 @@
   <div></div>
   <div class="top-center">
     <div class="top-icon" onclick="showOwner()">&#11088;</div>
-    <div class="top-icon">&#127925;</div>
+    <div class="top-icon" onclick="openSoundboard()">&#127925;</div>
     <div class="top-icon" onclick="openBrowser()">&#127760;</div>
     <div class="top-icon" onclick="openChat()">&#128101;</div>
     <div class="top-icon">&#9881;&#65039;</div>
@@ -371,6 +371,12 @@
   function filterGames() {
     const q = document.getElementById('search').value.toLowerCase();
     allCards.forEach(c => { c.style.display = c.dataset.name.includes(q) ? '' : 'none'; });
+  }
+
+  function openSoundboard() {
+    document.getElementById('game-frame').src = '/soundboard/index.html';
+    document.getElementById('game-frame').style.display = 'block';
+    document.getElementById('close-btn').style.display = 'flex';
   }
 
   function openBrowser() {
