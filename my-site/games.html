@@ -6,16 +6,6 @@
 <title>Games</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --topbar: 44px;
-    --search: 38px;
-    --botbar: 44px;
-    --main-h: calc(100vh - var(--topbar) - var(--search) - var(--botbar));
-    --row-h: calc(var(--main-h) / 3);
-    --icon-size: calc(var(--row-h) - 28px);
-  }
-
   body {
     font-family: Arial, sans-serif;
     background: #d0d0d8;
@@ -26,204 +16,174 @@
     user-select: none;
   }
 
-  /* TOP BAR */
   .top-bar {
     background: linear-gradient(180deg, #f0f0f0 0%, #d8d8d8 100%);
-    border-bottom: 1px solid #aaa;
+    border-bottom: 2px solid #aaa;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 4px 24px;
-    height: var(--topbar);
+    padding: 8px 24px;
+    height: 60px;
     flex-shrink: 0;
     position: relative;
   }
   .top-center {
     display: flex;
     align-items: center;
-    gap: 32px;
+    gap: 36px;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
   }
   .top-icon {
-    width: 34px; height: 34px;
-    border-radius: 8px;
+    width: 40px; height: 40px;
+    border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
+    font-size: 22px;
     background: #e8e8e8;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: transform 0.1s;
   }
+  .top-icon:hover { transform: scale(1.1); }
   .top-right-clock {
     display: flex; align-items: center; gap: 8px;
     font-size: 15px; font-weight: bold; color: #222;
   }
 
-  /* SEARCH */
   .search-row {
     background: linear-gradient(180deg, #e8e8e8, #d8d8d8);
-    padding: 4px 12px;
+    padding: 5px 12px;
     border-bottom: 1px solid #bbb;
-    display: flex;
-    align-items: center;
-    height: var(--search);
-    flex-shrink: 0;
+    display: flex; align-items: center;
+    height: 38px; flex-shrink: 0;
   }
   .search-row input {
-    width: 100%;
-    padding: 5px 12px;
-    border-radius: 999px;
-    border: 1px solid #bbb;
-    background: #fff;
-    font-size: 13px;
-    outline: none;
-    color: #333;
+    width: 100%; padding: 5px 12px;
+    border-radius: 999px; border: 1px solid #bbb;
+    background: #fff; font-size: 13px; outline: none; color: #333;
   }
 
-  /* MAIN */
   .main {
     flex: 1;
     position: relative;
     overflow: hidden;
     background: linear-gradient(180deg, #e0e0e8 0%, #c8c8d4 100%);
-    height: var(--main-h);
   }
 
   .arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
-    background: rgba(255,255,255,0.5);
-    border: none;
-    border-radius: 50%;
-    width: 36px; height: 36px;
-    font-size: 18px;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    color: #555;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    position: absolute; top: 50%; transform: translateY(-50%);
+    z-index: 10; background: rgba(255,255,255,0.5);
+    border: none; border-radius: 50%;
+    width: 36px; height: 36px; font-size: 18px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: #555; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   }
   .arrow:hover { background: rgba(255,255,255,0.85); }
   .arrow.left { left: 4px; }
   .arrow.right { right: 4px; }
 
-  /* GRID - 3 rows, each fills 1/3 of main height exactly */
-  .grid-viewport {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-  }
+  .grid-viewport { width: 100%; height: 100%; overflow: hidden; }
   .grid-track {
     display: grid;
-    grid-template-rows: repeat(3, var(--row-h));
+    grid-template-rows: repeat(3, 1fr);
     grid-auto-flow: column;
-    grid-auto-columns: calc(var(--icon-size) + 16px);
     height: 100%;
     padding: 0 44px;
     transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    will-change: transform;
   }
 
   .game-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    padding: 6px 4px 4px;
-    gap: 5px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    cursor: pointer; padding: 6px 4px 4px; gap: 5px;
   }
   .game-card:active .icon-wrap { transform: scale(0.93); }
 
   .icon-wrap {
-    width: var(--icon-size);
-    height: var(--icon-size);
-    border-radius: calc(var(--icon-size) * 0.2);
-    overflow: hidden;
-    background: #fff;
+    border-radius: 20%;
+    overflow: hidden; background: #fff;
     border: 2px solid rgba(255,255,255,0.9);
-    box-shadow:
-      0 4px 0 #aaa,
-      0 6px 16px rgba(0,0,0,0.25),
-      inset 0 1px 0 rgba(255,255,255,0.8);
-    position: relative;
-    transition: transform 0.1s;
-    flex-shrink: 0;
+    box-shadow: 0 4px 0 #aaa, 0 6px 16px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.8);
+    position: relative; transition: transform 0.1s; flex-shrink: 0;
   }
   .icon-wrap::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 40%;
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 40%;
     background: linear-gradient(180deg, rgba(255,255,255,0.3), transparent);
     pointer-events: none;
   }
-  .icon-wrap img {
-    width: 100%; height: 100%;
-    object-fit: cover; display: block;
-  }
+  .icon-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .no-cover {
-    width: 100%; height: 100%;
-    display: flex; align-items: center; justify-content: center;
-    background: linear-gradient(135deg, #ddd, #bbb);
-    font-size: 36px;
+    width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #ddd, #bbb); font-size: 36px;
   }
-
   .game-label {
-    font-size: 11px;
-    color: #333;
-    text-align: center;
-    width: calc(var(--icon-size) + 8px);
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    font-weight: bold;
-    text-shadow: 0 1px 0 rgba(255,255,255,0.8);
+    font-size: 11px; color: #333; text-align: center;
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+    font-weight: bold; text-shadow: 0 1px 0 rgba(255,255,255,0.8);
   }
 
-  /* BOTTOM BAR */
   .bottom-bar {
     background: linear-gradient(180deg, #e8e8e8 0%, #d0d0d0 100%);
     border-top: 1px solid #aaa;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 4px 24px;
-    height: var(--botbar);
-    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 4px 24px; height: 44px; flex-shrink: 0;
   }
   .bottom-btn {
     font-size: 15px; color: #333; font-weight: bold;
     display: flex; align-items: center; gap: 6px;
-    cursor: pointer; padding: 4px 14px;
-    border-radius: 6px;
-    background: rgba(255,255,255,0.5);
-    border: 1px solid #ccc;
+    cursor: pointer; padding: 4px 14px; border-radius: 6px;
+    background: rgba(255,255,255,0.5); border: 1px solid #ccc;
   }
   .bottom-btn:hover { background: rgba(255,255,255,0.9); }
   .home-circle {
     width: 30px; height: 30px; border-radius: 50%;
     background: radial-gradient(circle at 40% 35%, #eee, #999);
-    border: 2px solid #777;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    border: 2px solid #777; box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     cursor: pointer;
   }
   #status-text { font-size: 11px; color: #888; }
 
+  /* OWNER POPUP */
+  .popup-overlay {
+    display: none; position: fixed; top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.4); z-index: 9998;
+    align-items: center; justify-content: center;
+  }
+  .popup-overlay.show { display: flex; }
+  .popup-box {
+    background: linear-gradient(180deg, #f5f5f5, #e8e8e8);
+    border-radius: 16px; padding: 28px 36px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    border: 2px solid rgba(255,255,255,0.8);
+    max-width: 380px; width: 90%; text-align: center;
+    position: relative;
+  }
+  .popup-box h2 { font-size: 22px; margin-bottom: 16px; color: #222; }
+  .popup-box .crown { font-size: 48px; margin-bottom: 8px; }
+  .popup-box p { font-size: 14px; color: #444; line-height: 1.7; }
+  .popup-box p a { color: #1a6bba; text-decoration: none; }
+  .popup-box p a:hover { text-decoration: underline; }
+  .popup-close {
+    position: absolute; top: 10px; right: 14px;
+    background: none; border: none; font-size: 20px;
+    cursor: pointer; color: #888;
+  }
+  .popup-close:hover { color: #333; }
+  .popup-box hr { border: none; border-top: 1px solid #ccc; margin: 14px 0; }
+  .helper { font-weight: bold; color: #333; }
+
   /* GAME FRAME */
   #game-frame {
-    display: none; position: fixed;
-    top: 0; left: 0; width: 100vw; height: 100vh;
-    border: none; z-index: 9999;
+    display: none; position: fixed; top: 0; left: 0;
+    width: 100vw; height: 100vh; border: none; z-index: 9999;
   }
   #close-btn {
-    display: none; position: fixed;
-    top: 12px; right: 12px; z-index: 10000;
-    background: rgba(0,0,0,0.65); color: #fff;
-    border: none; border-radius: 50%;
-    width: 38px; height: 38px; font-size: 18px;
-    cursor: pointer; align-items: center; justify-content: center;
+    display: none; position: fixed; top: 12px; right: 12px;
+    z-index: 10000; background: rgba(0,0,0,0.65); color: #fff;
+    border: none; border-radius: 50%; width: 38px; height: 38px;
+    font-size: 18px; cursor: pointer; align-items: center; justify-content: center;
   }
   #close-btn:hover { background: rgba(200,0,0,0.85); }
 </style>
@@ -233,7 +193,7 @@
 <div class="top-bar">
   <div></div>
   <div class="top-center">
-    <div class="top-icon">&#128247;</div>
+    <div class="top-icon" onclick="showOwner()" title="Owner">&#128081;</div>
     <div class="top-icon">&#127925;</div>
     <div class="top-icon">&#127760;</div>
     <div class="top-icon">&#128101;</div>
@@ -266,10 +226,29 @@
   <div class="bottom-btn">Open &#9654;</div>
 </div>
 
+<!-- OWNER POPUP -->
+<div class="popup-overlay" id="ownerPopup" onclick="hideOwner(event)">
+  <div class="popup-box">
+    <button class="popup-close" onclick="hideOwner()">&#x2715;</button>
+    <div class="crown">&#128081;</div>
+    <h2>Owner: Yogi</h2>
+    <hr/>
+    <p><span class="helper">Helpers</span></p>
+    <p>
+      &#128176; <span class="helper">Meeksters</span> — Funder<br/>
+      &#128161; <span class="helper">Bobolpski</span> — Idea<br/>
+      &#127968; <span class="helper">hudthebud</span> — Home page idea<br/>
+      &#127918; <span class="helper">Snubby</span> — Help with games<br/>
+      <a href="https://startmyeducation.net" target="_blank">&#127760; startmyeducation.net</a>
+    </p>
+  </div>
+</div>
+
 <iframe id="game-frame" src="" title="game"></iframe>
 <button id="close-btn" onclick="closeGame()">&#x2715;</button>
 
 <script>
+  // Clock
   function updateClock() {
     const now = new Date();
     let h = now.getHours(), m = now.getMinutes();
@@ -279,16 +258,37 @@
   }
   updateClock(); setInterval(updateClock, 1000);
 
+  // Owner popup
+  function showOwner() { document.getElementById('ownerPopup').classList.add('show'); }
+  function hideOwner(e) {
+    if (!e || e.target === document.getElementById('ownerPopup'))
+      document.getElementById('ownerPopup').classList.remove('show');
+  }
+
+  // Sizing
+  function calcSizes() {
+    const topbar = 60, search = 38, botbar = 44;
+    const mainH = window.innerHeight - topbar - search - botbar;
+    const rowH = mainH / 3;
+    const iconSize = Math.floor(rowH - 28);
+    const colWidth = iconSize + 24;
+
+    document.querySelectorAll('.icon-wrap').forEach(el => {
+      el.style.width = iconSize + 'px';
+      el.style.height = iconSize + 'px';
+    });
+    document.querySelectorAll('.game-label').forEach(el => {
+      el.style.width = (iconSize + 8) + 'px';
+    });
+    document.querySelector('.grid-track').style.gridAutoColumns = colWidth + 'px';
+    return { iconSize, colWidth, mainH, rowH };
+  }
+
   const grid = document.getElementById('grid');
   const statusText = document.getElementById('status-text');
   const allCards = [];
   let loaded = 0, colOffset = 0;
   const ROWS = 3;
-
-  function getColWidth() {
-    const iconSize = (window.innerHeight - 44 - 38 - 44) / 3 - 28;
-    return iconSize + 16 + 8;
-  }
 
   async function loadGame(n) {
     try {
@@ -323,6 +323,7 @@
       allCards.push(card);
       loaded++;
       statusText.textContent = loaded + ' games';
+      calcSizes();
     } catch {}
   }
 
@@ -334,17 +335,20 @@
       statusText.textContent = 'Loading... ' + Math.min(i+15,825) + '/825';
     }
     statusText.textContent = loaded + ' games';
+    calcSizes();
   }
   loadAll();
 
   function scroll3ds(dir) {
-    const colW = getColWidth();
+    const { colWidth } = calcSizes();
     const viewWidth = document.querySelector('.grid-viewport').offsetWidth - 88;
-    const visibleCols = Math.floor(viewWidth / colW);
+    const visibleCols = Math.floor(viewWidth / colWidth);
     const totalCols = Math.ceil(loaded / ROWS);
-    colOffset = Math.max(0, Math.min(colOffset + dir * Math.max(1, Math.floor(visibleCols / 2)), totalCols - visibleCols));
-    grid.style.transform = 'translateX(-' + (colOffset * colW) + 'px)';
+    colOffset = Math.max(0, Math.min(colOffset + dir * Math.max(1, Math.floor(visibleCols/2)), totalCols - visibleCols));
+    grid.style.transform = 'translateX(-' + (colOffset * colWidth) + 'px)';
   }
+
+  window.addEventListener('resize', calcSizes);
 
   let tx = 0;
   document.querySelector('.main').addEventListener('touchstart', e => tx = e.touches[0].clientX);
