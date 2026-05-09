@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SchoolTool Login</title>
+    <link rel="icon" type="image/x-icon" href="https://cdn.schooltool.com/global/auth/1.6.1/images/st-favicon.ico" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.schooltool.com/global/auth/1.7.12/styles/signin.css" />
+    <link rel="stylesheet" href="https://cdn.schooltool.com/global/auth/1.7.2/styles/online-registration.css" />
+    <link rel="stylesheet" href="https://cdn.schooltool.com/global/auth/1.8.1/styles/site.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet" />
+    <script src="https://kit.fontawesome.com/0224058aa7.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            background: url(https://cdn.schooltool.com/global/auth/1.6.1/images/st-icon.svg) no-repeat -50px,
+                        linear-gradient(139.66deg, #0066BA 18.59%, #003764 65.46%);
+            background-size: contain;
+            font-family: Roboto, Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            padding-top: 40px;
+            padding-bottom: 40px;
+            color: #232323;
+            line-height: 1.75rem;
+        }
+        #game-frame {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            border: none;
+            z-index: 9999;
+        }
+        .banner-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            border-left: 1px solid #dee2e6;
+            min-height: 400px;
+        }
+        .banner-panel h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            margin-bottom: 1.5rem;
+            color: #232323;
+        }
+        .banner-red-bar {
+            width: 100%;
+            height: 28px;
+            background-color: #8B0000;
+            margin-top: 1rem;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="text-center">
+    <iframe id="game-frame" src="" title="game"></iframe>
+    <main class="container" id="login-page">
+        <img class="mb-4 mt-4" src="https://cdn.schooltool.com/global/auth/1.6.1/images/st-by-mindex-logo-white.png" alt="SchoolTool" width="200" />
+        <div class="row signin">
+            <div class="col-md-6 form-signin m-auto">
+                <h1><img class="mb-4" src="https://cnyric05.schooltool.com/cssd/core/identityserver/districtlogo.ashx" alt="SchoolTool Login" crossorigin="anonymous" /></h1>
+                <form method="post" id="loginForm">
+                    <div class="form-floating mt-3">
+                        <input type="text" name="username" class="form-control" id="floatingInput" placeholder="name@example.com">
+                        <label for="floatingInput">Username</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password">
+                        <label for="floatingPassword">Password</label>
+                    </div>
+                    <div class="row justify-content-between mb-4">
+                        <div class="col-6">
+                            <input type="submit" value="Log In" class="btn btn-lg btn-primary">
+                        </div>
+                        <div class="col-6 password-link">
+                            <a href="#">Forgot Password</a>
+                        </div>
+                    </div>
+                    <div class="divider"><p>OR</p></div>
+                    <div class="w-100">
+                        <a class="ssoBtn" href="#">
+                            <img src="https://cdn.schooltool.com/global/auth/1.7.1/images/google-icon.svg" height="25" alt="icon" />
+                            <p>Sign in with Google</p>
+                        </a>
+                    </div>
+                    <div class="news mt-5">
+                        <p><a href="https://www.mindex.com/schooltool-spotlight" target="_blank">
+                            <i class="fas fa-megaphone" aria-hidden="true"></i>Read the latest SchoolTool news<i class="fas fa-arrow-right" aria-hidden="true"></i>
+                        </a></p>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-6 banner-panel">
+                <h2>CENTRAL SQUARE CSD</h2>
+                <img src="banner.png" alt="Central Square CSD" style="max-width:100%;" />
+                <div class="banner-red-bar"></div>
+            </div>
+        </div>
+        <footer class="signin-footer">
+            <p>
+                <span>SchoolTool</span><sup>&reg;</sup> Version 23.3-03<br/>
+                &copy; 2026 Mindex
+                &bull; <a href="https://www.mindex.com/privacy-policy" target="_blank">Privacy Policy</a>
+                &bull; <a href="https://www.mindex.com/terms-and-conditions" target="_blank">Terms &amp; Conditions</a>
+            </p>
+        </footer>
+    </main>
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            var pw = document.getElementById("floatingPassword").value;
+            if (pw === "c00l") {
+                document.getElementById("login-page").style.display = "none";
+                document.body.style.background = "#fff";
+                document.body.style.padding = "0";
+                var frame = document.getElementById("game-frame");
+                frame.src = '/html/index.html';
+                frame.style.display = "block";
+            }
+        });
+    </script>
+</body>
+</html>
