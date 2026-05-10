@@ -643,10 +643,16 @@
       });
       const data = await res.json();
       console.log('Gemini response:', JSON.stringify(data));
-      const reply = data.candidates[0].content.parts[0].text;
-      tsaiHistory.push({ role: 'model', parts: [{ text: reply }] });
-      loadDiv.style.color = '#333';
-      loadDiv.textContent = reply;
+      if (data.error) {
+        loadDiv.textContent = 'API Error: ' + data.error.message;
+      } else if (!data.candidates || !data.candidates[0]) {
+        loadDiv.textContent = 'No response: ' + JSON.stringify(data);
+      } else {
+        const reply = data.candidates[0].content.parts[0].text;
+        tsaiHistory.push({ role: 'model', parts: [{ text: reply }] });
+        loadDiv.style.color = '#333';
+        loadDiv.textContent = reply;
+      }
     } catch(e) {
       loadDiv.textContent = 'Error: ' + (e.message || JSON.stringify(e));
     }
