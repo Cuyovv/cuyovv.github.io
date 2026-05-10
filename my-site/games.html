@@ -442,8 +442,14 @@
       const name = c.querySelector('.game-label').textContent;
       const img = c.querySelector('img');
       item.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 14px;cursor:pointer;border-bottom:1px solid #f0f0f0;font-size:13px;color:#333;';
-      item.innerHTML = '<img src="' + (img ? img.src : '') + '" style="width:32px;height:32px;border-radius:8px;object-fit:cover;background:#eee;" onerror="this.style.display='none'"/>' +
-        '<span>' + name + '</span>';
+      const sImg2 = document.createElement('img');
+      if (img) sImg2.src = img.src;
+      sImg2.style.cssText = 'width:32px;height:32px;border-radius:8px;object-fit:cover;background:#eee;';
+      sImg2.onerror = function(){ this.style.visibility='hidden'; };
+      const sName2 = document.createElement('span');
+      sName2.textContent = name;
+      item.appendChild(sImg2);
+      item.appendChild(sName2);
       item.onmousedown = () => {
         document.getElementById('search').value = name;
         suggestions.style.display = 'none';
@@ -599,6 +605,9 @@
     if (w.style.display === 'flex') document.getElementById('aiInput').focus();
   }
 
+  const TSAI_KEY = 'AIzaSyDhIA6mazRzjQ9k9qL9LHwKGMVykNn4r6U';
+  const tsaiHistory = [];
+
   async function sendAI() {
     const input = document.getElementById('aiInput');
     const text = input.value.trim();
@@ -609,34 +618,37 @@
 
     // Add user message
     const userDiv = document.createElement('div');
-    userDiv.style.cssText = 'background:#1a6bba;color:#fff;padding:8px 12px;border-radius:12px;font-size:13px;max-width:240px;align-self:flex-end;';
+    userDiv.style.cssText = 'background:#1a6bba;color:#fff;padding:8px 12px;border-radius:12px;font-size:13px;max-width:240px;align-self:flex-end;word-wrap:break-word;';
     userDiv.textContent = text;
     msgs.appendChild(userDiv);
     msgs.scrollTop = msgs.scrollHeight;
 
     // Add loading indicator
     const loadDiv = document.createElement('div');
-    loadDiv.style.cssText = 'background:#e0e0e0;color:#888;padding:8px 12px;border-radius:12px;font-size:13px;max-width:240px;';
+    loadDiv.style.cssText = 'background:#e0e0e0;color:#888;padding:8px 12px;border-radius:12px;font-size:13px;max-width:240px;word-wrap:break-word;';
     loadDiv.textContent = 'TSAI is thinking...';
     msgs.appendChild(loadDiv);
     msgs.scrollTop = msgs.scrollHeight;
 
+    tsaiHistory.push({ role: 'user', parts: [{ text }] });
+
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + TSAI_KEY, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          system: 'You are TSAI, the friendly AI assistant for ToolSchool - an online game site disguised as a school portal. Keep responses short and casual. Help users find games, answer questions, and chat.',
-          messages: [{ role: 'user', content: text }]
+          system_instruction: { parts: [{ text: 'You are TSAI, the friendly AI assistant for ToolSchool - an online game site disguised as a school portal. Keep responses short and casual. Help users find games, answer questions, and chat.' }] },
+          contents: tsaiHistory
         })
       });
       const data = await res.json();
+      console.log('Gemini response:', JSON.stringify(data));
+      const reply = data.candidates[0].content.parts[0].text;
+      tsaiHistory.push({ role: 'model', parts: [{ text: reply }] });
       loadDiv.style.color = '#333';
-      loadDiv.textContent = data.content[0].text;
+      loadDiv.textContent = reply;
     } catch(e) {
-      loadDiv.textContent = 'Oops, something went wrong!';
+      loadDiv.textContent = 'Error: ' + (e.message || JSON.stringify(e));
     }
     msgs.scrollTop = msgs.scrollHeight;
   }
