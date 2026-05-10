@@ -186,6 +186,7 @@
     <div class="top-icon" onclick="openSettings()">&#9881;&#65039;</div>
     <div class="top-icon" onclick="window.open('https://discord.gg/ZUeXWHkA','_blank')">&#128172;</div>
     <div class="top-icon" onclick="openAI()">&#129302;</div>
+    <div class="top-icon" onclick="openCommit()">&#128295;</div>
     <div class="top-icon" onclick="window.open('https://cash.app/$JayceThomson7','_blank')" style="background:#00D632;color:#fff;font-size:16px;font-weight:bold;">$</div>
   </div>
   <div class="top-right-clock">
@@ -605,7 +606,7 @@
     if (w.style.display === 'flex') document.getElementById('aiInput').focus();
   }
 
-  const TSAI_KEY = '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';
+  const TSAI_KEY = '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';
   const tsaiHistory = [{ role: 'system', content: 'You are TSAI, the friendly AI assistant for ToolSchool - an online game site disguised as a school portal. Keep responses short and casual. Help users find games, answer questions, and chat.' }];
 
   async function sendAI() {
@@ -634,14 +635,14 @@
 
     try {
       tsaiHistory.push({ role: 'user', content: text });
-      const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + TSAI_KEY
         },
         body: JSON.stringify({
-          model: 'gpt-4o-mini',
+          model: 'llama-3.3-70b-versatile',
           messages: tsaiHistory,
           max_tokens: 500
         })
@@ -659,6 +660,32 @@
       loadDiv.textContent = 'Error: ' + (e.message || JSON.stringify(e));
     }
     msgs.scrollTop = msgs.scrollHeight;
+  }
+
+
+  function openCommit() {
+    document.getElementById('commitPopup').classList.add('show');
+    fetchCommit();
+  }
+  function closeCommit(e) {
+    if (!e || e.target === document.getElementById('commitPopup'))
+      document.getElementById('commitPopup').classList.remove('show');
+  }
+  async function fetchCommit() {
+    const el = document.getElementById('commitContent');
+    try {
+      const res = await fetch('https://api.github.com/repos/Cuyovv/fakeschooltool/commits?per_page=1');
+      const data = await res.json();
+      const c = data[0];
+      const date = new Date(c.commit.author.date).toLocaleString();
+      el.innerHTML =
+        '<div style="margin-bottom:8px;"><span style="font-weight:bold;color:#333;">Message:</span><br/>' + c.commit.message + '</div>' +
+        '<div style="margin-bottom:8px;"><span style="font-weight:bold;color:#333;">Author:</span> ' + c.commit.author.name + '</div>' +
+        '<div style="margin-bottom:8px;"><span style="font-weight:bold;color:#333;">Date:</span> ' + date + '</div>' +
+        '<div><span style="font-weight:bold;color:#333;">Commit:</span> <a href="' + c.html_url + '" target="_blank" style="color:#1a6bba;font-family:monospace;">' + c.sha.substring(0,7) + '</a></div>';
+    } catch(e) {
+      el.innerHTML = '<div style="color:red;">Failed to load commit info.</div>';
+    }
   }
 
   function openBrowser() {
@@ -898,6 +925,19 @@
       style="background:#1a1a2e;color:#fff;border:none;border-radius:20px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:bold;">
       Send
     </button>
+  </div>
+</div>
+
+<!-- COMMIT POPUP -->
+<div class="popup-overlay" id="commitPopup" onclick="closeCommit(event)">
+  <div class="popup-box" style="max-width:420px;">
+    <button class="popup-close" onclick="closeCommit()">&#x2715;</button>
+    <div style="font-size:36px;margin-bottom:8px;">&#128295;</div>
+    <h2 style="margin-bottom:16px;">Latest Update</h2>
+    <hr/>
+    <div id="commitContent" style="text-align:left;margin-top:12px;font-size:13px;color:#444;line-height:1.8;">
+      <div style="color:#888;">Loading...</div>
+    </div>
   </div>
 </div>
 </body>
