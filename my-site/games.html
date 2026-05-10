@@ -225,13 +225,17 @@
 </div>
 
 <div class="bottom-bar">
-  <div class="bottom-btn" onclick="scroll3ds(-1)">&#9664; Back</div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="bottom-btn" onclick="scroll3ds(-1)">&#9664; Back</div>
+    <span style="font-size:12px;color:red;font-weight:bold;">Safety Key: &#92;</span>
+  </div>
   <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
     <div class="home-circle" onclick="closeGame()"></div>
     <span id="status-text">Loading...</span>
   </div>
   <div class="bottom-btn">Open &#9654;</div>
 </div>
+
 
 <div class="popup-overlay" id="ownerPopup" onclick="hideOwner(event)">
   <div class="popup-box">
@@ -532,7 +536,15 @@
     }
   }
 
-    function closeGame() {
+  
+  // Panic button - press \ to go back to SchoolTool
+  document.addEventListener('keydown', function(e) {
+    if (e.key === '\\') {
+      window.location.href = '/';
+    }
+  });
+
+  function closeGame() {
     document.getElementById('game-frame').src = '';
     document.getElementById('game-frame').style.display = 'none';
     document.getElementById('close-btn').style.display = 'none';
