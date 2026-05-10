@@ -606,7 +606,7 @@
     if (w.style.display === 'flex') document.getElementById('aiInput').focus();
   }
 
-  const TSAI_KEY = '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';
+
   const tsaiHistory = [{ role: 'system', content: 'You are TSAI, the friendly AI assistant for ToolSchool - an online game site disguised as a school portal. Keep responses short and casual. Help users find games, answer questions, and chat.' }];
 
   async function sendAI() {
@@ -635,12 +635,9 @@
 
     try {
       tsaiHistory.push({ role: 'user', content: text });
-      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      const res = await fetch('/api/chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + TSAI_KEY
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'llama-3.3-70b-versatile',
           messages: tsaiHistory,
