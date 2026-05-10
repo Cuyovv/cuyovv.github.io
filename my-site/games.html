@@ -24,15 +24,13 @@
     padding: 8px 24px;
     height: 60px;
     flex-shrink: 0;
-    position: relative;
   }
   .top-center {
     display: flex;
     align-items: center;
     gap: 36px;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    flex: 1;
+    justify-content: center;
   }
   .top-icon {
     width: 40px; height: 40px;
@@ -388,7 +386,7 @@
   }
 
   function openSoundboard() {
-    document.getElementById('game-frame').src = '/soundboard/index.html';
+    document.getElementById('game-frame').src = 'soundboard-main/index.html';
     document.getElementById('game-frame').style.display = 'block';
     document.getElementById('close-btn').style.display = 'flex';
   }
