@@ -631,8 +631,6 @@
     msgs.appendChild(loadDiv);
     msgs.scrollTop = msgs.scrollHeight;
 
-    tsaiHistory.push({ role: 'user', parts: [{ text }] });
-
     try {
       tsaiHistory.push({ role: 'user', content: text });
       const res = await fetch('/api/chat', {
