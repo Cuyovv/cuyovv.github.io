@@ -193,6 +193,18 @@
     <span>&#128267;</span>
     <span id="clock">12:00 PM</span>
   </div>
+  <div style="position:absolute;left:8px;top:50%;transform:translateY(-50%);overflow:hidden;width:728px;max-width:40%;height:90px;">
+    <script>
+      atOptions = {
+        'key' : '7be8d8b15dee729db953f921af0d1608',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+      };
+    </script>
+    <script src="https://www.highperformanceformat.com/7be8d8b15dee729db953f921af0d1608/invoke.js"></script>
+  </div>
 </div>
 
 <div class="search-row">
@@ -376,7 +388,7 @@
   }
 
   function openSoundboard() {
-    document.getElementById('game-frame').src = '/soundboard-main/index.html';
+    document.getElementById('game-frame').src = '/soundboard/index.html';
     document.getElementById('game-frame').style.display = 'block';
     document.getElementById('close-btn').style.display = 'flex';
   }
@@ -501,8 +513,13 @@
   function openGame(n) {
     if (ablankEnabled) {
       const w = window.open('about:blank', '_blank');
-      w.document.write('<html><head><title>Loading...</title></head><body style="margin:0;padding:0;overflow:hidden;"><iframe src="/html/html-main/' + n + '.html" style="width:100vw;height:100vh;border:none;"></iframe></body></html>');
-      w.document.close();
+      const doc = w.document;
+      doc.open();
+      doc.write('<html><head><title>Loading...</title></head>');
+      doc.write('<body style="margin:0;padding:0;overflow:hidden;">');
+      doc.write('<iframe src="/html/html-main/' + n + '.html" style="width:100vw;height:100vh;border:none;"></iframe>');
+      doc.write('<\/body><\/html>');
+      doc.close();
     } else {
       document.getElementById('game-frame').src = '/html/html-main/' + n + '.html';
       document.getElementById('game-frame').style.display = 'block';
@@ -510,7 +527,7 @@
     }
   }
 
-  function closeGame() {
+    function closeGame() {
     document.getElementById('game-frame').src = '';
     document.getElementById('game-frame').style.display = 'none';
     document.getElementById('close-btn').style.display = 'none';
@@ -651,6 +668,21 @@
     <button onclick="resetSettings()"
       style="width:100%;padding:9px;background:#e0e0e0;color:#333;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-weight:bold;margin-top:8px;">
       Reset to Default
+    </button>
+  </div>
+</div>
+
+
+
+<!-- ANNOUNCEMENT POPUP -->
+<div class="popup-overlay show" id="announcementPopup" style="z-index:10002;">
+  <div class="popup-box" style="max-width:420px;">
+    <div style="font-size:48px;margin-bottom:8px;">&#127881;</div>
+    <h2 style="font-size:24px;margin-bottom:12px;">LAUNCH!!!!!!</h2>
+    <p style="font-size:15px;color:#555;margin-bottom:20px;">UR PROUD OWNER YOGI</p>
+    <button onclick="document.getElementById('announcementPopup').classList.remove('show')"
+      style="width:100%;padding:10px;background:#1a6bba;color:#fff;border:none;border-radius:8px;font-size:15px;cursor:pointer;font-weight:bold;">
+      Close
     </button>
   </div>
 </div>
