@@ -605,8 +605,8 @@
     if (w.style.display === 'flex') document.getElementById('aiInput').focus();
   }
 
-  const TSAI_KEY = 'AIzaSyDhIA6mazRzjQ9k9qL9LHwKGMVykNn4r6U';
-  const tsaiHistory = [];
+  const TSAI_KEY = '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';
+  const tsaiHistory = [{ role: 'system', content: 'You are TSAI, the friendly AI assistant for ToolSchool - an online game site disguised as a school portal. Keep responses short and casual. Help users find games, answer questions, and chat.' }];
 
   async function sendAI() {
     const input = document.getElementById('aiInput');
@@ -633,23 +633,25 @@
     tsaiHistory.push({ role: 'user', parts: [{ text }] });
 
     try {
-      const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + TSAI_KEY, {
+      tsaiHistory.push({ role: 'user', content: text });
+      const res = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + TSAI_KEY
+        },
         body: JSON.stringify({
-          system_instruction: { parts: [{ text: 'You are TSAI, the friendly AI assistant for ToolSchool - an online game site disguised as a school portal. Keep responses short and casual. Help users find games, answer questions, and chat.' }] },
-          contents: tsaiHistory
+          model: 'gpt-4o-mini',
+          messages: tsaiHistory,
+          max_tokens: 500
         })
       });
       const data = await res.json();
-      console.log('Gemini response:', JSON.stringify(data));
       if (data.error) {
         loadDiv.textContent = 'API Error: ' + data.error.message;
-      } else if (!data.candidates || !data.candidates[0]) {
-        loadDiv.textContent = 'No response: ' + JSON.stringify(data);
       } else {
-        const reply = data.candidates[0].content.parts[0].text;
-        tsaiHistory.push({ role: 'model', parts: [{ text: reply }] });
+        const reply = data.choices[0].message.content;
+        tsaiHistory.push({ role: 'assistant', content: reply });
         loadDiv.style.color = '#333';
         loadDiv.textContent = reply;
       }
