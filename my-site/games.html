@@ -77,6 +77,52 @@
   .arrow:hover { background: rgba(255,255,255,0.85); }
   .arrow.left { left: 4px; }
   .arrow.right { right: 4px; }
+
+  /* FOLDER STYLES */
+  .folder-card {
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    cursor: pointer; transition: transform 0.15s;
+  }
+  .folder-card:hover { transform: scale(1.06); }
+  .folder-card:active { transform: scale(0.97); }
+  .folder-icon {
+    width: 180px; height: 180px;
+    border-radius: 28px;
+    background: linear-gradient(145deg, #e8e8f0, #d0d0dc);
+    box-shadow: 0 6px 0 #aaa, 0 10px 24px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.8);
+    border: 2px solid rgba(255,255,255,0.9);
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .folder-preview {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
+    gap: 3px; padding: 8px;
+  }
+  .folder-preview img {
+    width: 100%; height: 100%; object-fit: cover; border-radius: 8px;
+  }
+  .folder-label-inner {
+    font-size: 52px; z-index: 2; opacity: 0.15;
+    position: absolute; bottom: 6px; right: 10px;
+  }
+  .folder-name {
+    font-size: 14px; font-weight: bold; color: #333;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.8);
+    letter-spacing: 0.5px;
+  }
+  .back-btn {
+    position: absolute; top: 8px; left: 8px; z-index: 20;
+    background: rgba(255,255,255,0.7); border: 1px solid #ccc;
+    border-radius: 8px; padding: 4px 12px; font-size: 13px;
+    font-weight: bold; color: #333; cursor: pointer;
+  }
+  .back-btn:hover { background: rgba(255,255,255,0.95); }
+  .folder-title {
+    position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+    font-size: 13px; font-weight: bold; color: #555; z-index: 20;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.8);
+  }
   .grid-viewport { width: 100%; height: 100%; overflow: hidden; }
   .grid-track {
     display: grid;
@@ -227,12 +273,51 @@
 </div>
 
 <div class="main">
-  <button class="arrow left" onclick="scroll3ds(-1)">&#9664;</button>
-  <button class="arrow right" onclick="scroll3ds(1)">&#9654;</button>
-  <div class="grid-viewport">
-    <div style="position:absolute;top:6px;left:50px;font-size:12px;font-weight:bold;color:#555;text-shadow:0 1px 0 rgba(255,255,255,0.8);z-index:5;pointer-events:none;">&#128293; Popular</div>
-    <div class="grid-track" id="grid"></div>
+
+  <!-- FOLDER VIEW -->
+  <div id="folderView" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;">
+    <div style="display:flex;gap:40px;align-items:center;justify-content:center;">
+
+      <!-- Popular Folder -->
+      <div class="folder-card" onclick="openFolder('popular')">
+        <div class="folder-icon" id="folder-popular">
+          <div class="folder-preview" id="preview-popular"></div>
+          <div class="folder-label-inner">&#128293;</div>
+        </div>
+        <div class="folder-name">Popular</div>
+      </div>
+
+      <!-- Favorites Folder -->
+      <div class="folder-card" onclick="openFolder('favorites')">
+        <div class="folder-icon" id="folder-favorites">
+          <div class="folder-preview" id="preview-favorites"></div>
+          <div class="folder-label-inner">&#11088;</div>
+        </div>
+        <div class="folder-name">Favorites</div>
+      </div>
+
+      <!-- All Games Folder -->
+      <div class="folder-card" onclick="openFolder('all')">
+        <div class="folder-icon" id="folder-all">
+          <div class="folder-preview" id="preview-all"></div>
+          <div class="folder-label-inner">&#127918;</div>
+        </div>
+        <div class="folder-name">All Games</div>
+      </div>
+
+    </div>
+    <div id="folder-status" style="font-size:12px;color:#888;">Loading games...</div>
   </div>
+
+  <!-- GAME GRID VIEW (hidden by default) -->
+  <div id="gridView" style="display:none;width:100%;height:100%;position:relative;">
+    <button class="arrow left" onclick="scroll3ds(-1)">&#9664;</button>
+    <button class="arrow right" onclick="scroll3ds(1)">&#9654;</button>
+    <div class="grid-viewport">
+      <div class="grid-track" id="grid"></div>
+    </div>
+  </div>
+
 </div>
 
 <div class="bottom-bar">
@@ -374,8 +459,11 @@
       card.appendChild(label);
       grid.appendChild(card);
       allCards.push(card);
+      addFavBtn(card, n);
       loaded++;
       statusText.textContent = loaded + ' games';
+      const fs = document.getElementById('folder-status');
+      if (fs) fs.textContent = loaded + ' games loaded';
       calcSizes();
     } catch {}
   }
@@ -388,8 +476,11 @@
       statusText.textContent = 'Loading... ' + Math.min(i+15,825) + '/825';
     }
     statusText.textContent = loaded + ' games';
+    const fs = document.getElementById('folder-status');
+    if (fs) fs.textContent = loaded + ' games ready!';
     calcSizes();
     sortByPopularity();
+    updateFolderPreviews();
   }
   loadAll();
 
@@ -421,6 +512,117 @@
   document.querySelector('.main').addEventListener('touchend', e => {
     if (Math.abs(tx - e.changedTouches[0].clientX) > 40) scroll3ds(tx - e.changedTouches[0].clientX > 0 ? 1 : -1);
   });
+
+
+  let currentFolder = 'all';
+
+  function openFolder(type) {
+    currentFolder = type;
+    colOffset = 0;
+    grid.style.transform = 'translateX(0)';
+
+    // Filter cards based on folder
+    const clicks = JSON.parse(localStorage.getItem('gameclicks') || '{}');
+    const favs = JSON.parse(localStorage.getItem('gamefavs') || '[]');
+
+    let visible = [];
+    if (type === 'popular') {
+      visible = [...allCards].sort((a,b) => (clicks[b.dataset.num]||0) - (clicks[a.dataset.num]||0)).slice(0, 90);
+    } else if (type === 'favorites') {
+      visible = allCards.filter(c => favs.includes(c.dataset.num));
+    } else {
+      visible = [...allCards].sort((a,b) => (clicks[b.dataset.num]||0) - (clicks[a.dataset.num]||0));
+    }
+
+    // Show/hide cards
+    allCards.forEach(c => c.style.display = 'none');
+    // Re-append in order
+    visible.forEach(c => {
+      c.style.display = '';
+      grid.appendChild(c);
+    });
+
+    // Switch views
+    document.getElementById('folderView').style.display = 'none';
+    const gv = document.getElementById('gridView');
+    gv.style.display = 'block';
+
+    // Add back button and title if not already there
+    if (!document.getElementById('back-btn')) {
+      const backBtn = document.createElement('button');
+      backBtn.id = 'back-btn';
+      backBtn.className = 'back-btn';
+      backBtn.innerHTML = '&#9664; Back';
+      backBtn.onclick = closeFolder;
+      gv.appendChild(backBtn);
+
+      const title = document.createElement('div');
+      title.id = 'folder-title';
+      title.className = 'folder-title';
+      gv.appendChild(title);
+    }
+    const titles = { popular: '&#128293; Popular', favorites: '&#11088; Favorites', all: '&#127918; All Games' };
+    document.getElementById('folder-title').innerHTML = titles[type];
+
+    calcSizes();
+  }
+
+  function closeFolder() {
+    document.getElementById('folderView').style.display = 'flex';
+    document.getElementById('gridView').style.display = 'none';
+    allCards.forEach(c => c.style.display = '');
+    updateFolderPreviews();
+  }
+
+  function updateFolderPreviews() {
+    const clicks = JSON.parse(localStorage.getItem('gameclicks') || '{}');
+    const favs = JSON.parse(localStorage.getItem('gamefavs') || '[]');
+
+    // Popular preview - top 4
+    const popular = [...allCards].sort((a,b) => (clicks[b.dataset.num]||0) - (clicks[a.dataset.num]||0)).slice(0,4);
+    setPreview('preview-popular', popular);
+
+    // Favorites preview
+    const favCards = allCards.filter(c => favs.includes(c.dataset.num)).slice(0,4);
+    setPreview('preview-favorites', favCards);
+
+    // All games preview - first 4
+    setPreview('preview-all', allCards.slice(0,4));
+  }
+
+  function setPreview(id, cards) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = '';
+    cards.slice(0,4).forEach(c => {
+      const img = c.querySelector('img');
+      if (img) {
+        const i = document.createElement('img');
+        i.src = img.src;
+        i.onerror = () => i.remove();
+        el.appendChild(i);
+      }
+    });
+  }
+
+  // Add favorite button to each card
+  function addFavBtn(card, n) {
+    const favs = JSON.parse(localStorage.getItem('gamefavs') || '[]');
+    const btn = document.createElement('div');
+    btn.style.cssText = 'position:absolute;top:4px;right:4px;font-size:14px;cursor:pointer;z-index:10;text-shadow:0 1px 2px rgba(0,0,0,0.5);';
+    btn.textContent = favs.includes(String(n)) ? '⭐' : '☆';
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      const f = JSON.parse(localStorage.getItem('gamefavs') || '[]');
+      const idx = f.indexOf(String(n));
+      if (idx === -1) f.push(String(n));
+      else f.splice(idx, 1);
+      localStorage.setItem('gamefavs', JSON.stringify(f));
+      btn.textContent = f.includes(String(n)) ? '⭐' : '☆';
+    };
+    card.style.position = 'relative';
+    card.appendChild(btn);
+  }
 
   function filterGames() {
     const q = document.getElementById('search').value.toLowerCase().trim();
