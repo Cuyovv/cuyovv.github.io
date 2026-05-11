@@ -102,15 +102,47 @@
   .folder-preview img {
     width: 100%; height: 100%; object-fit: cover; border-radius: 8px;
   }
-  .folder-label-inner {
-    font-size: 52px; z-index: 2; opacity: 0.15;
-    position: absolute; bottom: 6px; right: 10px;
-  }
+
   .folder-name {
     font-size: 14px; font-weight: bold; color: #333;
     text-shadow: 0 1px 0 rgba(255,255,255,0.8);
     letter-spacing: 0.5px;
+    display: flex; align-items: center; gap: 6px;
   }
+  .folder-badge {
+    background: #1a6bba; color: #fff;
+    font-size: 10px; padding: 2px 6px;
+    border-radius: 999px; font-weight: bold;
+    min-width: 20px; text-align: center;
+  }
+  @keyframes folderZoom {
+    from { transform: scale(1); opacity: 1; }
+    to { transform: scale(1.15); opacity: 0; }
+  }
+  .folder-card:active .folder-icon {
+    animation: folderZoom 0.15s ease forwards;
+  }
+
+  /* DARK MODE */
+  body.dark { background: #1a1a2e; }
+  body.dark .top-bar { background: linear-gradient(180deg,#16213e,#0f3460); border-color:#0f3460; }
+  body.dark .bottom-bar { background: linear-gradient(180deg,#16213e,#0f3460); border-color:#0f3460; }
+  body.dark .search-row { background: linear-gradient(180deg,#16213e,#1a1a2e); border-color:#0f3460; }
+  body.dark .search-row input { background: #0f3460; color:#fff; border-color:#1a6bba; }
+  body.dark .search-row input::placeholder { color:#aaa; }
+  body.dark .main { background: linear-gradient(180deg,#1a1a2e,#16213e); }
+  body.dark .top-icon { background: #0f3460; color: #fff; }
+  body.dark .game-label { color: #ddd; text-shadow: none; }
+  body.dark .folder-name { color: #ddd; text-shadow: none; }
+  body.dark .folder-icon { background: linear-gradient(145deg,#16213e,#0f3460); box-shadow: 0 6px 0 #050d1a, 0 10px 24px rgba(0,0,0,0.5); }
+  body.dark .bottom-btn { background: rgba(15,52,96,0.7); color:#ddd; border-color:#1a6bba; }
+  body.dark .popup-box { background: linear-gradient(180deg,#16213e,#1a1a2e); color:#ddd; }
+  body.dark .popup-box h2 { color:#ddd; }
+  body.dark .popup-box p { color:#aaa; }
+  body.dark .popup-box hr { border-color:#0f3460; }
+  body.dark #suggestions { background:#16213e; border-color:#0f3460; }
+  body.dark #chatMessages { background:#1a1a2e; }
+  body.dark #chatWindow { background:#16213e; border-color:#0f3460; }
   .back-btn {
     position: absolute; top: 8px; left: 8px; z-index: 20;
     background: rgba(255,255,255,0.7); border: 1px solid #ccc;
@@ -224,7 +256,7 @@
 <body>
 
 <div class="top-bar">
-  <div></div>
+  <div style="min-width:220px;"></div>
   <div class="top-center">
     <div class="top-icon" onclick="showOwner()">&#128081;</div>
     <div class="top-icon" onclick="openSoundboard()">&#127925;</div>
@@ -237,7 +269,7 @@
     <div class="top-icon" onclick="openCommit()">&#128295;</div>
     <div class="top-icon" onclick="window.open('https://cash.app/$JayceThomson7','_blank')" style="background:#00D632;color:#fff;font-size:16px;font-weight:bold;">$</div>
   </div>
-  <div class="top-right-clock">
+  <div class="top-right-clock" style="min-width:220px;justify-content:flex-end;">
     <span style="font-size:11px;color:#4caf50;">&#9679;</span>
     <span id="online-count" style="font-size:12px;color:#555;">0 online</span>
     <span style="color:#ccc;">|</span>
@@ -267,31 +299,47 @@
   <div id="folderView" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;">
     <div style="display:flex;gap:40px;align-items:center;justify-content:center;">
 
+      <!-- Leaderboard Folder -->
+      <div class="folder-card" onclick="openLeaderboard()">
+        <div class="folder-icon" style="background:linear-gradient(145deg,#f5e8d0,#e8d0a8);display:flex;align-items:center;justify-content:center;">
+          <div style="font-size:70px;">&#127942;</div>
+        </div>
+        <div class="folder-name">Leaderboard</div>
+      </div>
+
       <!-- Popular Folder -->
       <div class="folder-card" onclick="openFolder('popular')">
-        <div class="folder-icon" id="folder-popular">
-          <div class="folder-preview" id="preview-popular"></div>
-          <div class="folder-label-inner">&#128293;</div>
+        <div class="folder-icon" id="folder-popular" style="display:flex;align-items:center;justify-content:center;">
+          <div class="folder-preview" id="preview-popular" style="display:none;"></div>
+          <div class="folder-emoji" id="emoji-popular" style="font-size:70px;">&#128293;</div>
         </div>
-        <div class="folder-name">Popular</div>
+        <div class="folder-name">Popular <span class="folder-badge" id="badge-popular"></span></div>
       </div>
 
       <!-- Favorites Folder -->
       <div class="folder-card" onclick="openFolder('favorites')">
-        <div class="folder-icon" id="folder-favorites">
-          <div class="folder-preview" id="preview-favorites"></div>
-          <div class="folder-label-inner">&#11088;</div>
+        <div class="folder-icon" id="folder-favorites" style="display:flex;align-items:center;justify-content:center;">
+          <div class="folder-preview" id="preview-favorites" style="display:none;"></div>
+          <div class="folder-emoji" id="emoji-favorites" style="font-size:70px;">&#11088;</div>
         </div>
-        <div class="folder-name">Favorites</div>
+        <div class="folder-name">Favorites <span class="folder-badge" id="badge-favorites"></span></div>
       </div>
 
       <!-- All Games Folder -->
       <div class="folder-card" onclick="openFolder('all')">
-        <div class="folder-icon" id="folder-all">
-          <div class="folder-preview" id="preview-all"></div>
-          <div class="folder-label-inner">&#127918;</div>
+        <div class="folder-icon" id="folder-all" style="display:flex;align-items:center;justify-content:center;">
+          <div class="folder-preview" id="preview-all" style="display:none;"></div>
+          <div class="folder-emoji" id="emoji-all" style="font-size:70px;">&#127918;</div>
         </div>
-        <div class="folder-name">All Games</div>
+        <div class="folder-name">All Games <span class="folder-badge" id="badge-all"></span></div>
+      </div>
+
+      <!-- Random Game Button -->
+      <div class="folder-card" onclick="openRandomGame()">
+        <div class="folder-icon" style="background:linear-gradient(145deg,#e8f0e8,#d0dcd0);display:flex;align-items:center;justify-content:center;">
+          <div style="font-size:70px;">&#127922;</div>
+        </div>
+        <div class="folder-name">Random</div>
       </div>
 
     </div>
@@ -470,6 +518,7 @@
     calcSizes();
     sortByPopularity();
     updateFolderPreviews();
+    updateBadges();
   }
   loadAll();
 
@@ -561,6 +610,7 @@
     document.getElementById('gridView').style.display = 'none';
     allCards.forEach(c => c.style.display = '');
     updateFolderPreviews();
+    updateBadges();
   }
 
   function updateFolderPreviews() {
@@ -583,7 +633,8 @@
     const el = document.getElementById(id);
     if (!el) return;
     el.innerHTML = '';
-    cards.slice(0,4).forEach(c => {
+    const validCards = cards.filter(c => c.querySelector('img'));
+    validCards.slice(0,4).forEach(c => {
       const img = c.querySelector('img');
       if (img) {
         const i = document.createElement('img');
@@ -592,6 +643,12 @@
         el.appendChild(i);
       }
     });
+    if (validCards.length > 0) {
+      el.style.display = 'grid';
+      const emojiId = id.replace('preview-', 'emoji-');
+      const emoji = document.getElementById(emojiId);
+      if (emoji) emoji.style.display = 'none';
+    }
   }
 
   // Add favorite button to each card
@@ -920,6 +977,89 @@
       document.getElementById('biblePopup').classList.remove('show');
   }
 
+  let darkEnabled = localStorage.getItem('darkMode') === 'true';
+
+  function applyDark() {
+    if (darkEnabled) {
+      document.body.classList.add('dark');
+      document.getElementById('dark-track').style.background = '#1a6bba';
+      document.getElementById('dark-knob').style.transform = 'translateX(20px)';
+    } else {
+      document.body.classList.remove('dark');
+      const t = document.getElementById('dark-track');
+      const k = document.getElementById('dark-knob');
+      if (t) t.style.background = '#ccc';
+      if (k) k.style.transform = 'translateX(0)';
+    }
+  }
+
+  function toggleDark() {
+    darkEnabled = !darkEnabled;
+    localStorage.setItem('darkMode', darkEnabled);
+    applyDark();
+  }
+
+  // Apply dark mode on load
+  applyDark();
+
+
+  function openLeaderboard() {
+    document.getElementById('leaderboardPopup').classList.add('show');
+    const list = document.getElementById('leaderboardList');
+    const clicks = JSON.parse(localStorage.getItem('gameclicks') || '{}');
+
+    // Sort all games by click count
+    const sorted = allCards
+      .map(c => ({ name: c.querySelector('.game-label').textContent, num: c.dataset.num, clicks: clicks[c.dataset.num] || 0 }))
+      .filter(g => g.clicks > 0)
+      .sort((a, b) => b.clicks - a.clicks)
+      .slice(0, 15);
+
+    if (sorted.length === 0) {
+      list.innerHTML = '<div style="color:#888;font-size:13px;">No games played yet! Start playing to see the leaderboard.</div>';
+      return;
+    }
+
+    const medals = ['\uD83E\uDD47', '\uD83E\uDD48', '\uD83E\uDD49'];
+    list.innerHTML = sorted.map((g, i) => {
+      const medal = medals[i] || (i + 1) + '.';
+      const img = allCards.find(c => c.dataset.num === g.num);
+      const imgSrc = img ? (img.querySelector('img') ? img.querySelector('img').src : '') : '';
+      return '<div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #eee;">' +
+        '<span style="font-size:18px;min-width:28px;">' + medal + '</span>' +
+        (imgSrc ? '<img src="' + imgSrc + '" style="width:36px;height:36px;border-radius:8px;object-fit:cover;"/>' : '') +
+        '<div style="flex:1;">' +
+          '<div style="font-size:13px;font-weight:bold;color:#333;">' + g.name + '</div>' +
+          '<div style="font-size:11px;color:#888;">' + g.clicks + ' play' + (g.clicks !== 1 ? 's' : '') + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function closeLeaderboard(e) {
+    if (!e || e.target === document.getElementById('leaderboardPopup'))
+      document.getElementById('leaderboardPopup').classList.remove('show');
+  }
+
+  function openRandomGame() {
+    if (allCards.length === 0) return;
+    const card = allCards[Math.floor(Math.random() * allCards.length)];
+    card.click();
+  }
+
+  function updateBadges() {
+    const clicks = JSON.parse(localStorage.getItem('gameclicks') || '{}');
+    const favs = JSON.parse(localStorage.getItem('gamefavs') || '[]');
+    const popCount = Math.min(90, allCards.length);
+    const favCount = allCards.filter(c => favs.includes(c.dataset.num)).length;
+    const pb = document.getElementById('badge-popular');
+    const fb = document.getElementById('badge-favorites');
+    const ab = document.getElementById('badge-all');
+    if (pb) pb.textContent = popCount;
+    if (fb) fb.textContent = favCount;
+    if (ab) ab.textContent = allCards.length;
+  }
+
   function openBrowser() {
     document.getElementById('game-frame').src = '/GUST.html';
     document.getElementById('game-frame').style.display = 'block';
@@ -1101,6 +1241,17 @@
 
       <div style="display:flex;align-items:center;justify-content:space-between;">
         <div>
+          <label style="font-size:13px;font-weight:bold;color:#333;">Dark Mode</label>
+          <div style="font-size:11px;color:#888;">Easy on the eyes</div>
+        </div>
+        <div id="dark-track" onclick="toggleDark()"
+          style="position:relative;display:inline-block;width:44px;height:24px;background:#ccc;border-radius:24px;cursor:pointer;transition:.3s;">
+          <div id="dark-knob" style="position:absolute;height:18px;width:18px;left:3px;top:3px;background:white;border-radius:50%;transition:.3s;"></div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div>
           <label style="font-size:13px;font-weight:bold;color:#333;">Open games in about:blank</label>
           <div style="font-size:11px;color:#888;">Hides URL from address bar</div>
         </div>
@@ -1214,6 +1365,19 @@
     <hr/>
     <div id="bible-verse" style="font-size:15px;color:#333;line-height:1.8;margin:16px 0;font-style:italic;"></div>
     <div id="bible-ref" style="font-size:13px;color:#1a6bba;font-weight:bold;text-align:right;"></div>
+  </div>
+</div>
+
+<!-- LEADERBOARD POPUP -->
+<div class="popup-overlay" id="leaderboardPopup" onclick="closeLeaderboard(event)">
+  <div class="popup-box" style="max-width:420px;">
+    <button class="popup-close" onclick="closeLeaderboard()">&#x2715;</button>
+    <div style="font-size:36px;margin-bottom:8px;">&#127942;</div>
+    <h2 style="margin-bottom:16px;">Most Played Games</h2>
+    <hr/>
+    <div id="leaderboardList" style="text-align:left;margin-top:12px;display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto;">
+      <div style="color:#888;font-size:13px;">Loading...</div>
+    </div>
   </div>
 </div>
 </body>
