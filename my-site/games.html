@@ -299,6 +299,15 @@
   <div id="folderView" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;">
     <div style="display:flex;gap:40px;align-items:center;justify-content:center;">
 
+      <!-- Recently Played Folder -->
+      <div class="folder-card" onclick="openFolder('recent')">
+        <div class="folder-icon" id="folder-recent" style="display:flex;align-items:center;justify-content:center;">
+          <div class="folder-preview" id="preview-recent" style="display:none;"></div>
+          <div class="folder-emoji" id="emoji-recent" style="font-size:70px;">&#128336;</div>
+        </div>
+        <div class="folder-name">Recent <span class="folder-badge" id="badge-recent"></span></div>
+      </div>
+
       <!-- Leaderboard Folder -->
       <div class="folder-card" onclick="openLeaderboard()">
         <div class="folder-icon" style="background:linear-gradient(145deg,#f5e8d0,#e8d0a8);display:flex;align-items:center;justify-content:center;">
@@ -340,6 +349,15 @@
           <div style="font-size:70px;">&#127922;</div>
         </div>
         <div class="folder-name">Random</div>
+      </div>
+
+      <!-- Continue Playing -->
+      <div class="folder-card" id="continueFolder" style="display:none;" onclick="continueGame()">
+        <div class="folder-icon" style="background:linear-gradient(145deg,#d0e8f0,#a8c8e8);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px;">
+          <div style="font-size:52px;">&#9654;&#65039;</div>
+          <div id="continueGameName" style="font-size:10px;font-weight:bold;color:#1a3a6e;text-align:center;max-width:140px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;"></div>
+        </div>
+        <div class="folder-name">Continue Playing</div>
       </div>
 
     </div>
@@ -563,11 +581,14 @@
     const clicks = JSON.parse(localStorage.getItem('gameclicks') || '{}');
     const favs = JSON.parse(localStorage.getItem('gamefavs') || '[]');
 
+    const recent = JSON.parse(localStorage.getItem('recentGames') || '[]');
     let visible = [];
     if (type === 'popular') {
       visible = [...allCards].sort((a,b) => (clicks[b.dataset.num]||0) - (clicks[a.dataset.num]||0)).slice(0, 90);
     } else if (type === 'favorites') {
       visible = allCards.filter(c => favs.includes(c.dataset.num));
+    } else if (type === 'recent') {
+      visible = recent.map(n => allCards.find(c => c.dataset.num === String(n))).filter(Boolean);
     } else {
       visible = [...allCards].sort((a,b) => (clicks[b.dataset.num]||0) - (clicks[a.dataset.num]||0));
     }
@@ -1041,23 +1062,55 @@
       document.getElementById('leaderboardPopup').classList.remove('show');
   }
 
+  function updateContinueButton() {
+    const last = JSON.parse(localStorage.getItem('lastGame') || 'null');
+    const folder = document.getElementById('continueFolder');
+    const nameEl = document.getElementById('continueGameName');
+    if (last && folder) {
+      folder.style.display = 'flex';
+      if (nameEl) nameEl.textContent = last.name;
+    }
+  }
+
+  function continueGame() {
+    const last = JSON.parse(localStorage.getItem('lastGame') || 'null');
+    if (last) openGame(last.num);
+  }
+
+  // Check on load
+  updateContinueButton();
+  updateRecentPreview();
+
   function openRandomGame() {
     if (allCards.length === 0) return;
     const card = allCards[Math.floor(Math.random() * allCards.length)];
     card.click();
   }
 
+  function updateRecentPreview() {
+    const recent = JSON.parse(localStorage.getItem('recentGames') || '[]');
+    const recentCards = recent.map(n => allCards.find(c => c.dataset.num === String(n))).filter(Boolean);
+    setPreview('preview-recent', recentCards);
+    const rb = document.getElementById('badge-recent');
+    if (rb) rb.textContent = recentCards.length;
+  }
+
   function updateBadges() {
     const clicks = JSON.parse(localStorage.getItem('gameclicks') || '{}');
     const favs = JSON.parse(localStorage.getItem('gamefavs') || '[]');
+    const recent = JSON.parse(localStorage.getItem('recentGames') || '[]');
     const popCount = Math.min(90, allCards.length);
     const favCount = allCards.filter(c => favs.includes(c.dataset.num)).length;
+    const recentCount = recent.length;
     const pb = document.getElementById('badge-popular');
     const fb = document.getElementById('badge-favorites');
     const ab = document.getElementById('badge-all');
+    const rb = document.getElementById('badge-recent');
     if (pb) pb.textContent = popCount;
     if (fb) fb.textContent = favCount;
     if (ab) ab.textContent = allCards.length;
+    if (rb) rb.textContent = recentCount;
+    updateRecentPreview();
   }
 
   function openBrowser() {
@@ -1067,6 +1120,18 @@
   }
 
   function openGame(n) {
+    // Save last played game for continue button
+    const card = allCards.find(c => c.dataset.num === String(n));
+    if (card) {
+      const name = card.querySelector('.game-label').textContent;
+      localStorage.setItem('lastGame', JSON.stringify({ num: n, name }));
+      updateContinueButton();
+      // Track recently played
+      let recent = JSON.parse(localStorage.getItem('recentGames') || '[]');
+      recent = [String(n), ...recent.filter(r => r !== String(n))].slice(0, 20);
+      localStorage.setItem('recentGames', JSON.stringify(recent));
+      updateRecentPreview();
+    }
     if (ablankEnabled) {
       const w = window.open('about:blank', '_blank');
       const doc = w.document;
