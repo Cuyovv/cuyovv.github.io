@@ -719,7 +719,12 @@
   }
 
   const defaultSettings = {
-    bg: '#c8c8d4', bar: '#d8d8d8', icon: '#e8e8e8', label: '#333333', search: '#ffffff'
+    bg: '#c8c8d4',
+    bar: '#d8d8d8',
+    icon: '#e8e8e8',
+    label: '#333333',
+    search: '#ffffff',
+    profanityFilter: false
   };
 
   function loadSettingsInputs() {
@@ -730,6 +735,11 @@
     document.getElementById('s-label').value = s.label || defaultSettings.label;
     document.getElementById('s-search').value = s.search || defaultSettings.search;
     ablankEnabled = s.ablank || false;
+    profanityFilterEnabled = s.profanityFilter || false;
+    const profanityTrack = document.getElementById('profanity-toggle-track');
+    const profanityKnob = document.getElementById('profanity-toggle-knob');
+    if (profanityTrack) profanityTrack.style.background = profanityFilterEnabled ? '#1a6bba' : '#ccc';
+    if (profanityKnob) profanityKnob.style.transform = profanityFilterEnabled ? 'translateX(20px)' : 'translateX(0)';
     const track = document.getElementById('toggle-track');
     const knob = document.getElementById('toggle-knob');
     if (track) track.style.background = ablankEnabled ? '#1a6bba' : '#ccc';
@@ -737,13 +747,24 @@
   }
 
   let ablankEnabled = JSON.parse(localStorage.getItem('siteSettings') || '{}').ablank || false;
+  let profanityFilterEnabled = JSON.parse(localStorage.getItem('siteSettings') || '{}').profanityFilter || false;
+
+  function setSwitchState(trackId, knobId, enabled) {
+    const track = document.getElementById(trackId);
+    const knob = document.getElementById(knobId);
+    if (track) track.style.background = enabled ? '#1a6bba' : '#ccc';
+    if (knob) knob.style.transform = enabled ? 'translateX(20px)' : 'translateX(0)';
+  }
 
   function toggleAblank() {
     ablankEnabled = !ablankEnabled;
-    const track = document.getElementById('toggle-track');
-    const knob = document.getElementById('toggle-knob');
-    track.style.background = ablankEnabled ? '#1a6bba' : '#ccc';
-    knob.style.transform = ablankEnabled ? 'translateX(20px)' : 'translateX(0)';
+    setSwitchState('toggle-track', 'toggle-knob', ablankEnabled);
+    applySettings();
+  }
+
+  function toggleProfanityFilter() {
+    profanityFilterEnabled = !profanityFilterEnabled;
+    setSwitchState('profanity-toggle-track', 'profanity-toggle-knob', profanityFilterEnabled);
     applySettings();
   }
 
@@ -755,6 +776,7 @@
       label: document.getElementById('s-label').value,
       search: document.getElementById('s-search').value,
       ablank: ablankEnabled,
+      profanityFilter: profanityFilterEnabled,
     };
     localStorage.setItem('siteSettings', JSON.stringify(s));
     applyCSS(s);
@@ -801,6 +823,8 @@
 
   function resetSettings() {
     localStorage.removeItem('siteSettings');
+    profanityFilterEnabled = defaultSettings.profanityFilter;
+    ablankEnabled = false;
     applyCSS(defaultSettings);
     loadSettingsInputs();
   }
@@ -1005,11 +1029,19 @@
     });
   });
 
+  const profanityPattern = /\b(fuck(?:er|ing|ed)?|shit(?:ty|ting|head)?|asshole|bitch(?:es|ing)?|bastard|damn|dick|piss|crap|slut|whore)\b/gi;
+
+  function filterChatText(text) {
+    const value = String(text || '');
+    if (!profanityFilterEnabled) return value;
+    return value.replace(profanityPattern, word => '*'.repeat(word.length));
+  }
+
   function sendMsg() {
     const input = document.getElementById('msgInput');
     const text = input.value.trim();
     if (!text || !chatName) return;
-    db.ref('chat').push({ name: chatName, text, ts: Date.now(), system: false });
+    db.ref('chat').push({ name: chatName, text: filterChatText(text), ts: Date.now(), system: false });
     input.value = '';
   }
 
@@ -1024,10 +1056,15 @@
         div.textContent = msg.name + ' ' + msg.text;
       } else {
         const isMe = msg.name === chatName;
+        const nameSpan = document.createElement('span');
+        const textSpan = document.createElement('span');
         div.style.cssText = 'display:flex;flex-direction:column;align-items:' + (isMe ? 'flex-end' : 'flex-start') + ';';
-        div.innerHTML = '<span style="font-size:10px;color:#888;margin-bottom:2px;">' + msg.name + '</span>' +
-          '<span style="background:' + (isMe ? '#1a6bba' : '#e0e0e0') + ';color:' + (isMe ? '#fff' : '#333') + ';' +
-          'padding:6px 10px;border-radius:12px;font-size:13px;max-width:220px;word-wrap:break-word;">' + msg.text + '</span>';
+        nameSpan.style.cssText = 'font-size:10px;color:#888;margin-bottom:2px;';
+        nameSpan.textContent = filterChatText(msg.name);
+        textSpan.style.cssText = 'background:' + (isMe ? '#1a6bba' : '#e0e0e0') + ';color:' + (isMe ? '#fff' : '#333') + ';' +
+          'padding:6px 10px;border-radius:12px;font-size:13px;max-width:220px;word-wrap:break-word;';
+        textSpan.textContent = filterChatText(msg.text);
+        div.append(nameSpan, textSpan);
       }
       messagesDiv.appendChild(div);
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
@@ -1096,6 +1133,17 @@
         <div id="toggle-track" onclick="toggleAblank()"
           style="position:relative;display:inline-block;width:44px;height:24px;background:#ccc;border-radius:24px;cursor:pointer;transition:.3s;">
           <div id="toggle-knob" style="position:absolute;height:18px;width:18px;left:3px;top:3px;background:white;border-radius:50%;transition:.3s;"></div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <label style="font-size:13px;font-weight:bold;color:#333;">Chat profanity filter</label>
+          <div style="font-size:11px;color:#888;">Censors common swear words in global chat</div>
+        </div>
+        <div id="profanity-toggle-track" onclick="toggleProfanityFilter()"
+          style="position:relative;display:inline-block;width:44px;height:24px;background:#ccc;border-radius:24px;cursor:pointer;transition:.3s;">
+          <div id="profanity-toggle-knob" style="position:absolute;height:18px;width:18px;left:3px;top:3px;background:white;border-radius:50%;transition:.3s;"></div>
         </div>
       </div>
 
