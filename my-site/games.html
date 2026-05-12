@@ -659,7 +659,7 @@
 
     try {
       tsaiHistory.push({ role: 'user', content: text });
-      const res = await fetch('/api/chat', {
+      const res = await fetch(new URL('api/chat', window.location.href).href, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -710,7 +710,7 @@
   }
 
   function openBrowser() {
-    document.getElementById('game-frame').src = '/GUST.html';
+    document.getElementById('game-frame').src = new URL('GUST.html', window.location.href).href;
     document.getElementById('game-frame').style.display = 'block';
     document.getElementById('close-btn').style.display = 'flex';
   }
@@ -740,7 +740,7 @@
   // Panic button - press \ to go back to SchoolTool
   document.addEventListener('keydown', function(e) {
     if (e.key === '\\') {
-      window.location.href = '/';
+      window.location.href = new URL('index.html', window.location.href).href;
     }
   });
 
