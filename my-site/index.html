@@ -61,11 +61,38 @@
             border: none;
             z-index: 9999;
         }
+        .countdown-banner {
+            color: #fff;
+            text-align: center;
+            margin: 0 auto 18px;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+        }
+        .countdown-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            margin-bottom: 6px;
+        }
+        #friday-countdown {
+            display: inline-block;
+            min-width: 290px;
+            padding: 8px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            border-radius: 999px;
+            background: rgba(0, 0, 0, 0.22);
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+        }
     </style>
 </head>
 <body class="text-center">
     <iframe id="game-frame" src="" title="game"></iframe>
     <main class="container">
+        <div class="countdown-banner" aria-live="polite">
+            <div class="countdown-title">########</div>
+            <div id="friday-countdown">Loading countdown...</div>
+        </div>
         <img class="mb-4 mt-4" src="https://cdn.schooltool.com/global/auth/1.6.1/images/st-by-mindex-logo-white.png" alt="SchoolTool" width="200" />
         <div class="row signin">
             <div class="col-md-6 form-signin m-auto">
@@ -116,6 +143,29 @@
         </footer>
     </main>
     <script>
+        const fridayCountdownTarget = new Date(2026, 4, 15, 8, 0, 0);
+
+        function updateFridayCountdown() {
+            const countdown = document.getElementById('friday-countdown');
+            if (!countdown) return;
+
+            const remaining = fridayCountdownTarget.getTime() - Date.now();
+            if (remaining <= 0) {
+                countdown.textContent = 'It is Friday at 8:00 AM!';
+                return;
+            }
+
+            const totalSeconds = Math.floor(remaining / 1000);
+            const days = Math.floor(totalSeconds / 86400);
+            const hours = Math.floor((totalSeconds % 86400) / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            countdown.textContent = days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's until Friday at 8:00 AM';
+        }
+
+        updateFridayCountdown();
+        setInterval(updateFridayCountdown, 1000);
+
         function goToGames() {
             document.querySelector('main').style.display = 'none';
             document.body.style.background = '#fff';
