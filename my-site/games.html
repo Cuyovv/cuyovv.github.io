@@ -104,8 +104,57 @@
     pointer-events: none;
   }
   .icon-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .grid-track.folder-grid {
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    grid-auto-flow: row;
+    justify-content: center;
+    align-content: center;
+  }
+  .folder-card {
+    justify-content: center;
+  }
+  .folder-card .game-label {
+    white-space: normal;
+    line-height: 1.1;
+    max-height: 2.3em;
+  }
   .folder-card .icon-wrap {
     background: linear-gradient(145deg, #ffe082 0%, #f6b93b 45%, #e58e26 100%);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .folder-preview-grid {
+    width: 100%; height: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 2px;
+    padding: 5px;
+    background: rgba(255,255,255,0.35);
+  }
+  .folder-preview-tile {
+    min-width: 0; min-height: 0;
+    border-radius: 10%;
+    overflow: hidden;
+    background: rgba(255,255,255,0.45);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.45);
+  }
+  .folder-preview-tile img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+  .folder-preview-empty {
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, rgba(255,224,130,0.95), rgba(229,142,38,0.95));
+    color: rgba(70,46,0,0.8);
+    font-size: 42px;
+  }
+  .folder-emoji {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    z-index: 2; font-size: 34px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.45));
+    background: rgba(0,0,0,0.3); color: #fff;
+    width: 48px; height: 48px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
   }
   .folder-emoji { font-size: 46px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.25)); }
@@ -334,9 +383,37 @@
 
   function calcSizes() {
     const mainH = window.innerHeight - 60 - 38 - 44;
-    const rowH = mainH / 3;
-    const iconSize = Math.floor(rowH - 26);
-    const colWidth = iconSize + 24;
+    const viewport = document.querySelector('.grid-viewport');
+    const gridTrack = document.querySelector('.grid-track');
+    const isFolderGrid = currentFolder === 'folders';
+    let iconSize, colWidth;
+
+    if (isFolderGrid) {
+      const horizontalPad = Math.max(12, Math.min(44, Math.floor(viewport.offsetWidth * 0.05)));
+      const viewWidth = Math.max(0, viewport.offsetWidth - horizontalPad * 2);
+      const viewHeight = Math.max(0, mainH - 28);
+      const gap = Math.max(14, Math.min(44, Math.floor(viewWidth * 0.035)));
+      iconSize = Math.floor(Math.min((viewWidth - gap * 2) / 3 - 10, (viewHeight - gap) / 2 - 30));
+      iconSize = Math.max(52, Math.min(170, iconSize));
+      colWidth = iconSize + 10;
+      gridTrack.style.gridTemplateRows = 'repeat(2, minmax(0, 1fr))';
+      gridTrack.style.gridTemplateColumns = 'repeat(3, ' + colWidth + 'px)';
+      gridTrack.style.gridAutoColumns = colWidth + 'px';
+      gridTrack.style.columnGap = gap + 'px';
+      gridTrack.style.rowGap = Math.max(12, Math.floor(gap * 0.75)) + 'px';
+      gridTrack.style.padding = '14px ' + horizontalPad + 'px';
+    } else {
+      const rowH = mainH / 3;
+      iconSize = Math.floor(rowH - 26);
+      colWidth = iconSize + 24;
+      gridTrack.style.gridTemplateRows = 'repeat(3, 1fr)';
+      gridTrack.style.gridTemplateColumns = '';
+      gridTrack.style.gridAutoColumns = colWidth + 'px';
+      gridTrack.style.columnGap = '';
+      gridTrack.style.rowGap = '';
+      gridTrack.style.padding = '0 44px';
+    }
+
     document.querySelectorAll('.icon-wrap').forEach(el => {
       el.style.width = iconSize + 'px';
       el.style.height = iconSize + 'px';
@@ -344,7 +421,6 @@
     document.querySelectorAll('.game-label').forEach(el => {
       el.style.width = (iconSize + 8) + 'px';
     });
-    document.querySelector('.grid-track').style.gridAutoColumns = colWidth + 'px';
     return { iconSize, colWidth };
   }
 
@@ -437,6 +513,7 @@
     grid.innerHTML = '';
     visibleCards = cards;
     colOffset = 0;
+    grid.classList.toggle('folder-grid', currentFolder === 'folders');
     grid.style.transform = 'translateX(0)';
     cards.forEach(card => {
       card.style.display = '';
@@ -444,6 +521,38 @@
     });
     statusText.textContent = currentFolder === 'folders' ? loaded + ' games in 6 folders' : cards.length + ' games';
     calcSizes();
+  }
+
+  function createFolderPreview(folderId) {
+    const preview = document.createElement('div');
+    preview.className = 'folder-preview-grid';
+    const cards = getCardsForFolder(folderId).slice(0, 4);
+    if (!cards.length) {
+      const empty = document.createElement('div');
+      empty.className = 'folder-preview-empty';
+      empty.innerHTML = '&#127918;';
+      preview.appendChild(empty);
+      return preview;
+    }
+    cards.forEach(card => {
+      const tile = document.createElement('div');
+      tile.className = 'folder-preview-tile';
+      const img = document.createElement('img');
+      img.src = coverUrlForGameId(card.dataset.num);
+      img.alt = card.querySelector('.game-label')?.textContent || 'Game preview';
+      img.onerror = () => {
+        tile.innerHTML = '<div class="no-cover">&#127918;</div>';
+      };
+      tile.appendChild(img);
+      preview.appendChild(tile);
+    });
+    while (preview.children.length < 4) {
+      const tile = document.createElement('div');
+      tile.className = 'folder-preview-tile';
+      tile.innerHTML = '<div class="no-cover">&#127918;</div>';
+      preview.appendChild(tile);
+    }
+    return preview;
   }
 
   function createFolderCard(folder) {
@@ -454,6 +563,7 @@
 
     const iconWrap = document.createElement('div');
     iconWrap.className = 'icon-wrap';
+    iconWrap.appendChild(createFolderPreview(folder.id));
     const icon = document.createElement('div');
     icon.className = 'folder-emoji';
     icon.innerHTML = folder.icon;
@@ -607,6 +717,7 @@
   }
 
   function scroll3ds(dir) {
+    if (currentFolder === 'folders') return;
     const { colWidth } = calcSizes();
     const viewWidth = document.querySelector('.grid-viewport').offsetWidth - 88;
     const visibleCols = Math.floor(viewWidth / colWidth);
