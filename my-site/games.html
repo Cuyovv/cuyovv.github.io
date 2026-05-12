@@ -225,18 +225,6 @@
     <span>&#128267;</span>
     <span id="clock">12:00 PM</span>
   </div>
-  <div style="position:absolute;left:8px;top:50%;transform:translateY(-50%);overflow:hidden;width:728px;max-width:40%;height:90px;">
-    <script>
-      atOptions = {
-        'key' : '7be8d8b15dee729db953f921af0d1608',
-        'format' : 'iframe',
-        'height' : 90,
-        'width' : 728,
-        'params' : {}
-      };
-    </script>
-    <script src="https://www.highperformanceformat.com/7be8d8b15dee729db953f921af0d1608/invoke.js"></script>
-  </div>
 </div>
 
 <div class="search-row" style="position:relative;">
@@ -935,13 +923,49 @@
     document.getElementById('close-btn').style.display = 'flex';
   }
 
-  function openGame(slug) {
+  function registerGameAdBlocker() {
+    if (!('serviceWorker' in navigator)) return Promise.resolve();
+    return navigator.serviceWorker.register(new URL('adblock-sw.js', window.location.href).href, { scope: './' })
+      .then(() => navigator.serviceWorker.ready)
+      .catch(err => console.warn('Game ad blocker registration failed:', err));
+  }
+
+  function suppressFrameAds() {
+    const frame = document.getElementById('game-frame');
+    let doc;
+    try {
+      doc = frame.contentDocument || frame.contentWindow.document;
+    } catch (_) {
+      return;
+    }
+    if (!doc || doc.getElementById('toolschool-ad-hide-style')) return;
+    const style = doc.createElement('style');
+    style.id = 'toolschool-ad-hide-style';
+    style.textContent = `
+      .adsbygoogle, .adsbox, .ad, .advertisement, .ad-container, .ad-wrapper,
+      [id^="google_ads"], [id*="adsbygoogle"], [id*="advert"], [id*="ad-container"],
+      #sidebarad1, #sidebarad2, iframe[src*="googlesyndication"], iframe[src*="doubleclick"],
+      iframe[src*="gamedistribution"], iframe[src*="crazygames"] {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+      }
+    `;
+    (doc.head || doc.documentElement).appendChild(style);
+    doc.querySelectorAll('script[src*="googlesyndication"], script[src*="doubleclick"], script[src*="imasdk"], script[src*="yandex-sdk"], script[src*="poki-sdk"], script[src*="gamedistribution"], script[src*="crazygames"]').forEach(el => el.remove());
+  }
+
+  const gameAdBlockerReady = registerGameAdBlocker();
+  document.getElementById('game-frame').addEventListener('load', suppressFrameAds);
+
+  async function openGame(slug) {
     const s = String(slug);
     const fn = s.toLowerCase().endsWith('.html') ? s : s + '.html';
     const src = gameHtmlUrl(fn);
     if (ablankEnabled) {
       const w = window.open('about:blank', '_blank');
       if (!w) return;
+      await gameAdBlockerReady;
       const doc = w.document;
       doc.open();
       doc.write('<html><head><title>Loading...</title></head>');
@@ -950,6 +974,7 @@
       doc.write('<\/body><\/html>');
       doc.close();
     } else {
+      await gameAdBlockerReady;
       document.getElementById('game-frame').src = src;
       document.getElementById('game-frame').style.display = 'block';
       document.getElementById('close-btn').style.display = 'flex';
