@@ -13,7 +13,8 @@ const AD_HOST_PATTERNS = [
   'poki.io',
   'game-cdn.poki.com',
   'serve.app.playsaurus.com',
-  'glance-cdn.com'
+  'glance-cdn.com',
+  'highperformanceformat.com'
 ];
 
 const AD_PATH_PATTERNS = [
@@ -27,7 +28,8 @@ const AD_PATH_PATTERNS = [
   'gamedistribution',
   'crazygames-sdk',
   'gamesad.js',
-  'adsdk.js'
+  'adsdk.js',
+  'invoke.js'
 ];
 
 const STUB_SCRIPT = `
