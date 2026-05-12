@@ -104,6 +104,24 @@
     pointer-events: none;
   }
   .icon-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .folder-card .icon-wrap {
+    background: linear-gradient(145deg, #ffe082 0%, #f6b93b 45%, #e58e26 100%);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .folder-emoji { font-size: 46px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.25)); }
+  .favorite-btn {
+    position: absolute; top: 4px; right: 4px; z-index: 3;
+    width: 24px; height: 24px; border: none; border-radius: 50%;
+    background: rgba(0,0,0,0.5); color: #fff; cursor: pointer;
+    font-size: 14px; line-height: 24px; text-align: center;
+  }
+  .favorite-btn.active { color: #ffd54f; background: rgba(0,0,0,0.7); }
+  .count-badge {
+    position: absolute; bottom: 4px; left: 4px; z-index: 3;
+    padding: 2px 6px; border-radius: 999px;
+    background: rgba(0,0,0,0.65); color: #fff;
+    font-size: 10px; font-weight: bold;
+  }
   .no-cover {
     width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
     background: linear-gradient(135deg, #ddd, #bbb); font-size: 36px;
@@ -133,6 +151,12 @@
     cursor: pointer;
   }
   #status-text { font-size: 11px; color: #888; }
+  #folder-title {
+    position: absolute; top: 6px; left: 50px;
+    font-size: 12px; font-weight: bold; color: #555;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.8);
+    z-index: 5; pointer-events: none;
+  }
   .popup-overlay {
     display: none; position: fixed; top: 0; left: 0;
     width: 100vw; height: 100vh;
@@ -230,14 +254,14 @@
   <button class="arrow left" onclick="scroll3ds(-1)">&#9664;</button>
   <button class="arrow right" onclick="scroll3ds(1)">&#9654;</button>
   <div class="grid-viewport">
-    <div style="position:absolute;top:6px;left:50px;font-size:12px;font-weight:bold;color:#555;text-shadow:0 1px 0 rgba(255,255,255,0.8);z-index:5;pointer-events:none;">&#128293; Popular</div>
+    <div id="folder-title">&#128193; Folders</div>
     <div class="grid-track" id="grid"></div>
   </div>
 </div>
 
 <div class="bottom-bar">
   <div style="display:flex;align-items:center;gap:10px;">
-    <div class="bottom-btn" onclick="scroll3ds(-1)">&#9664; Back</div>
+    <div class="bottom-btn" onclick="goBackFolder()">&#9664; Back</div>
     <span style="font-size:12px;color:red;font-weight:bold;">Safety Key: &#92;</span>
   </div>
   <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
@@ -338,8 +362,19 @@
 
   const grid = document.getElementById('grid');
   const statusText = document.getElementById('status-text');
+  const folderTitle = document.getElementById('folder-title');
   const allCards = [];
-  let loaded = 0, colOffset = 0;
+  let loaded = 0, colOffset = 0, currentFolder = 'folders';
+  let visibleCards = [];
+
+  const FOLDERS = [
+    { id: 'leaderboard', label: 'Leaderboard', icon: '&#127942;' },
+    { id: 'continue', label: 'Continue Playing', icon: '&#9654;&#65039;' },
+    { id: 'recent', label: 'Recent', icon: '&#128338;' },
+    { id: 'favorites', label: 'Favorited', icon: '&#11088;' },
+    { id: 'popular', label: 'Popular', icon: '&#128293;' },
+    { id: 'all', label: 'All Games', icon: '&#127918;' }
+  ];
 
   function gameHtmlUrl(filename) {
     return new URL('html/html-main/' + filename, window.location.href).href;
@@ -357,6 +392,162 @@
     '1-fde.html','8-wow.html','27-f.html','34-fixed.html','44-fix.html','64-fix.html','65-fixed.html','67-f.html','75-fix.html','76-fix.html','82-a.html','85-f.html','90-fix2.html','100-f.html','110-f.html','112-fix.html','117-fix.html','123-win.html','164-temp.html','164-temp2.html','179-a.html','194-a.html','196-fixed.html','203-a.html','204-a.html','205-f.html','212-f.html','213-f.html','214-fi.html','217-c.html','253-update.html','265-fix.html','354-a.html','370-f.html','427-z.html','429-f.html','447-e.html','465-fix.html','467-updatee.html','468-f.html','482-2.html','502-fixed.html','520-fix.html','523-f.html','542-a.html','543-a.html','589-f.html','590-f.html','591-awe.html','593-f.html','596-fixx.html','597-a.html','603-aa.html','604-a.html','605-e.html','606-e.html','607-e.html','609-a.html','617-a.html','623-work.html','626-f.html','628-f.html','631-a.html','632-a.html','637-f.html','638-f.html','645-e.html','646-fixed.html','648-el.html','650-f.html','653-f.html','667-fix.html','668-fix2.html','672-2.html','704-fix.html','705-fix.html','706-fix.html','707-fix.html','708-fix.html','709-fixagain.html','710-fix.html','712-f.html','716-fix2.html','717-fix2.html','725-ff.html','738-u.html','744-a.html','750-u.html','756-f.html','770-update.html','771-z.html','785-upd2.html','789-fix.html','794-fixed.html','799-fix.html','800-fix.html','801-fix.html','803-fix.html','810-fix.html','813-f2.html','817-f.html','819-fix.html','820-fix.html','821-fix.html','823-fix.html'
   ];
 
+
+  function readStoredList(key) {
+    try {
+      const value = JSON.parse(localStorage.getItem(key) || '[]');
+      return Array.isArray(value) ? value : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function writeStoredList(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+
+  function favoriteSlugs() {
+    return readStoredList('favoriteGames');
+  }
+
+  function isFavorite(slug) {
+    return favoriteSlugs().includes(slug);
+  }
+
+  function updateFavoriteButton(card) {
+    const btn = card.querySelector('.favorite-btn');
+    if (!btn) return;
+    const active = isFavorite(card.dataset.num);
+    btn.classList.toggle('active', active);
+    btn.setAttribute('aria-label', active ? 'Remove from favorites' : 'Add to favorites');
+    btn.innerHTML = active ? '&#9733;' : '&#9734;';
+  }
+
+  function toggleFavorite(slug) {
+    const favorites = favoriteSlugs();
+    const next = favorites.includes(slug) ? favorites.filter(item => item !== slug) : [slug, ...favorites];
+    writeStoredList('favoriteGames', next);
+    allCards.forEach(updateFavoriteButton);
+    if (currentFolder === 'favorites') renderFolder('favorites');
+  }
+
+  function rememberRecent(slug) {
+    const recent = readStoredList('recentGames').filter(item => item !== slug);
+    recent.unshift(slug);
+    writeStoredList('recentGames', recent.slice(0, 60));
+    localStorage.setItem('continueGame', slug);
+  }
+
+  function recordGamePlay(slug) {
+    const clicks = JSON.parse(localStorage.getItem('gameclicks') || '{}');
+    clicks[slug] = (clicks[slug] || 0) + 1;
+    localStorage.setItem('gameclicks', JSON.stringify(clicks));
+    rememberRecent(slug);
+  }
+
+  function resetGrid(cards) {
+    grid.innerHTML = '';
+    visibleCards = cards;
+    colOffset = 0;
+    grid.style.transform = 'translateX(0)';
+    cards.forEach(card => {
+      card.style.display = '';
+      grid.appendChild(card);
+    });
+    statusText.textContent = currentFolder === 'folders' ? loaded + ' games in 6 folders' : cards.length + ' games';
+    calcSizes();
+  }
+
+  function createFolderCard(folder) {
+    const card = document.createElement('div');
+    card.className = 'game-card folder-card';
+    card.dataset.name = folder.label.toLowerCase();
+    card.onclick = () => renderFolder(folder.id);
+
+    const iconWrap = document.createElement('div');
+    iconWrap.className = 'icon-wrap';
+    const icon = document.createElement('div');
+    icon.className = 'folder-emoji';
+    icon.innerHTML = folder.icon;
+    iconWrap.appendChild(icon);
+
+    const label = document.createElement('div');
+    label.className = 'game-label';
+    label.textContent = folder.label;
+    label.title = folder.label;
+    card.appendChild(iconWrap);
+    card.appendChild(label);
+    return card;
+  }
+
+  function cardLookupBySlug(slug) {
+    return allCards.find(card => card.dataset.num === slug);
+  }
+
+  function sortedByClickCount(cards) {
+    const clicks = JSON.parse(localStorage.getItem('gameclicks') || '{}');
+    return [...cards].sort((a, b) => {
+      const cb = clicks[b.dataset.num] || 0;
+      const ca = clicks[a.dataset.num] || 0;
+      if (cb !== ca) return cb - ca;
+      return Number(b.dataset.order) - Number(a.dataset.order);
+    });
+  }
+
+  function getCardsForFolder(folderId) {
+    if (folderId === 'all') return [...allCards].sort((a, b) => Number(a.dataset.order) - Number(b.dataset.order));
+    if (folderId === 'popular') return sortedByClickCount(allCards).slice(0, 120);
+    if (folderId === 'leaderboard') {
+      const clicks = JSON.parse(localStorage.getItem('gameclicks') || '{}');
+      return sortedByClickCount(allCards).filter(card => (clicks[card.dataset.num] || 0) > 0).slice(0, 60);
+    }
+    if (folderId === 'favorites') return favoriteSlugs().map(cardLookupBySlug).filter(Boolean);
+    if (folderId === 'recent') return readStoredList('recentGames').map(cardLookupBySlug).filter(Boolean);
+    if (folderId === 'continue') {
+      const slug = localStorage.getItem('continueGame');
+      const card = slug ? cardLookupBySlug(slug) : null;
+      return card ? [card] : [];
+    }
+    return [];
+  }
+
+  function addCountBadges(cards, folderId) {
+    allCards.forEach(card => {
+      const oldBadge = card.querySelector('.count-badge');
+      if (oldBadge) oldBadge.remove();
+    });
+    if (folderId !== 'leaderboard' && folderId !== 'popular') return;
+    const clicks = JSON.parse(localStorage.getItem('gameclicks') || '{}');
+    cards.forEach((card, index) => {
+      const badge = document.createElement('div');
+      badge.className = 'count-badge';
+      badge.textContent = folderId === 'leaderboard' ? '#' + (index + 1) + ' · ' + (clicks[card.dataset.num] || 0) : (clicks[card.dataset.num] || 0) + ' plays';
+      card.querySelector('.icon-wrap').appendChild(badge);
+    });
+  }
+
+  function renderFolders() {
+    currentFolder = 'folders';
+    folderTitle.innerHTML = '&#128193; Folders';
+    const cards = FOLDERS.map(createFolderCard);
+    resetGrid(cards);
+  }
+
+  function renderFolder(folderId) {
+    currentFolder = folderId;
+    const folder = FOLDERS.find(item => item.id === folderId);
+    folderTitle.innerHTML = folder ? folder.icon + ' ' + folder.label : '&#127918; Games';
+    const cards = getCardsForFolder(folderId);
+    addCountBadges(cards, folderId);
+    resetGrid(cards);
+    if (!cards.length) statusText.textContent = 'No games here yet';
+  }
+
+  function goBackFolder() {
+    if (currentFolder === 'folders') scroll3ds(-1);
+    else renderFolders();
+  }
+
   async function loadGameFromFile(filename) {
     if (loadedGameFiles.has(filename)) return;
     try {
@@ -371,10 +562,9 @@
       card.className = 'game-card';
       card.dataset.name = name.toLowerCase();
       card.dataset.num = slug;
+      card.dataset.order = String(allCards.length);
       card.onclick = () => {
-        const clicks = JSON.parse(localStorage.getItem('gameclicks') || '{}');
-        clicks[slug] = (clicks[slug] || 0) + 1;
-        localStorage.setItem('gameclicks', JSON.stringify(clicks));
+        recordGamePlay(slug);
         openGame(slug);
       };
       const iconWrap = document.createElement('div');
@@ -382,19 +572,29 @@
       const img = document.createElement('img');
       img.src = coverUrlForGameId(filename);
       img.alt = name;
-      img.onerror = () => { iconWrap.innerHTML = '<div class="no-cover">&#127918;</div>'; };
+      img.onerror = () => {
+        img.remove();
+        if (!iconWrap.querySelector('.no-cover')) iconWrap.insertAdjacentHTML('afterbegin', '<div class="no-cover">&#127918;</div>');
+      };
       iconWrap.appendChild(img);
+      const favoriteBtn = document.createElement('button');
+      favoriteBtn.type = 'button';
+      favoriteBtn.className = 'favorite-btn';
+      favoriteBtn.onclick = (event) => {
+        event.stopPropagation();
+        toggleFavorite(slug);
+      };
+      iconWrap.appendChild(favoriteBtn);
       const label = document.createElement('div');
       label.className = 'game-label';
       label.textContent = name;
       label.title = name;
       card.appendChild(iconWrap);
       card.appendChild(label);
-      grid.appendChild(card);
       allCards.push(card);
+      updateFavoriteButton(card);
       loaded++;
-      statusText.textContent = loaded + ' games';
-      calcSizes();
+      statusText.textContent = 'Loading... ' + loaded + ' games';
     } catch {}
   }
 
@@ -410,30 +610,20 @@
       await Promise.all(batch.map(loadGameFromFile));
       statusText.textContent = 'Loading extras... ' + Math.min(i + 15, HYPHEN_GAME_FILES.length) + '/' + HYPHEN_GAME_FILES.length;
     }
-    statusText.textContent = loaded + ' games';
-    calcSizes();
-    sortByPopularity();
+    renderFolders();
   }
   loadAll();
 
   function sortByPopularity() {
-    const clicks = JSON.parse(localStorage.getItem('gameclicks') || '{}');
-    // Sort cards by click count descending
-    const sorted = [...allCards].sort((a, b) => {
-      const ca = clicks[a.dataset.num] || 0;
-      const cb = clicks[b.dataset.num] || 0;
-      return cb - ca;
-    });
-    // Re-append in sorted order
-    sorted.forEach(card => grid.appendChild(card));
+    renderFolder('popular');
   }
 
   function scroll3ds(dir) {
     const { colWidth } = calcSizes();
     const viewWidth = document.querySelector('.grid-viewport').offsetWidth - 88;
     const visibleCols = Math.floor(viewWidth / colWidth);
-    const totalCols = Math.ceil(loaded / 3);
-    colOffset = Math.max(0, Math.min(colOffset + dir * Math.max(1, Math.floor(visibleCols/2)), totalCols - visibleCols));
+    const totalCols = Math.ceil(visibleCards.length / 3);
+    colOffset = Math.max(0, Math.min(colOffset + dir * Math.max(1, Math.floor(visibleCols/2)), Math.max(0, totalCols - visibleCols)));
     grid.style.transform = 'translateX(-' + (colOffset * colWidth) + 'px)';
   }
 
@@ -449,20 +639,26 @@
     const q = document.getElementById('search').value.toLowerCase().trim();
     const suggestions = document.getElementById('suggestions');
 
-    // Filter grid
-    allCards.forEach(c => { c.style.display = (!q || c.dataset.name.includes(q)) ? '' : 'none'; });
-
-    // Show suggestions
-    if (!q) { suggestions.style.display = 'none'; return; }
+    if (!q) {
+      suggestions.style.display = 'none';
+      if (currentFolder === 'folders' || currentFolder === 'search') renderFolders();
+      else renderFolder(currentFolder);
+      return;
+    }
 
     const matches = allCards
       .filter(c => c.dataset.name.includes(q))
-      .slice(0, 8);
+      .slice(0, 120);
+    currentFolder = 'search';
+    folderTitle.innerHTML = '&#128269; Search Results';
+    resetGrid(matches);
+    statusText.textContent = matches.length + ' matching games';
 
-    if (matches.length === 0) { suggestions.style.display = 'none'; return; }
+    const suggestionMatches = matches.slice(0, 8);
+    if (suggestionMatches.length === 0) { suggestions.style.display = 'none'; return; }
 
     suggestions.innerHTML = '';
-    matches.forEach(c => {
+    suggestionMatches.forEach(c => {
       const item = document.createElement('div');
       const name = c.querySelector('.game-label').textContent;
       const img = c.querySelector('img');
@@ -478,7 +674,7 @@
       item.onmousedown = () => {
         document.getElementById('search').value = name;
         suggestions.style.display = 'none';
-        allCards.forEach(card => { card.style.display = card.dataset.name === c.dataset.name ? '' : 'none'; });
+        resetGrid([c]);
         c.click();
       };
       item.onmouseover = () => item.style.background = '#f5f5f5';
@@ -492,7 +688,7 @@
     if (e.key === 'Escape') {
       document.getElementById('suggestions').style.display = 'none';
       document.getElementById('search').value = '';
-      allCards.forEach(c => c.style.display = '');
+      renderFolders();
     }
     if (e.key === 'Enter') {
       const first = document.getElementById('suggestions').firstChild;
@@ -523,7 +719,12 @@
   }
 
   const defaultSettings = {
-    bg: '#c8c8d4', bar: '#d8d8d8', icon: '#e8e8e8', label: '#333333', search: '#ffffff'
+    bg: '#c8c8d4',
+    bar: '#d8d8d8',
+    icon: '#e8e8e8',
+    label: '#333333',
+    search: '#ffffff',
+    profanityFilter: false
   };
 
   function loadSettingsInputs() {
@@ -534,6 +735,11 @@
     document.getElementById('s-label').value = s.label || defaultSettings.label;
     document.getElementById('s-search').value = s.search || defaultSettings.search;
     ablankEnabled = s.ablank || false;
+    profanityFilterEnabled = s.profanityFilter || false;
+    const profanityTrack = document.getElementById('profanity-toggle-track');
+    const profanityKnob = document.getElementById('profanity-toggle-knob');
+    if (profanityTrack) profanityTrack.style.background = profanityFilterEnabled ? '#1a6bba' : '#ccc';
+    if (profanityKnob) profanityKnob.style.transform = profanityFilterEnabled ? 'translateX(20px)' : 'translateX(0)';
     const track = document.getElementById('toggle-track');
     const knob = document.getElementById('toggle-knob');
     if (track) track.style.background = ablankEnabled ? '#1a6bba' : '#ccc';
@@ -541,13 +747,24 @@
   }
 
   let ablankEnabled = JSON.parse(localStorage.getItem('siteSettings') || '{}').ablank || false;
+  let profanityFilterEnabled = JSON.parse(localStorage.getItem('siteSettings') || '{}').profanityFilter || false;
+
+  function setSwitchState(trackId, knobId, enabled) {
+    const track = document.getElementById(trackId);
+    const knob = document.getElementById(knobId);
+    if (track) track.style.background = enabled ? '#1a6bba' : '#ccc';
+    if (knob) knob.style.transform = enabled ? 'translateX(20px)' : 'translateX(0)';
+  }
 
   function toggleAblank() {
     ablankEnabled = !ablankEnabled;
-    const track = document.getElementById('toggle-track');
-    const knob = document.getElementById('toggle-knob');
-    track.style.background = ablankEnabled ? '#1a6bba' : '#ccc';
-    knob.style.transform = ablankEnabled ? 'translateX(20px)' : 'translateX(0)';
+    setSwitchState('toggle-track', 'toggle-knob', ablankEnabled);
+    applySettings();
+  }
+
+  function toggleProfanityFilter() {
+    profanityFilterEnabled = !profanityFilterEnabled;
+    setSwitchState('profanity-toggle-track', 'profanity-toggle-knob', profanityFilterEnabled);
     applySettings();
   }
 
@@ -559,6 +776,7 @@
       label: document.getElementById('s-label').value,
       search: document.getElementById('s-search').value,
       ablank: ablankEnabled,
+      profanityFilter: profanityFilterEnabled,
     };
     localStorage.setItem('siteSettings', JSON.stringify(s));
     applyCSS(s);
@@ -605,6 +823,8 @@
 
   function resetSettings() {
     localStorage.removeItem('siteSettings');
+    profanityFilterEnabled = defaultSettings.profanityFilter;
+    ablankEnabled = false;
     applyCSS(defaultSettings);
     loadSettingsInputs();
   }
@@ -659,7 +879,7 @@
 
     try {
       tsaiHistory.push({ role: 'user', content: text });
-      const res = await fetch('/api/chat', {
+      const res = await fetch(new URL('api/chat', window.location.href).href, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -710,7 +930,7 @@
   }
 
   function openBrowser() {
-    document.getElementById('game-frame').src = '/GUST.html';
+    document.getElementById('game-frame').src = new URL('GUST.html', window.location.href).href;
     document.getElementById('game-frame').style.display = 'block';
     document.getElementById('close-btn').style.display = 'flex';
   }
@@ -740,7 +960,7 @@
   // Panic button - press \ to go back to SchoolTool
   document.addEventListener('keydown', function(e) {
     if (e.key === '\\') {
-      window.location.href = '/';
+      window.location.href = new URL('index.html', window.location.href).href;
     }
   });
 
@@ -809,11 +1029,19 @@
     });
   });
 
+  const profanityPattern = /\b(fuck(?:er|ing|ed)?|shit(?:ty|ting|head)?|asshole|bitch(?:es|ing)?|bastard|damn|dick|piss|crap|slut|whore)\b/gi;
+
+  function filterChatText(text) {
+    const value = String(text || '');
+    if (!profanityFilterEnabled) return value;
+    return value.replace(profanityPattern, word => '*'.repeat(word.length));
+  }
+
   function sendMsg() {
     const input = document.getElementById('msgInput');
     const text = input.value.trim();
     if (!text || !chatName) return;
-    db.ref('chat').push({ name: chatName, text, ts: Date.now(), system: false });
+    db.ref('chat').push({ name: chatName, text: filterChatText(text), ts: Date.now(), system: false });
     input.value = '';
   }
 
@@ -828,10 +1056,15 @@
         div.textContent = msg.name + ' ' + msg.text;
       } else {
         const isMe = msg.name === chatName;
+        const nameSpan = document.createElement('span');
+        const textSpan = document.createElement('span');
         div.style.cssText = 'display:flex;flex-direction:column;align-items:' + (isMe ? 'flex-end' : 'flex-start') + ';';
-        div.innerHTML = '<span style="font-size:10px;color:#888;margin-bottom:2px;">' + msg.name + '</span>' +
-          '<span style="background:' + (isMe ? '#1a6bba' : '#e0e0e0') + ';color:' + (isMe ? '#fff' : '#333') + ';' +
-          'padding:6px 10px;border-radius:12px;font-size:13px;max-width:220px;word-wrap:break-word;">' + msg.text + '</span>';
+        nameSpan.style.cssText = 'font-size:10px;color:#888;margin-bottom:2px;';
+        nameSpan.textContent = filterChatText(msg.name);
+        textSpan.style.cssText = 'background:' + (isMe ? '#1a6bba' : '#e0e0e0') + ';color:' + (isMe ? '#fff' : '#333') + ';' +
+          'padding:6px 10px;border-radius:12px;font-size:13px;max-width:220px;word-wrap:break-word;';
+        textSpan.textContent = filterChatText(msg.text);
+        div.append(nameSpan, textSpan);
       }
       messagesDiv.appendChild(div);
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
@@ -900,6 +1133,17 @@
         <div id="toggle-track" onclick="toggleAblank()"
           style="position:relative;display:inline-block;width:44px;height:24px;background:#ccc;border-radius:24px;cursor:pointer;transition:.3s;">
           <div id="toggle-knob" style="position:absolute;height:18px;width:18px;left:3px;top:3px;background:white;border-radius:50%;transition:.3s;"></div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <label style="font-size:13px;font-weight:bold;color:#333;">Chat profanity filter</label>
+          <div style="font-size:11px;color:#888;">Censors common swear words in global chat</div>
+        </div>
+        <div id="profanity-toggle-track" onclick="toggleProfanityFilter()"
+          style="position:relative;display:inline-block;width:44px;height:24px;background:#ccc;border-radius:24px;cursor:pointer;transition:.3s;">
+          <div id="profanity-toggle-knob" style="position:absolute;height:18px;width:18px;left:3px;top:3px;background:white;border-radius:50%;transition:.3s;"></div>
         </div>
       </div>
 
