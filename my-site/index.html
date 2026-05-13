@@ -13,35 +13,78 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/0224058aa7.js" crossorigin="anonymous"></script>
-   <style>
-    .countdown-banner {
-        color: #fff;
-        text-align: center;
-        margin: 0 auto 18px;
-        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
-    }
-    .countdown-title {
-        font-size: 2rem;
-        font-weight: 700;
-        letter-spacing: 0.18em;
-        margin-bottom: 6px;
-        color: #FFD700;
-        text-shadow: 0 0 12px #FFD700, 0 0 24px #FFD700, 0 0 40px #FFA500;
-    }
-    #friday-countdown {
-        display: inline-block;
-        min-width: 290px;
-        padding: 8px 16px;
-        border: 1px solid rgba(255, 0, 0, 0.55);
-        border-radius: 999px;
-        background: rgba(0, 0, 0, 0.22);
-        font-size: 1.4rem;
-        font-weight: 700;
-        letter-spacing: 0.04em;
-        color: #ff2222;
-        text-shadow: 0 0 8px rgba(255, 0, 0, 0.5);
-    }
-</style>
+    <style>
+        body {
+            background: url(https://cdn.schooltool.com/global/auth/1.6.1/images/st-icon.svg) no-repeat -50px,
+                        linear-gradient(139.66deg, #0066BA 18.59%, #003764 65.46%);
+            background-size: contain;
+            font-family: Roboto, Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            padding-top: 40px;
+            padding-bottom: 40px;
+            color: #232323;
+            line-height: 1.75rem;
+            min-height: 100vh;
+        }
+        .banner-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            border-left: 1px solid #dee2e6;
+            min-height: 400px;
+            gap: 16px;
+        }
+        .banner-panel img {
+            max-width: 180px;
+            height: auto;
+        }
+        .banner-panel h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1a3a6e;
+            letter-spacing: 2px;
+            margin: 0;
+        }
+        .banner-panel p {
+            font-size: 13px;
+            color: #888;
+            margin: 0;
+        }
+        #game-frame {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            border: none;
+            z-index: 9999;
+        }
+        .countdown-banner {
+            color: #fff;
+            text-align: center;
+            margin: 0 auto 18px;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+        }
+        .countdown-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            margin-bottom: 6px;
+        }
+        #friday-countdown {
+            display: inline-block;
+            min-width: 290px;
+            padding: 8px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            border-radius: 999px;
+            background: rgba(0, 0, 0, 0.22);
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+        }
+    </style>
 </head>
 <body class="text-center">
     <iframe id="game-frame" src="" title="game"></iframe>
@@ -100,46 +143,30 @@
         </footer>
     </main>
     <script>
-    const fridayCountdownTarget = new Date(2026, 4, 15, 8, 0, 0);
+        const fridayCountdownTarget = new Date(2026, 4, 15, 8, 0, 0);
 
-    function updateFridayCountdown() {
-        const countdown = document.getElementById('friday-countdown');
-        if (!countdown) return;
+        function updateFridayCountdown() {
+            const countdown = document.getElementById('friday-countdown');
+            if (!countdown) return;
 
-        const remaining = fridayCountdownTarget.getTime() - Date.now();
-        if (remaining <= 0) {
-            countdown.textContent = '00d 00h 00m 00s';
-            return;
+            const remaining = fridayCountdownTarget.getTime() - Date.now();
+            if (remaining <= 0) {
+                countdown.textContent = 'It is Friday at 8:00 AM!';
+                return;
+            }
+
+            const totalSeconds = Math.floor(remaining / 1000);
+            const days = Math.floor(totalSeconds / 86400);
+            const hours = Math.floor((totalSeconds % 86400) / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            countdown.textContent = days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's until Friday at 8:00 AM';
         }
 
-        const totalSeconds = Math.floor(remaining / 1000);
-        const days = Math.floor(totalSeconds / 86400);
-        const hours = Math.floor((totalSeconds % 86400) / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = totalSeconds % 60;
-        countdown.textContent =
-            String(days).padStart(2,'0') + 'd ' +
-            String(hours).padStart(2,'0') + 'h ' +
-            String(minutes).padStart(2,'0') + 'm ' +
-            String(seconds).padStart(2,'0') + 's';
-    }
+        updateFridayCountdown();
+        setInterval(updateFridayCountdown, 1000);
 
-    updateFridayCountdown();
-    setInterval(updateFridayCountdown, 1000);
-
-    function goToGames() {
-        document.querySelector('main').style.display = 'none';
-        document.body.style.background = '#fff';
-        document.body.style.padding = '0';
-        var frame = document.getElementById('game-frame');
-        frame.src = 'games.html';
-        frame.style.display = 'block';
-    }
-
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        var pw = document.getElementById('floatingPassword').value;
-        if (pw === 'c00l') {
+        function goToGames() {
             document.querySelector('main').style.display = 'none';
             document.body.style.background = '#fff';
             document.body.style.padding = '0';
@@ -147,7 +174,19 @@
             frame.src = 'games.html';
             frame.style.display = 'block';
         }
-    });
-</script>
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var pw = document.getElementById('floatingPassword').value;
+            if (pw === 'c00l') {
+                document.querySelector('main').style.display = 'none';
+                document.body.style.background = '#fff';
+                document.body.style.padding = '0';
+                var frame = document.getElementById('game-frame');
+                frame.src = 'games.html';
+                frame.style.display = 'block';
+            }
+        });
+    </script>
 </body>
 </html>
