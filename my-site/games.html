@@ -388,14 +388,14 @@
     const isFolderGrid = currentFolder === 'folders';
     let iconSize, colWidth;
 
-    if (isFolderGrid) {
-      const horizontalPad = Math.max(12, Math.min(44, Math.floor(viewport.offsetWidth * 0.05)));
+if (isFolderGrid) {
+      const horizontalPad = Math.max(8, Math.min(24, Math.floor(viewport.offsetWidth * 0.02)));
       const viewWidth = Math.max(0, viewport.offsetWidth - horizontalPad * 2);
-      const viewHeight = Math.max(0, mainH - 28);
-      const gap = Math.max(14, Math.min(44, Math.floor(viewWidth * 0.035)));
-      iconSize = Math.floor(Math.min((viewWidth - gap * 2) / 3 - 10, (viewHeight - gap) / 2 - 30));
-      iconSize = Math.max(52, Math.min(170, iconSize));
-      colWidth = iconSize + 10;
+      const viewHeight = Math.max(0, mainH - 16);
+      const gap = Math.max(10, Math.min(24, Math.floor(viewWidth * 0.025)));
+      iconSize = Math.floor(Math.min((viewWidth - gap * 2) / 3 - 6, (viewHeight - gap) / 2 - 24));
+      iconSize = Math.max(52, Math.min(280, iconSize));  // ← raised cap
+      colWidth = iconSize + 6;
       gridTrack.style.gridTemplateRows = 'repeat(2, minmax(0, 1fr))';
       gridTrack.style.gridTemplateColumns = 'repeat(3, ' + colWidth + 'px)';
       gridTrack.style.gridAutoColumns = colWidth + 'px';
