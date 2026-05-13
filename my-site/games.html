@@ -138,6 +138,11 @@
     background: rgba(255,255,255,0.45);
     box-shadow: inset 0 0 0 1px rgba(255,255,255,0.45);
   }
+  .folder-preview-full {
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+    border-radius: 14px;
+  }
   .folder-preview-tile img {
     width: 100%; height: 100%; object-fit: cover; display: block;
   }
@@ -565,7 +570,7 @@ if (isFolderGrid) {
   function createFolderPreview(folderId) {
     const preview = document.createElement('div');
     preview.className = 'folder-preview-grid';
-    const cards = getCardsForFolder(folderId).slice(0, 4);
+    const cards = getCardsForFolder(folderId);
     if (!cards.length) {
       const empty = document.createElement('div');
       empty.className = 'folder-preview-empty';
@@ -573,7 +578,24 @@ if (isFolderGrid) {
       preview.appendChild(empty);
       return preview;
     }
-    cards.forEach(card => {
+
+    if (folderId === 'continue') {
+      const card = cards[0];
+      const tile = document.createElement('div');
+      tile.className = 'folder-preview-tile folder-preview-full';
+      const img = document.createElement('img');
+      img.src = coverUrlForGameId(card.dataset.num);
+      img.alt = card.querySelector('.game-label')?.textContent || 'Continue preview';
+      img.onerror = () => {
+        tile.innerHTML = '<div class="no-cover">&#127918;</div>';
+      };
+      tile.appendChild(img);
+      preview.appendChild(tile);
+      return preview;
+    }
+
+    const previewCards = cards.slice(0, 4);
+    previewCards.forEach(card => {
       const tile = document.createElement('div');
       tile.className = 'folder-preview-tile';
       const img = document.createElement('img');
