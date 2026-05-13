@@ -697,6 +697,7 @@ if (isFolderGrid) {
   }
 
   async function loadAll() {
+    renderFolders(); // Render folders immediately
     for (let i = 0; i <= 825; i += 15) {
       const batch = [];
       for (let j = i; j < i+15 && j <= 825; j++) batch.push(j);
@@ -708,7 +709,8 @@ if (isFolderGrid) {
       await Promise.all(batch.map(loadGameFromFile));
       statusText.textContent = 'Loading extras... ' + Math.min(i + 15, HYPHEN_GAME_FILES.length) + '/' + HYPHEN_GAME_FILES.length;
     }
-    renderFolders();
+    // Update folder previews after loading
+    if (currentFolder === 'folders') renderFolders();
   }
   loadAll();
 
@@ -732,6 +734,27 @@ if (isFolderGrid) {
   document.querySelector('.main').addEventListener('touchstart', e => tx = e.touches[0].clientX);
   document.querySelector('.main').addEventListener('touchend', e => {
     if (Math.abs(tx - e.changedTouches[0].clientX) > 40) scroll3ds(tx - e.changedTouches[0].clientX > 0 ? 1 : -1);
+  });
+
+  let isDragging = false;
+  let startX = 0;
+  document.querySelector('.main').addEventListener('mousedown', e => {
+    isDragging = true;
+    startX = e.clientX;
+  });
+  document.addEventListener('mousemove', e => {
+    if (isDragging) {
+      // Optional: add visual feedback or prevent default if needed
+    }
+  });
+  document.addEventListener('mouseup', e => {
+    if (isDragging) {
+      const delta = startX - e.clientX;
+      if (Math.abs(delta) > 40) {
+        scroll3ds(delta > 0 ? 1 : -1);
+      }
+      isDragging = false;
+    }
   });
 
   function filterGames() {
