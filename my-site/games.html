@@ -377,6 +377,7 @@
   <div class="popup-box" style="max-width:320px;">
     <div style="font-size:36px;margin-bottom:8px;">&#128101;</div>
     <h2 style="margin-bottom:16px;">Enter your name</h2>
+    <div id="nameError" style="display:none;background:#ffebee;color:#c62828;padding:8px 12px;border-radius:6px;margin-bottom:12px;font-size:13px;font-weight:bold;"></div>
     <input id="nameInput" type="text" maxlength="20" placeholder="Your name..."
       style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid #ccc;font-size:14px;outline:none;margin-bottom:12px;"/>
     <button onclick="submitName()"
@@ -1273,13 +1274,37 @@ if (isFolderGrid) {
 
   function submitName() {
     const n = document.getElementById('nameInput').value.trim();
-    if (!n) return;
-    chatName = n;
-    document.getElementById('namePopup').classList.remove('show');
-    document.getElementById('chatWindow').style.display = 'flex';
-    listenMessages();
-    // announce join
-    db.ref('chat').push({ name: chatName, text: 'joined the chat!', ts: Date.now(), system: true });
+    const errorEl = document.getElementById('nameError');
+    
+    if (!n) {
+      errorEl.textContent = 'Please enter a name';
+      errorEl.style.display = 'block';
+      return;
+    }
+    
+    // Check if name is already taken by checking recent messages
+    db.ref('chat').limitToLast(100).once('value', snap => {
+      let nameTaken = false;
+      snap.forEach(child => {
+        if (child.val().name === n) {
+          nameTaken = true;
+        }
+      });
+      
+      if (nameTaken) {
+        errorEl.textContent = 'This name is already taken';
+        errorEl.style.display = 'block';
+        return;
+      }
+      
+      errorEl.style.display = 'none';
+      chatName = n;
+      document.getElementById('namePopup').classList.remove('show');
+      document.getElementById('chatWindow').style.display = 'flex';
+      listenMessages();
+      // announce join
+      db.ref('chat').push({ name: chatName, text: 'joined the chat!', ts: Date.now(), system: true });
+    });
   }
 
   document.addEventListener('DOMContentLoaded', () => {
