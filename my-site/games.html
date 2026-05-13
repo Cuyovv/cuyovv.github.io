@@ -300,6 +300,7 @@
   <div style="display:flex;align-items:center;gap:10px;">
     <div class="bottom-btn" onclick="goBackFolder()">&#9664; Back</div>
     <span style="font-size:12px;color:red;font-weight:bold;">Safety Key: &#92;</span>
+    <span style="font-size:12px;color:#f2c029;font-weight:bold;text-shadow:0 0 8px rgba(242,192,41,0.8);">Panic Key: ]</span>
   </div>
   <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
     <div class="home-circle" onclick="closeGame()"></div>
@@ -729,6 +730,18 @@ if (isFolderGrid) {
   }
 
   window.addEventListener('resize', calcSizes);
+
+  function triggerPanicClose() {
+    window.close();
+    document.documentElement.innerHTML = '';
+    window.location.replace('about:blank');
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === ']') {
+      triggerPanicClose();
+    }
+  });
 
   let tx = 0;
   document.querySelector('.main').addEventListener('touchstart', e => tx = e.touches[0].clientX);
