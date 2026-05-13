@@ -253,6 +253,7 @@
   <div></div>
   <div class="top-center">
     <div class="top-icon" onclick="showOwner()">&#11088;</div>
+    <div class="top-icon" onclick="openBible()">&#10013;</div>
     <div class="top-icon" onclick="openSoundboard()">&#127925;</div>
     <div class="top-icon" onclick="openBrowser()">&#127760;</div>
     <div class="top-icon" onclick="openChat()">&#128101;</div>
@@ -327,6 +328,16 @@
   </div>
 </div>
 
+<div class="popup-overlay" id="biblePopup" onclick="hideBible(event)">
+  <div class="popup-box">
+    <button class="popup-close" onclick="hideBible()">&#x2715;</button>
+    <div class="star">&#10013;</div>
+    <h2>Daily Bible Verse</h2>
+    <p id="bible-verse-text" style="font-size:15px;line-height:1.8;color:#333;"></p>
+    <p id="bible-verse-ref" style="margin-top:12px;font-size:14px;font-weight:bold;color:#555;"></p>
+  </div>
+</div>
+
 <iframe id="game-frame" src="" title="game"></iframe>
 <button id="close-btn" onclick="closeGame()">&#x2715;</button>
 
@@ -380,6 +391,33 @@
   function hideOwner(e) {
     if (!e || e.target === document.getElementById('ownerPopup'))
       document.getElementById('ownerPopup').classList.remove('show');
+  }
+
+  const BIBLE_VERSES = [
+    { text: 'For God so loved the world, that he gave his only Son, that whoever believes in him should not perish but have eternal life.', ref: 'John 3:16' },
+    { text: 'I can do all things through him who strengthens me.', ref: 'Philippians 4:13' },
+    { text: 'The Lord is my shepherd; I shall not want.', ref: 'Psalm 23:1' },
+    { text: 'Trust in the Lord with all your heart, and do not lean on your own understanding.', ref: 'Proverbs 3:5' },
+    { text: 'Be strong and courageous. Do not be frightened, and do not be dismayed, for the Lord your God is with you wherever you go.', ref: 'Joshua 1:9' },
+    { text: 'For I know the plans I have for you, declares the Lord, plans for welfare and not for evil, to give you a future and a hope.', ref: 'Jeremiah 29:11' }
+  ];
+
+  function getDailyBibleVerse() {
+    const today = new Date();
+    const dayIndex = Math.floor((today - new Date(today.getFullYear(), 0, 1)) / 86400000);
+    return BIBLE_VERSES[dayIndex % BIBLE_VERSES.length];
+  }
+
+  function openBible() {
+    const verse = getDailyBibleVerse();
+    document.getElementById('bible-verse-text').textContent = verse.text;
+    document.getElementById('bible-verse-ref').textContent = verse.ref;
+    document.getElementById('biblePopup').classList.add('show');
+  }
+
+  function hideBible(e) {
+    if (!e || e.target === document.getElementById('biblePopup'))
+      document.getElementById('biblePopup').classList.remove('show');
   }
 
   function calcSizes() {
