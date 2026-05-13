@@ -1070,10 +1070,9 @@ if (isFolderGrid) {
     msgs.appendChild(loadDiv);
     msgs.scrollTop = msgs.scrollHeight;
 
-    tsaiHistory.push({ role: 'user', parts: [{ text }] });
+    tsaiHistory.push({ role: 'user', content: text });
 
     try {
-      tsaiHistory.push({ role: 'user', content: text });
       const res = await fetch(new URL('api/chat', window.location.href).href, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1086,11 +1085,13 @@ if (isFolderGrid) {
       const data = await res.json();
       if (data.error) {
         loadDiv.textContent = 'API Error: ' + data.error.message;
-      } else {
+      } else if (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
         const reply = data.choices[0].message.content;
         tsaiHistory.push({ role: 'assistant', content: reply });
         loadDiv.style.color = '#333';
         loadDiv.textContent = reply;
+      } else {
+        loadDiv.textContent = 'API Error: Unexpected response format.';
       }
     } catch(e) {
       loadDiv.textContent = 'Error: ' + (e.message || JSON.stringify(e));
