@@ -83,7 +83,7 @@
   .arrow:hover { background: rgba(255,255,255,0.95); box-shadow: 0 4px 12px rgba(0,0,0,0.3); transform: translateY(-50%) scale(1.05); }
   .arrow.left { left: 4px; }
   .arrow.right { right: 4px; }
-  .grid-viewport { width: 100%; height: 100%; overflow: hidden; }
+  .grid-viewport { width: 100%; height: 100%; overflow: hidden; position: relative; }
   .grid-track {
     display: grid;
     grid-template-rows: repeat(3, 1fr);
@@ -115,10 +115,40 @@
   }
   .icon-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .grid-track.folder-grid {
-    grid-template-rows: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(1, minmax(0, 1fr));
     grid-auto-flow: row;
     justify-content: center;
     align-content: center;
+  }
+  .brand-mark {
+    display: none;
+    position: absolute;
+    top: 78px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 6;
+    pointer-events: none;
+    text-align: center;
+  }
+  .grid-viewport.show-brand .brand-mark {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .brand-mark img {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 16px rgba(143,231,255,0.34));
+  }
+  .brand-mark span {
+    color: var(--neo-text);
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-shadow: 0 0 14px rgba(143,231,255,0.36);
   }
   .folder-card {
     justify-content: center;
@@ -632,6 +662,10 @@
   <button class="arrow left" onclick="scroll3ds(-1)">&#9664;</button>
   <button class="arrow right" onclick="scroll3ds(1)">&#9654;</button>
   <div class="grid-viewport">
+    <div class="brand-mark">
+      <img src="cursor.png" alt="ToolSchool"/>
+      <span>ToolSchool</span>
+    </div>
     <div id="folder-title">&#128193; Folders</div>
     <div class="grid-track" id="grid"></div>
   </div>
@@ -774,18 +808,19 @@
 
 if (isFolderGrid) {
       const horizontalPad = Math.max(8, Math.min(24, Math.floor(viewport.offsetWidth * 0.02)));
+      const brandSpace = Math.max(210, Math.min(260, Math.floor(mainH * 0.36)));
       const viewWidth = Math.max(0, viewport.offsetWidth - horizontalPad * 2);
-      const viewHeight = Math.max(0, mainH - 16);
-      const gap = Math.max(10, Math.min(24, Math.floor(viewWidth * 0.025)));
-      iconSize = Math.floor(Math.min((viewWidth - gap * 2) / 3 - 6, (viewHeight - gap) / 2 - 24));
-      iconSize = Math.max(52, Math.min(280, iconSize));  // ← raised cap
+      const viewHeight = Math.max(0, mainH - brandSpace - 24);
+      const gap = Math.max(8, Math.min(18, Math.floor(viewWidth * 0.012)));
+      iconSize = Math.floor(Math.min((viewWidth - gap * 5) / 6 - 6, viewHeight - 28));
+      iconSize = Math.max(52, Math.min(210, iconSize));
       colWidth = iconSize + 6;
-      gridTrack.style.gridTemplateRows = 'repeat(2, minmax(0, 1fr))';
-      gridTrack.style.gridTemplateColumns = 'repeat(3, ' + colWidth + 'px)';
+      gridTrack.style.gridTemplateRows = 'repeat(1, minmax(0, 1fr))';
+      gridTrack.style.gridTemplateColumns = 'repeat(6, ' + colWidth + 'px)';
       gridTrack.style.gridAutoColumns = colWidth + 'px';
       gridTrack.style.columnGap = gap + 'px';
-      gridTrack.style.rowGap = Math.max(12, Math.floor(gap * 0.75)) + 'px';
-      gridTrack.style.padding = '14px ' + horizontalPad + 'px';
+      gridTrack.style.rowGap = '0';
+      gridTrack.style.padding = brandSpace + 'px ' + horizontalPad + 'px 18px';
     } else {
       const rowH = mainH / 3;
       iconSize = Math.floor(rowH - 26);
@@ -1027,6 +1062,7 @@ if (isFolderGrid) {
 
   function renderFolders() {
     currentFolder = 'folders';
+    document.querySelector('.grid-viewport').classList.add('show-brand');
     folderTitle.innerHTML = '&#128193; Folders';
     const cards = FOLDERS.map(createFolderCard);
     resetGrid(cards);
@@ -1034,6 +1070,7 @@ if (isFolderGrid) {
 
   function renderFolder(folderId) {
     currentFolder = folderId;
+    document.querySelector('.grid-viewport').classList.remove('show-brand');
     const folder = FOLDERS.find(item => item.id === folderId);
     folderTitle.innerHTML = folder ? folder.icon + ' ' + folder.label : '&#127918; Games';
     const cards = getCardsForFolder(folderId);
@@ -1185,6 +1222,7 @@ if (isFolderGrid) {
       .filter(c => c.dataset.name.includes(q))
       .slice(0, 120);
     currentFolder = 'search';
+    document.querySelector('.grid-viewport').classList.remove('show-brand');
     folderTitle.innerHTML = '&#128269; Search Results';
     resetGrid(matches);
     statusText.textContent = matches.length + ' matching games';
