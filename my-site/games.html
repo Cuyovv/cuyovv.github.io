@@ -1314,12 +1314,29 @@ if (isFolderGrid) {
     });
   });
 
-  const profanityPattern = /\b(fuck(?:er|ing|ed)?|shit(?:ty|ting|head)?|asshole|bitch(?:es|ing)?|bastard|damn|dick|piss|crap|slut|whore)\b/gi;
+  const bad_words = [
+    'fuck', 'fucking', 'fucker', 'fuckers', 'motherfucker', 'shit', 'shitty', 'shitted', 'shitting',
+    'asshole', 'asses', 'asshat', 'asswipe', 'bitch', 'bitches', 'bitching', 'bastard', 'damn', 'dammit',
+    'dick', 'dickhead', 'dickface', 'piss', 'pissed', 'pissing', 'crap', 'crappy', 'slut', 'sluts',
+    'whore', 'whores', 'cunt', 'cock', 'pussy', 'tit', 'tits', 'douche', 'douchebag', 'jerk', 'idiot',
+    'moron', 'retard', 'nigger', 'nigga', 'fag', 'faggot', 'tranny', 'bastards', 'bullshit', 'bollocks'
+  ];
+
+  function censor_word(word) {
+    let censored = false;
+    const lower = String(word || '').toLowerCase();
+    bad_words.forEach((bad) => {
+      if (lower.includes(bad)) {
+        censored = true;
+      }
+    });
+    return censored ? '####' : word;
+  }
 
   function filterChatText(text) {
     const value = String(text || '');
     if (!profanityFilterEnabled) return value;
-    return value.replace(profanityPattern, word => '*'.repeat(word.length));
+    return value.replace(/\w+/g, word => censor_word(word));
   }
 
   function sendMsg() {
@@ -1443,8 +1460,6 @@ if (isFolderGrid) {
 
 
 
-<<<<<<< HEAD
-=======
 <!-- ANNOUNCEMENT POPUP -->
 <div class="popup-overlay show" id="announcementPopup" style="z-index:10002;">
   <div class="popup-box" style="max-width:420px;">
@@ -1458,7 +1473,6 @@ if (isFolderGrid) {
   </div>
 </div>
 
->>>>>>> 21dd9b715386d834d946fcb76a1f8fe6fcb800f7
 <!-- TSAI WINDOW -->
 <div id="aiWindow" style="display:none;position:fixed;bottom:60px;right:360px;width:320px;
   background:#f5f5f5;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.3);
