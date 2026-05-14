@@ -345,6 +345,14 @@
     box-shadow: 0 0 24px var(--neo-shadow), 0 10px 26px rgba(0,0,0,0.45) !important;
   }
 
+  .top-icon-img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    display: block;
+    filter: drop-shadow(0 0 8px rgba(143,231,255,0.32));
+  }
+
   .top-right-clock,
   .top-right-clock span,
   #clock,
@@ -590,7 +598,7 @@
     <div class="top-icon" onclick="openChat()">&#128101;</div>
     <div class="top-icon" onclick="openSettings()">&#9881;&#65039;</div>
     <div class="top-icon" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSfwUUnBPkc3PfjexfSQICEHXzGbpKe2VP6P8zuwc4s9kM0Gxg/viewform?usp=header','_blank')">&#10133;</div>
-    <div class="top-icon" onclick="window.open('https://discord.gg/ZUeXWHkA','_blank')">&#128172;</div>
+    <div class="top-icon" onclick="window.open('https://discord.gg/ZUeXWHkA','_blank')"><img class="top-icon-img" src="OIP.png" alt="Discord"/></div>
     <div class="top-icon" onclick="openAI()">&#129302;</div>
     <div class="top-icon" onclick="openCommit()">&#128295;</div>
     <div class="top-icon" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLScjuLYhuMm_w5qZNgqPL2BrLbbHttpVFeIReIf0JTLOd2y5DA/viewform?usp=publish-editor','_blank')">&#9888;</div>
