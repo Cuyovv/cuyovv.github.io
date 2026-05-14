@@ -692,6 +692,7 @@
       <div class="top-icon" onclick="openCommit()">&#128295;</div>
       <div class="top-icon" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLScjuLYhuMm_w5qZNgqPL2BrLbbHttpVFeIReIf0JTLOd2y5DA/viewform?usp=publish-editor','_blank')">&#9888;</div>
       <div class="top-icon" onclick="window.open('https://cash.app/$JayceThomson7','_blank')" style="background:#4cc9ff;color:#fff;font-size:16px;font-weight:bold;">$</div>
+      <div class="top-icon" onclick="openVault()" title="Secret Vault">&#128274;</div>
     </div>
     <div class="top-divider"></div>
     <div class="top-search-bar">
@@ -790,6 +791,36 @@ REACH OUT FOR QUESTIONS yogi870450@gmail.com</div>
     <h2>Daily Bible Verse</h2>
     <p id="bible-verse-text" style="font-size:15px;line-height:1.8;color:#333;"></p>
     <p id="bible-verse-ref" style="margin-top:12px;font-size:14px;font-weight:bold;color:#555;"></p>
+  </div>
+</div>
+
+<!-- VAULT POPUP -->
+<div class="popup-overlay" id="vaultPopup" onclick="closeVault(event)">
+  <div class="popup-box" style="max-width:320px;">
+    <button class="popup-close" onclick="closeVault()">&#x2715;</button>
+    <div style="font-size:36px;margin-bottom:8px;">&#128452;</div>
+    <h2 style="margin-bottom:16px;">Secret Vault</h2>
+    <input id="vaultInput" type="text" placeholder="Enter code..."
+      style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid rgba(143,231,255,0.32);font-size:14px;outline:none;margin-bottom:12px;"/>
+    <button onclick="checkVaultCode()"
+      style="width:100%;padding:9px;background:#8fe7ff;color:#061018;border:none;border-radius:8px;font-size:14px;cursor:pointer;font-weight:bold;">
+      Unlock
+    </button>
+    <div id="vaultMessage" style="margin-top:10px;font-size:12px;display:none;font-weight:bold;"></div>
+  </div>
+</div>
+
+<!-- TIMEOUT POPUP -->
+<div class="popup-overlay" id="timeoutPopup" onclick="closeTimeout(event)">
+  <div class="popup-box" style="max-width:280px;">
+    <button class="popup-close" onclick="closeTimeout()">&#x2715;</button>
+    <h2 id="timeoutTargetName" style="font-size:18px;margin-bottom:16px;">Timeout User</h2>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button onclick="applyTimeout(5)" style="padding:10px;border-radius:8px;cursor:pointer;font-weight:bold;">5 Minutes</button>
+      <button onclick="applyTimeout(10)" style="padding:10px;border-radius:8px;cursor:pointer;font-weight:bold;">10 Minutes</button>
+      <button onclick="applyTimeout(30)" style="padding:10px;border-radius:8px;cursor:pointer;font-weight:bold;">30 Minutes</button>
+      <button onclick="applyTimeout(60)" style="padding:10px;border-radius:8px;cursor:pointer;font-weight:bold;">1 Hour</button>
+    </div>
   </div>
 </div>
 
@@ -1846,8 +1877,20 @@ if (isFolderGrid) {
         const nameSpan = document.createElement('span');
         const textSpan = document.createElement('span');
         div.style.cssText = 'display:flex;flex-direction:column;align-items:' + (isMe ? 'flex-end' : 'flex-start') + ';';
+        
         nameSpan.style.cssText = 'font-size:10px;color:#888;margin-bottom:2px;';
         nameSpan.textContent = filterChatText(msg.name);
+
+        if (localStorage.getItem('hasTimeoutPrivilege') === 'true' && !msg.system) {
+          nameSpan.style.cursor = 'pointer';
+          nameSpan.title = 'Click to timeout';
+          nameSpan.onclick = () => openTimeoutMenu(msg.name);
+        }
+        if (isMe && localStorage.getItem('hasGreenName') === 'true') {
+          nameSpan.style.color = '#4caf50';
+          nameSpan.style.fontWeight = 'bold';
+        }
+
         textSpan.style.cssText = 'background:' + (isMe ? 'rgba(143,231,255,0.18)' : 'rgba(255,255,255,0.06)') + ';color:#eefbff;' +
           'padding:6px 10px;border-radius:12px;font-size:13px;max-width:220px;word-wrap:break-word;border:1px solid rgba(143,231,255,0.16);';
         textSpan.textContent = filterChatText(msg.text);
@@ -1893,6 +1936,61 @@ if (isFolderGrid) {
       document.addEventListener('mousemove', onMouseMove);
       document.addEventListener('mouseup', onMouseUp);
     });
+  }
+
+  // Vault & Mod Logic
+  function _vh(s) {
+    let h = 0;
+    for (let i = 0; i < s.length; i++) {
+      h = ((h << 5) - h) + s.charCodeAt(i);
+      h |= 0;
+    }
+    return h;
+  }
+  function openVault() {
+    document.getElementById('vaultPopup').classList.add('show');
+    document.getElementById('vaultInput').value = '';
+    document.getElementById('vaultMessage').style.display = 'none';
+    setTimeout(() => document.getElementById('vaultInput').focus(), 100);
+  }
+  function closeVault(e) {
+    if (!e || e.target === document.getElementById('vaultPopup'))
+      document.getElementById('vaultPopup').classList.remove('show');
+  }
+  function checkVaultCode() {
+    const code = document.getElementById('vaultInput').value.trim();
+    const msgEl = document.getElementById('vaultMessage');
+    const h = _vh(code);
+    msgEl.style.display = 'block';
+    if (h === -1503923362) { // 106471
+      localStorage.setItem('hasTimeoutPrivilege', 'true');
+      msgEl.textContent = 'Access Granted: Timeout Mod';
+      msgEl.style.color = '#4caf50';
+      setTimeout(() => closeVault(), 1500);
+    } else if (h === 439775317) { // 06220166
+      localStorage.setItem('hasGreenName', 'true');
+      msgEl.textContent = 'Access Granted: Green Name';
+      msgEl.style.color = '#4caf50';
+      setTimeout(() => closeVault(), 1500);
+    } else {
+      msgEl.textContent = 'Invalid Security Key';
+      msgEl.style.color = '#ff6b6b';
+    }
+  }
+  let timeoutTarget = null;
+  function openTimeoutMenu(name) {
+    timeoutTarget = name;
+    document.getElementById('timeoutTargetName').textContent = 'Timeout: ' + name;
+    document.getElementById('timeoutPopup').classList.add('show');
+  }
+  function closeTimeout(e) {
+    if (!e || e.target === document.getElementById('timeoutPopup'))
+      document.getElementById('timeoutPopup').classList.remove('show');
+  }
+  function applyTimeout(mins) {
+    if (!timeoutTarget || !chatName) return;
+    db.ref('chat').push({ name: 'SYSTEM', text: timeoutTarget + ' has been timed out for ' + mins + ' minutes by ' + chatName, ts: Date.now(), system: true });
+    closeTimeout();
   }
 
   makeDraggable('chatWindow', 'chatHeader');
