@@ -275,25 +275,25 @@
   #close-btn:hover { background: rgba(200,0,0,0.85); }
 
   :root {
-    --neo-bg: #080d0b;
-    --neo-panel: #101914;
-    --neo-panel-2: #16221b;
-    --neo-glass: rgba(22, 255, 91, 0.08);
-    --neo-line: rgba(57, 255, 20, 0.32);
-    --neo-line-soft: rgba(176, 255, 190, 0.16);
-    --neo-green: #39ff14;
-    --neo-green-2: #00d632;
-    --neo-green-dark: #0b5f22;
-    --neo-text: #eefdf1;
-    --neo-muted: #8fa99a;
-    --neo-shadow: rgba(57, 255, 20, 0.28);
+    --neo-bg: #080d12;
+    --neo-panel: #101820;
+    --neo-panel-2: #16232c;
+    --neo-glass: rgba(143, 231, 255, 0.08);
+    --neo-line: rgba(143, 231, 255, 0.34);
+    --neo-line-soft: rgba(143, 231, 255, 0.16);
+    --neo-green: #8fe7ff;
+    --neo-green-2: #4cc9ff;
+    --neo-green-dark: #0b4d74;
+    --neo-text: #eefbff;
+    --neo-muted: #9bb7c3;
+    --neo-shadow: rgba(143, 231, 255, 0.3);
   }
 
   body {
     font-family: Inter, "Segoe UI", Arial, sans-serif !important;
     color: var(--neo-text) !important;
     background:
-      radial-gradient(circle at 50% -20%, rgba(57,255,20,0.18), transparent 34%),
+      radial-gradient(circle at 50% -20%, rgba(143,231,255,0.18), transparent 34%),
       linear-gradient(145deg, #050806 0%, #0a100d 48%, #111827 100%) !important;
   }
 
@@ -304,8 +304,8 @@
     z-index: -1;
     pointer-events: none;
     background:
-      linear-gradient(rgba(57,255,20,0.035) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(57,255,20,0.025) 1px, transparent 1px);
+      linear-gradient(rgba(143,231,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(143,231,255,0.025) 1px, transparent 1px);
     background-size: 48px 48px;
     mask-image: linear-gradient(to bottom, rgba(0,0,0,0.82), transparent 78%);
   }
@@ -334,13 +334,13 @@
 
   .top-icon {
     color: var(--neo-text) !important;
-    background: linear-gradient(145deg, rgba(57,255,20,0.13), rgba(10,21,15,0.95)) !important;
+    background: linear-gradient(145deg, rgba(143,231,255,0.13), rgba(10,20,28,0.95)) !important;
     border: 1px solid var(--neo-line) !important;
-    box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset, 0 8px 24px rgba(0,0,0,0.35), 0 0 18px rgba(57,255,20,0.08) !important;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset, 0 8px 24px rgba(0,0,0,0.35), 0 0 18px rgba(143,231,255,0.08) !important;
   }
 
   .top-icon:hover {
-    color: #071008 !important;
+    color: #061018 !important;
     background: linear-gradient(145deg, var(--neo-green), var(--neo-green-2)) !important;
     box-shadow: 0 0 24px var(--neo-shadow), 0 10px 26px rgba(0,0,0,0.45) !important;
   }
@@ -363,10 +363,10 @@
   #msgInput,
   #aiInput,
   #nameInput {
-    background: #070b09 !important;
+    background: #070b0f !important;
     color: var(--neo-text) !important;
     border: 1px solid var(--neo-line) !important;
-    box-shadow: 0 0 0 1px rgba(255,255,255,0.035) inset, 0 0 22px rgba(57,255,20,0.06) !important;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.035) inset, 0 0 22px rgba(143,231,255,0.06) !important;
   }
 
   #search::placeholder,
@@ -381,18 +381,18 @@
   #aiInput:focus,
   #nameInput:focus {
     border-color: var(--neo-green) !important;
-    box-shadow: 0 0 0 3px rgba(57,255,20,0.16), 0 0 24px rgba(57,255,20,0.14) !important;
+    box-shadow: 0 0 0 3px rgba(143,231,255,0.16), 0 0 24px rgba(143,231,255,0.14) !important;
   }
 
   #suggestions {
-    background: rgba(9,14,11,0.98) !important;
+    background: rgba(9,14,20,0.98) !important;
     border: 1px solid var(--neo-line) !important;
-    box-shadow: 0 16px 40px rgba(0,0,0,0.55), 0 0 24px rgba(57,255,20,0.09) !important;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.55), 0 0 24px rgba(143,231,255,0.09) !important;
   }
 
   .main {
     background:
-      radial-gradient(circle at 50% 10%, rgba(57,255,20,0.14), transparent 30%),
+      radial-gradient(circle at 50% 10%, rgba(143,231,255,0.14), transparent 30%),
       linear-gradient(145deg, #090f0c 0%, #111a15 45%, #0b1017 100%) !important;
   }
 
@@ -405,15 +405,15 @@
   }
 
   .arrow {
-    background: rgba(9,14,11,0.88) !important;
+    background: rgba(9,14,20,0.88) !important;
     border: 1px solid var(--neo-line) !important;
     color: var(--neo-green) !important;
-    box-shadow: 0 0 18px rgba(57,255,20,0.14), 0 10px 24px rgba(0,0,0,0.4) !important;
+    box-shadow: 0 0 18px rgba(143,231,255,0.14), 0 10px 24px rgba(0,0,0,0.4) !important;
   }
 
   .arrow:hover {
     background: var(--neo-green) !important;
-    color: #071008 !important;
+    color: #061018 !important;
     box-shadow: 0 0 28px var(--neo-shadow), 0 12px 30px rgba(0,0,0,0.5) !important;
   }
 
@@ -422,38 +422,38 @@
   }
 
   .icon-wrap {
-    background: #101914 !important;
-    border: 1px solid rgba(57,255,20,0.38) !important;
+    background: #101820 !important;
+    border: 1px solid rgba(143,231,255,0.38) !important;
     border-radius: 18px !important;
-    box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset, 0 10px 24px rgba(0,0,0,0.45), 0 0 18px rgba(57,255,20,0.09) !important;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset, 0 10px 24px rgba(0,0,0,0.45), 0 0 18px rgba(143,231,255,0.09) !important;
   }
 
   .game-card:hover .icon-wrap {
     transform: translateY(-5px) scale(1.03) !important;
     border-color: var(--neo-green) !important;
-    box-shadow: 0 0 0 1px rgba(57,255,20,0.32) inset, 0 16px 32px rgba(0,0,0,0.52), 0 0 26px rgba(57,255,20,0.28) !important;
+    box-shadow: 0 0 0 1px rgba(143,231,255,0.32) inset, 0 16px 32px rgba(0,0,0,0.52), 0 0 26px rgba(143,231,255,0.28) !important;
   }
 
   .icon-wrap::after {
-    background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(57,255,20,0.05), transparent) !important;
+    background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(143,231,255,0.05), transparent) !important;
   }
 
   .folder-card .icon-wrap,
   .folder-preview-empty {
-    background: linear-gradient(145deg, #12351c 0%, #16a334 50%, #39ff14 100%) !important;
+    background: linear-gradient(145deg, #0b2638 0%, #169ed8 50%, #8fe7ff 100%) !important;
   }
 
   .folder-preview-grid,
   .folder-preview-tile {
-    background: rgba(7,16,10,0.55) !important;
-    box-shadow: inset 0 0 0 1px rgba(57,255,20,0.22) !important;
+    background: rgba(7,16,24,0.55) !important;
+    box-shadow: inset 0 0 0 1px rgba(143,231,255,0.22) !important;
   }
 
   .game-label,
   #folder-title,
   #status-text {
     color: var(--neo-text) !important;
-    text-shadow: 0 0 10px rgba(57,255,20,0.26) !important;
+    text-shadow: 0 0 10px rgba(143,231,255,0.26) !important;
   }
 
   #folder-title {
@@ -462,8 +462,8 @@
 
   .favorite-btn,
   .count-badge {
-    background: rgba(5,9,7,0.82) !important;
-    border: 1px solid rgba(57,255,20,0.28) !important;
+    background: rgba(5,9,13,0.82) !important;
+    border: 1px solid rgba(143,231,255,0.28) !important;
     color: var(--neo-text) !important;
   }
 
@@ -476,10 +476,10 @@
   button,
   label[style*="background:#1a6bba"],
   label[style*="background:#ffcc00"] {
-    background: linear-gradient(145deg, rgba(57,255,20,0.16), rgba(12,22,15,0.96)) !important;
+    background: linear-gradient(145deg, rgba(143,231,255,0.16), rgba(12,22,30,0.96)) !important;
     color: var(--neo-text) !important;
     border: 1px solid var(--neo-line) !important;
-    box-shadow: 0 0 18px rgba(57,255,20,0.08) !important;
+    box-shadow: 0 0 18px rgba(143,231,255,0.08) !important;
   }
 
   .bottom-btn:hover,
@@ -487,12 +487,12 @@
   label[style*="background:#1a6bba"]:hover,
   label[style*="background:#ffcc00"]:hover {
     background: linear-gradient(145deg, var(--neo-green), var(--neo-green-2)) !important;
-    color: #071008 !important;
+    color: #061018 !important;
     box-shadow: 0 0 24px var(--neo-shadow) !important;
   }
 
   .home-circle {
-    background: radial-gradient(circle at 40% 35%, #aaff9d, #39ff14 42%, #0f5f23 78%) !important;
+    background: radial-gradient(circle at 40% 35%, #d9f7ff, #8fe7ff 42%, #0b5d86 78%) !important;
     border: 1px solid rgba(191,255,201,0.7) !important;
     box-shadow: 0 0 18px var(--neo-shadow), inset 0 2px 8px rgba(255,255,255,0.28) !important;
   }
@@ -505,10 +505,10 @@
   .popup-box,
   #chatWindow,
   #aiWindow {
-    background: linear-gradient(180deg, rgba(18,28,22,0.98), rgba(8,13,10,0.98)) !important;
+    background: linear-gradient(180deg, rgba(18,28,22,0.98), rgba(8,13,18,0.98)) !important;
     border: 1px solid var(--neo-line) !important;
     color: var(--neo-text) !important;
-    box-shadow: 0 24px 70px rgba(0,0,0,0.62), 0 0 34px rgba(57,255,20,0.16) !important;
+    box-shadow: 0 24px 70px rgba(0,0,0,0.62), 0 0 34px rgba(143,231,255,0.16) !important;
   }
 
   .popup-box h2,
@@ -538,7 +538,7 @@
 
   #chatWindow > div:first-child,
   #aiWindow > div:first-child {
-    background: linear-gradient(135deg, #0b3418, #111c16 58%, #39ff14) !important;
+    background: linear-gradient(135deg, #0b2a3d, #111c24 58%, #8fe7ff) !important;
     border-bottom: 1px solid var(--neo-line) !important;
   }
 
@@ -555,21 +555,21 @@
   #chatMessages span[style*="background"],
   #aiMessages div,
   #chatMessages div[style*="background"] {
-    background: rgba(57,255,20,0.12) !important;
+    background: rgba(143,231,255,0.12) !important;
     color: var(--neo-text) !important;
-    border: 1px solid rgba(57,255,20,0.16) !important;
+    border: 1px solid rgba(143,231,255,0.16) !important;
   }
 
   .no-cover {
-    background: linear-gradient(135deg, #101914, #163d20) !important;
+    background: linear-gradient(135deg, #101820, #163d20) !important;
     color: var(--neo-green) !important;
   }
 
   #close-btn {
-    background: rgba(8,13,10,0.86) !important;
+    background: rgba(8,13,18,0.86) !important;
     border: 1px solid var(--neo-line) !important;
     color: var(--neo-green) !important;
-    box-shadow: 0 0 20px rgba(57,255,20,0.16) !important;
+    box-shadow: 0 0 20px rgba(143,231,255,0.16) !important;
   }
 
   input[type="color"] {
@@ -594,16 +594,16 @@
     <div class="top-icon" onclick="openAI()">&#129302;</div>
     <div class="top-icon" onclick="openCommit()">&#128295;</div>
     <div class="top-icon" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLScjuLYhuMm_w5qZNgqPL2BrLbbHttpVFeIReIf0JTLOd2y5DA/viewform?usp=publish-editor','_blank')">&#9888;</div>
-    <div class="top-icon" onclick="window.open('https://cash.app/$JayceThomson7','_blank')" style="background:#00D632;color:#fff;font-size:16px;font-weight:bold;">$</div>
+    <div class="top-icon" onclick="window.open('https://cash.app/$JayceThomson7','_blank')" style="background:#4cc9ff;color:#fff;font-size:16px;font-weight:bold;">$</div>
   </div>
   <div class="top-right-clock">
     <span style="font-size:11px;color:#4caf50;">&#9679;</span>
     <span id="online-count" style="font-size:12px;color:#555;">0 online</span>
-    <span style="color:rgba(57,255,20,0.35);">|</span>
+    <span style="color:rgba(143,231,255,0.35);">|</span>
     <span id="visit-count" style="font-size:12px;color:#555;">0 visits</span>
-    <span style="color:rgba(57,255,20,0.35);">|</span>
+    <span style="color:rgba(143,231,255,0.35);">|</span>
     <span id="my-visits" style="font-size:12px;color:#555;">my visits: 0</span>
-    <span style="color:rgba(57,255,20,0.35);">|</span>
+    <span style="color:rgba(143,231,255,0.35);">|</span>
     <span>&#128267;</span>
     <span id="clock">12:00 PM</span>
   </div>
@@ -614,9 +614,9 @@
     oninput="filterGames()" 
     onkeydown="handleSearchKey(event)"
     autocomplete="off"
-    style="width:100%;padding:5px 12px;border-radius:999px;border:1px solid rgba(57,255,20,0.32);background:#070b09;font-size:13px;outline:none;color:#eefdf1;"/>
+    style="width:100%;padding:5px 12px;border-radius:999px;border:1px solid rgba(143,231,255,0.32);background:#070b0f;font-size:13px;outline:none;color:#eefbff;"/>
   <div id="suggestions" style="display:none;position:absolute;top:100%;left:12px;right:12px;background:#090e0b;
-    border:1px solid rgba(57,255,20,0.32);border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,0.35);
+    border:1px solid rgba(143,231,255,0.32);border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,0.35);
     z-index:200;max-height:220px;overflow-y:auto;margin-top:2px;"></div>
 </div>
 
@@ -684,9 +684,9 @@
     <h2 style="margin-bottom:16px;">Enter your name</h2>
     <div id="nameError" style="display:none;background:rgba(255,58,58,0.14);color:#ff6b6b;padding:8px 12px;border-radius:6px;margin-bottom:12px;font-size:13px;font-weight:bold;"></div>
     <input id="nameInput" type="text" maxlength="20" placeholder="Your name..."
-      style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid rgba(57,255,20,0.32);font-size:14px;outline:none;margin-bottom:12px;"/>
+      style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid rgba(143,231,255,0.32);font-size:14px;outline:none;margin-bottom:12px;"/>
     <button onclick="submitName()"
-      style="width:100%;padding:9px;background:#39ff14;color:#071008;border:none;border-radius:8px;font-size:14px;cursor:pointer;font-weight:bold;">
+      style="width:100%;padding:9px;background:#8fe7ff;color:#061018;border:none;border-radius:8px;font-size:14px;cursor:pointer;font-weight:bold;">
       Join Chat
     </button>
   </div>
@@ -694,9 +694,9 @@
 
 <!-- CHAT WINDOW -->
 <div id="chatWindow" style="display:none;position:fixed;bottom:60px;right:20px;width:320px;
-  background:#101914;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.45);
-  border:1px solid rgba(57,255,20,0.32);z-index:10000;flex-direction:column;overflow:hidden;">
-  <div style="background:linear-gradient(135deg,#0b3418,#111c16 58%,#39ff14);color:#fff;padding:12px 16px;
+  background:#101820;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.45);
+  border:1px solid rgba(143,231,255,0.32);z-index:10000;flex-direction:column;overflow:hidden;">
+  <div style="background:linear-gradient(135deg,#0b2a3d,#111c24 58%,#8fe7ff);color:#fff;padding:12px 16px;
     display:flex;align-items:center;justify-content:space-between;border-radius:14px 14px 0 0;">
     <span style="font-weight:bold;font-size:15px;">&#127760; Hep𒆙ObalChat</span>
     <button onclick="document.getElementById('chatWindow').style.display='none'"
@@ -705,10 +705,10 @@
   <div id="chatMessages" style="overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:6px;height:300px;"></div>
   <div style="padding:8px;border-top:1px solid #ddd;display:flex;gap:6px;">
     <input id="msgInput" type="text" maxlength="200" placeholder="Type a message..."
-      style="flex:1;padding:7px 10px;border-radius:20px;border:1px solid rgba(57,255,20,0.32);font-size:13px;outline:none;"
+      style="flex:1;padding:7px 10px;border-radius:20px;border:1px solid rgba(143,231,255,0.32);font-size:13px;outline:none;"
       onkeydown="if(event.key==='Enter')sendMsg()"/>
     <button onclick="sendMsg()"
-      style="background:#39ff14;color:#071008;border:none;border-radius:20px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:bold;">
+      style="background:#8fe7ff;color:#061018;border:none;border-radius:20px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:bold;">
       Send
     </button>
   </div>
@@ -1204,7 +1204,7 @@ if (isFolderGrid) {
         resetGrid([c]);
         c.click();
       };
-      item.onmouseover = () => item.style.background = 'rgba(57,255,20,0.12)';
+      item.onmouseover = () => item.style.background = 'rgba(143,231,255,0.12)';
       item.onmouseout = () => item.style.background = '';
       suggestions.appendChild(item);
     });
@@ -1246,11 +1246,11 @@ if (isFolderGrid) {
   }
 
   const defaultSettings = {
-    bg: '#080d0b',
-    bar: '#101914',
-    icon: '#16221b',
-    label: '#eefdf1',
-    search: '#070b09',
+    bg: '#080d12',
+    bar: '#101820',
+    icon: '#16232c',
+    label: '#eefbff',
+    search: '#070b0f',
     profanityFilter: false
   };
 
@@ -1265,11 +1265,11 @@ if (isFolderGrid) {
     profanityFilterEnabled = s.profanityFilter || false;
     const profanityTrack = document.getElementById('profanity-toggle-track');
     const profanityKnob = document.getElementById('profanity-toggle-knob');
-    if (profanityTrack) profanityTrack.style.background = profanityFilterEnabled ? '#39ff14' : '#233129';
+    if (profanityTrack) profanityTrack.style.background = profanityFilterEnabled ? '#8fe7ff' : '#23313a';
     if (profanityKnob) profanityKnob.style.transform = profanityFilterEnabled ? 'translateX(20px)' : 'translateX(0)';
     const track = document.getElementById('toggle-track');
     const knob = document.getElementById('toggle-knob');
-    if (track) track.style.background = ablankEnabled ? '#39ff14' : '#233129';
+    if (track) track.style.background = ablankEnabled ? '#8fe7ff' : '#23313a';
     if (knob) knob.style.transform = ablankEnabled ? 'translateX(20px)' : 'translateX(0)';
   }
 
@@ -1279,7 +1279,7 @@ if (isFolderGrid) {
   function setSwitchState(trackId, knobId, enabled) {
     const track = document.getElementById(trackId);
     const knob = document.getElementById(knobId);
-    if (track) track.style.background = enabled ? '#39ff14' : '#233129';
+    if (track) track.style.background = enabled ? '#8fe7ff' : '#23313a';
     if (knob) knob.style.transform = enabled ? 'translateX(20px)' : 'translateX(0)';
   }
 
@@ -1390,7 +1390,7 @@ if (isFolderGrid) {
 
     // Add user message
     const userDiv = document.createElement('div');
-    userDiv.style.cssText = 'background:rgba(57,255,20,0.18);color:#eefdf1;padding:8px 12px;border-radius:12px;font-size:13px;max-width:240px;align-self:flex-end;word-wrap:break-word;border:1px solid rgba(57,255,20,0.22);';
+    userDiv.style.cssText = 'background:rgba(143,231,255,0.18);color:#eefbff;padding:8px 12px;border-radius:12px;font-size:13px;max-width:240px;align-self:flex-end;word-wrap:break-word;border:1px solid rgba(143,231,255,0.22);';
     userDiv.textContent = text;
     msgs.appendChild(userDiv);
     msgs.scrollTop = msgs.scrollHeight;
@@ -1451,7 +1451,7 @@ if (isFolderGrid) {
         '<div style="margin-bottom:8px;"><span style="font-weight:bold;color:#333;">Message:</span><br/>' + c.commit.message + '</div>' +
         '<div style="margin-bottom:8px;"><span style="font-weight:bold;color:#333;">Author:</span> ' + c.commit.author.name + '</div>' +
         '<div style="margin-bottom:8px;"><span style="font-weight:bold;color:#333;">Date:</span> ' + date + '</div>' +
-        '<div><span style="font-weight:bold;color:#eefdf1;">Commit:</span> <a href="' + c.html_url + '" target="_blank" style="color:#39ff14;font-family:monospace;">' + c.sha.substring(0,7) + '</a></div>';
+        '<div><span style="font-weight:bold;color:#eefbff;">Commit:</span> <a href="' + c.html_url + '" target="_blank" style="color:#8fe7ff;font-family:monospace;">' + c.sha.substring(0,7) + '</a></div>';
     } catch(e) {
       el.innerHTML = '<div style="color:red;">Failed to load commit info.</div>';
     }
@@ -1667,8 +1667,8 @@ if (isFolderGrid) {
         div.style.cssText = 'display:flex;flex-direction:column;align-items:' + (isMe ? 'flex-end' : 'flex-start') + ';';
         nameSpan.style.cssText = 'font-size:10px;color:#888;margin-bottom:2px;';
         nameSpan.textContent = filterChatText(msg.name);
-        textSpan.style.cssText = 'background:' + (isMe ? 'rgba(57,255,20,0.18)' : 'rgba(255,255,255,0.06)') + ';color:#eefdf1;' +
-          'padding:6px 10px;border-radius:12px;font-size:13px;max-width:220px;word-wrap:break-word;border:1px solid rgba(57,255,20,0.16);';
+        textSpan.style.cssText = 'background:' + (isMe ? 'rgba(143,231,255,0.18)' : 'rgba(255,255,255,0.06)') + ';color:#eefbff;' +
+          'padding:6px 10px;border-radius:12px;font-size:13px;max-width:220px;word-wrap:break-word;border:1px solid rgba(143,231,255,0.16);';
         textSpan.textContent = filterChatText(msg.text);
         div.append(nameSpan, textSpan);
       }
@@ -1689,31 +1689,31 @@ if (isFolderGrid) {
 
       <div style="display:flex;align-items:center;justify-content:space-between;">
         <label style="font-size:13px;font-weight:bold;color:#333;">Background Color</label>
-        <input type="color" id="s-bg" value="#080d0b" oninput="applySettings()"
+        <input type="color" id="s-bg" value="#080d12" oninput="applySettings()"
           style="width:48px;height:32px;border:none;border-radius:6px;cursor:pointer;"/>
       </div>
 
       <div style="display:flex;align-items:center;justify-content:space-between;">
         <label style="font-size:13px;font-weight:bold;color:#333;">Top &amp; Bottom Bar Color</label>
-        <input type="color" id="s-bar" value="#101914" oninput="applySettings()"
+        <input type="color" id="s-bar" value="#101820" oninput="applySettings()"
           style="width:48px;height:32px;border:none;border-radius:6px;cursor:pointer;"/>
       </div>
 
       <div style="display:flex;align-items:center;justify-content:space-between;">
         <label style="font-size:13px;font-weight:bold;color:#333;">Icon Background Color</label>
-        <input type="color" id="s-icon" value="#16221b" oninput="applySettings()"
+        <input type="color" id="s-icon" value="#16232c" oninput="applySettings()"
           style="width:48px;height:32px;border:none;border-radius:6px;cursor:pointer;"/>
       </div>
 
       <div style="display:flex;align-items:center;justify-content:space-between;">
         <label style="font-size:13px;font-weight:bold;color:#333;">Game Label Color</label>
-        <input type="color" id="s-label" value="#eefdf1" oninput="applySettings()"
+        <input type="color" id="s-label" value="#eefbff" oninput="applySettings()"
           style="width:48px;height:32px;border:none;border-radius:6px;cursor:pointer;"/>
       </div>
 
       <div style="display:flex;align-items:center;justify-content:space-between;">
         <label style="font-size:13px;font-weight:bold;color:#333;">Search Bar Color</label>
-        <input type="color" id="s-search" value="#070b09" oninput="applySettings()"
+        <input type="color" id="s-search" value="#070b0f" oninput="applySettings()"
           style="width:48px;height:32px;border:none;border-radius:6px;cursor:pointer;"/>
       </div>
 
@@ -1723,11 +1723,11 @@ if (isFolderGrid) {
           <div style="font-size:11px;color:#888;">Replaces background color</div>
         </div>
         <div style="display:flex;gap:6px;align-items:center;">
-          <label style="background:#39ff14;color:#071008;padding:6px 10px;border-radius:6px;font-size:12px;cursor:pointer;font-weight:bold;">
+          <label style="background:#8fe7ff;color:#061018;padding:6px 10px;border-radius:6px;font-size:12px;cursor:pointer;font-weight:bold;">
             Upload
             <input type="file" id="s-bgimg" accept="image/*" onchange="uploadBgImage()" style="display:none;"/>
           </label>
-          <button onclick="clearBgImage()" style="background:#16221b;color:#eefdf1;border:1px solid rgba(57,255,20,0.32);padding:6px 10px;border-radius:6px;font-size:12px;cursor:pointer;">Clear</button>
+          <button onclick="clearBgImage()" style="background:#16232c;color:#eefbff;border:1px solid rgba(143,231,255,0.32);padding:6px 10px;border-radius:6px;font-size:12px;cursor:pointer;">Clear</button>
         </div>
       </div>
 
@@ -1737,7 +1737,7 @@ if (isFolderGrid) {
           <div style="font-size:11px;color:#888;">Hides URL from address bar</div>
         </div>
         <div id="toggle-track" onclick="toggleAblank()"
-          style="position:relative;display:inline-block;width:44px;height:24px;background:#233129;border-radius:24px;cursor:pointer;transition:.3s;">
+          style="position:relative;display:inline-block;width:44px;height:24px;background:#23313a;border-radius:24px;cursor:pointer;transition:.3s;">
           <div id="toggle-knob" style="position:absolute;height:18px;width:18px;left:3px;top:3px;background:white;border-radius:50%;transition:.3s;"></div>
         </div>
       </div>
@@ -1748,7 +1748,7 @@ if (isFolderGrid) {
           <div style="font-size:11px;color:#888;">Censors common swear words in global chat</div>
         </div>
         <div id="profanity-toggle-track" onclick="toggleProfanityFilter()"
-          style="position:relative;display:inline-block;width:44px;height:24px;background:#233129;border-radius:24px;cursor:pointer;transition:.3s;">
+          style="position:relative;display:inline-block;width:44px;height:24px;background:#23313a;border-radius:24px;cursor:pointer;transition:.3s;">
           <div id="profanity-toggle-knob" style="position:absolute;height:18px;width:18px;left:3px;top:3px;background:white;border-radius:50%;transition:.3s;"></div>
         </div>
       </div>
@@ -1756,7 +1756,7 @@ if (isFolderGrid) {
     </div>
     <hr style="margin-top:16px;"/>
     <button onclick="resetSettings()"
-      style="width:100%;padding:9px;background:#16221b;color:#eefdf1;border:1px solid rgba(57,255,20,0.32);border-radius:8px;font-size:13px;cursor:pointer;font-weight:bold;margin-top:8px;">
+      style="width:100%;padding:9px;background:#16232c;color:#eefbff;border:1px solid rgba(143,231,255,0.32);border-radius:8px;font-size:13px;cursor:pointer;font-weight:bold;margin-top:8px;">
       Reset to Default
     </button>
   </div>
@@ -1769,9 +1769,9 @@ if (isFolderGrid) {
   <div class="popup-box" style="max-width:420px;">
     <div style="font-size:48px;margin-bottom:8px;">&#127881;</div>
     <h2 style="font-size:24px;margin-bottom:12px;">w 1k visits</h2>
-    <p style="font-size:15px;color:#8fa99a;margin-bottom:20px;">also i added a profanity filter (by david) in settings, you can enable it if you want to </p>
+    <p style="font-size:15px;color:#9bb7c3;margin-bottom:20px;">also i added a profanity filter (by david) in settings, you can enable it if you want to </p>
     <button onclick="document.getElementById('announcementPopup').classList.remove('show')"
-      style="width:100%;padding:10px;background:#39ff14;color:#071008;border:none;border-radius:8px;font-size:15px;cursor:pointer;font-weight:bold;">
+      style="width:100%;padding:10px;background:#8fe7ff;color:#061018;border:none;border-radius:8px;font-size:15px;cursor:pointer;font-weight:bold;">
       Close
     </button>
   </div>
@@ -1779,8 +1779,8 @@ if (isFolderGrid) {
 
 <!-- TSAI WINDOW -->
 <div id="aiWindow" style="display:none;position:fixed;bottom:60px;right:360px;width:320px;
-  background:#101914;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.45);
-  border:1px solid rgba(57,255,20,0.32);z-index:10000;flex-direction:column;overflow:hidden;">
+  background:#101820;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.45);
+  border:1px solid rgba(143,231,255,0.32);z-index:10000;flex-direction:column;overflow:hidden;">
   <div style="background:linear-gradient(180deg,#1a1a2e,#16213e);color:#fff;padding:12px 16px;
     display:flex;align-items:center;justify-content:space-between;border-radius:14px 14px 0 0;">
     <span style="font-weight:bold;font-size:15px;">&#129302; TSAI</span>
@@ -1788,16 +1788,16 @@ if (isFolderGrid) {
       style="background:none;border:none;color:#fff;font-size:18px;cursor:pointer;">&#x2715;</button>
   </div>
   <div id="aiMessages" style="overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px;height:300px;">
-    <div style="background:rgba(255,255,255,0.06);color:#eefdf1;padding:8px 12px;border-radius:12px;font-size:13px;max-width:240px;border:1px solid rgba(57,255,20,0.16);">
+    <div style="background:rgba(255,255,255,0.06);color:#eefbff;padding:8px 12px;border-radius:12px;font-size:13px;max-width:240px;border:1px solid rgba(143,231,255,0.16);">
       Hi! I'm TSAI, ToolSchool's AI. Ask me anything!
     </div>
   </div>
   <div style="padding:8px;border-top:1px solid #ddd;display:flex;gap:6px;">
     <input id="aiInput" type="text" placeholder="Ask HEP𒆙TSAI..."
-      style="flex:1;padding:7px 10px;border-radius:20px;border:1px solid rgba(57,255,20,0.32);font-size:13px;outline:none;"
+      style="flex:1;padding:7px 10px;border-radius:20px;border:1px solid rgba(143,231,255,0.32);font-size:13px;outline:none;"
       onkeydown="if(event.key==='Enter')sendAI()"/>
     <button onclick="sendAI()"
-      style="background:#39ff14;color:#071008;border:none;border-radius:20px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:bold;">
+      style="background:#8fe7ff;color:#061018;border:none;border-radius:20px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:bold;">
       Send
     </button>
   </div>
