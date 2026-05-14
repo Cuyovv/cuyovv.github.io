@@ -47,6 +47,7 @@
   .top-right-clock {
     display: flex; align-items: center; gap: 8px;
     font-size: 15px; font-weight: bold; color: #222;
+    white-space: nowrap;
   }
   .search-row {
     background: linear-gradient(180deg, #e8e8e8, #d8d8d8);
@@ -684,17 +685,7 @@
     <div class="top-icon" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLScjuLYhuMm_w5qZNgqPL2BrLbbHttpVFeIReIf0JTLOd2y5DA/viewform?usp=publish-editor','_blank')">&#9888;</div>
     <div class="top-icon" onclick="window.open('https://cash.app/$JayceThomson7','_blank')" style="background:#4cc9ff;color:#fff;font-size:16px;font-weight:bold;">$</div>
   </div>
-  <div class="top-right-clock">
-    <span style="font-size:11px;color:#4caf50;">&#9679;</span>
-    <span id="online-count" style="font-size:12px;color:#555;">0 online</span>
-    <span style="color:rgba(143,231,255,0.35);">|</span>
-    <span id="visit-count" style="font-size:12px;color:#555;">0 visits</span>
-    <span style="color:rgba(143,231,255,0.35);">|</span>
-    <span id="my-visits" style="font-size:12px;color:#555;">my visits: 0</span>
-    <span style="color:rgba(143,231,255,0.35);">|</span>
-    <span>&#128267;</span>
-    <span id="clock">12:00 PM</span>
-  </div>
+  <div></div>
 </div>
 
 <div class="search-row" style="position:relative;">
@@ -731,7 +722,20 @@
     <div class="home-circle" onclick="closeGame()"></div>
     <span id="status-text">Loading...</span>
   </div>
-  <div class="bottom-btn">Open &#9654;</div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div class="top-right-clock">
+      <span style="font-size:11px;color:#4caf50;">&#9679;</span>
+      <span id="online-count" style="font-size:12px;color:#555;">0 online</span>
+      <span style="color:rgba(143,231,255,0.35);">|</span>
+      <span id="visit-count" style="font-size:12px;color:#555;">0 visits</span>
+      <span style="color:rgba(143,231,255,0.35);">|</span>
+      <span id="my-visits" style="font-size:12px;color:#555;">my visits: 0</span>
+      <span style="color:rgba(143,231,255,0.35);">|</span>
+      <span>&#128267;</span>
+      <span id="clock">12:00 PM</span>
+    </div>
+    <div class="bottom-btn">Open &#9654;</div>
+  </div>
 </div>
 
 
