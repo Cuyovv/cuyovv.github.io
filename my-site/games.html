@@ -26,12 +26,29 @@
     height: 60px;
     flex-shrink: 0;
   }
-  .top-center {
+  .top-left-group {
     display: flex;
     align-items: center;
-    gap: 36px;
+    gap: 10px;
     flex: 1;
-    justify-content: center;
+    min-width: 0;
+  }
+  .top-search-bar {
+    flex: 1;
+    max-width: 380px;
+    position: relative;
+  }
+  .top-divider {
+    width: 1px;
+    height: 32px;
+    background: var(--neo-line-soft);
+    margin: 0 10px;
+  }
+  .top-icons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
   }
   .top-icon {
     width: 40px; height: 40px;
@@ -47,14 +64,6 @@
   .top-right-clock {
     display: flex; align-items: center; gap: 8px;
     font-size: 15px; font-weight: bold; color: #222;
-    white-space: nowrap;
-  }
-  .search-row {
-    background: linear-gradient(180deg, #e8e8e8, #d8d8d8);
-    padding: 5px 12px;
-    border-bottom: 1px solid #bbb;
-    display: flex; align-items: center;
-    height: 38px; flex-shrink: 0;
   }
   .search-row input {
     width: 100%; padding: 5px 12px;
@@ -342,7 +351,6 @@
   }
 
   .top-bar,
-  .search-row,
   .bottom-bar {
     background: linear-gradient(180deg, rgba(20,31,25,0.96), rgba(10,16,13,0.96)) !important;
     border-color: var(--neo-line-soft) !important;
@@ -352,11 +360,6 @@
 
   .top-bar {
     border-bottom: 1px solid var(--neo-line) !important;
-  }
-
-  .search-row {
-    border-bottom: 1px solid var(--neo-line-soft) !important;
-    padding: 7px 14px !important;
   }
 
   .bottom-bar {
@@ -670,33 +673,44 @@
 <body>
 
 <div class="top-bar">
-  <div></div>
-  <div class="top-center">
-    <div class="top-icon" onclick="showOwner()">&#11088;</div>
-    <div class="top-icon" onclick="openBible()">&#10013;</div>
-    <div class="top-icon" onclick="openSoundboard()">&#127925;</div>
-    <div class="top-icon" onclick="openBrowser()">&#127760;</div>
-    <div class="top-icon" onclick="openChat()">&#128101;</div>
-    <div class="top-icon" onclick="openSettings()">&#9881;&#65039;</div>
-    <div class="top-icon" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSfwUUnBPkc3PfjexfSQICEHXzGbpKe2VP6P8zuwc4s9kM0Gxg/viewform?usp=header','_blank')">&#10133;</div>
-    <div class="top-icon" onclick="window.open('https://discord.gg/ZUeXWHkA','_blank')"><img class="top-icon-img" src="OIP.png" alt="Discord"/></div>
-    <div class="top-icon" onclick="openAI()">&#129302;</div>
-    <div class="top-icon" onclick="openCommit()">&#128295;</div>
-    <div class="top-icon" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLScjuLYhuMm_w5qZNgqPL2BrLbbHttpVFeIReIf0JTLOd2y5DA/viewform?usp=publish-editor','_blank')">&#9888;</div>
-    <div class="top-icon" onclick="window.open('https://cash.app/$JayceThomson7','_blank')" style="background:#4cc9ff;color:#fff;font-size:16px;font-weight:bold;">$</div>
+  <div class="top-left-group">
+    <div class="top-search-bar">
+      <input type="text" id="search" placeholder="&#128269;  Search games..." 
+        oninput="filterGames()" 
+        onkeydown="handleSearchKey(event)"
+        autocomplete="off"
+        style="width:100%;padding:5px 12px;border-radius:999px;border:1px solid rgba(143,231,255,0.32);background:#070b0f;font-size:13px;outline:none;color:#eefbff;"/>
+      <div id="suggestions" style="display:none;position:absolute;top:100%;left:0;right:0;background:#090e0b;
+        border:1px solid rgba(143,231,255,0.32);border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,0.35);
+        z-index:200;max-height:220px;overflow-y:auto;margin-top:2px;"></div>
+    </div>
+    <div class="top-divider"></div>
+    <div class="top-icons">
+      <div class="top-icon" onclick="showOwner()">&#11088;</div>
+      <div class="top-icon" onclick="openBible()">&#10013;</div>
+      <div class="top-icon" onclick="openSoundboard()">&#127925;</div>
+      <div class="top-icon" onclick="openBrowser()">&#127760;</div>
+      <div class="top-icon" onclick="openChat()">&#128101;</div>
+      <div class="top-icon" onclick="openSettings()">&#9881;&#65039;</div>
+      <div class="top-icon" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSfwUUnBPkc3PfjexfSQICEHXzGbpKe2VP6P8zuwc4s9kM0Gxg/viewform?usp=header','_blank')">&#10133;</div>
+      <div class="top-icon" onclick="window.open('https://discord.gg/ZUeXWHkA','_blank')"><img class="top-icon-img" src="OIP.png" alt="Discord"/></div>
+      <div class="top-icon" onclick="openAI()">&#129302;</div>
+      <div class="top-icon" onclick="openCommit()">&#128295;</div>
+      <div class="top-icon" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLScjuLYhuMm_w5qZNgqPL2BrLbbHttpVFeIReIf0JTLOd2y5DA/viewform?usp=publish-editor','_blank')">&#9888;</div>
+      <div class="top-icon" onclick="window.open('https://cash.app/$JayceThomson7','_blank')" style="background:#4cc9ff;color:#fff;font-size:16px;font-weight:bold;">$</div>
+    </div>
   </div>
-  <div></div>
-</div>
-
-<div class="search-row" style="position:relative;">
-  <input type="text" id="search" placeholder="&#128269;  Search games..." 
-    oninput="filterGames()" 
-    onkeydown="handleSearchKey(event)"
-    autocomplete="off"
-    style="width:100%;padding:5px 12px;border-radius:999px;border:1px solid rgba(143,231,255,0.32);background:#070b0f;font-size:13px;outline:none;color:#eefbff;"/>
-  <div id="suggestions" style="display:none;position:absolute;top:100%;left:12px;right:12px;background:#090e0b;
-    border:1px solid rgba(143,231,255,0.32);border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,0.35);
-    z-index:200;max-height:220px;overflow-y:auto;margin-top:2px;"></div>
+  <div class="top-right-clock">
+    <span style="font-size:11px;color:#4caf50;">&#9679;</span>
+    <span id="online-count" style="font-size:12px;color:#555;">0 online</span>
+    <span style="color:rgba(143,231,255,0.35);">|</span>
+    <span id="visit-count" style="font-size:12px;color:#555;">0 visits</span>
+    <span style="color:rgba(143,231,255,0.35);">|</span>
+    <span id="my-visits" style="font-size:12px;color:#555;">my visits: 0</span>
+    <span style="color:rgba(143,231,255,0.35);">|</span>
+    <span>&#128267;</span>
+    <span id="clock">12:00 PM</span>
+  </div>
 </div>
 
 <div class="main">
@@ -722,20 +736,7 @@
     <div class="home-circle" onclick="closeGame()"></div>
     <span id="status-text">Loading...</span>
   </div>
-  <div style="display:flex;align-items:center;gap:12px;">
-    <div class="top-right-clock">
-      <span style="font-size:11px;color:#4caf50;">&#9679;</span>
-      <span id="online-count" style="font-size:12px;color:#555;">0 online</span>
-      <span style="color:rgba(143,231,255,0.35);">|</span>
-      <span id="visit-count" style="font-size:12px;color:#555;">0 visits</span>
-      <span style="color:rgba(143,231,255,0.35);">|</span>
-      <span id="my-visits" style="font-size:12px;color:#555;">my visits: 0</span>
-      <span style="color:rgba(143,231,255,0.35);">|</span>
-      <span>&#128267;</span>
-      <span id="clock">12:00 PM</span>
-    </div>
-    <div class="bottom-btn">Open &#9654;</div>
-  </div>
+  <div class="bottom-btn">Open &#9654;</div>
 </div>
 
 
@@ -743,12 +744,12 @@
   <div class="popup-box">
     <button class="popup-close" onclick="hideOwner()">&#x2715;</button>
     <div class="star">&#11088;</div>
-    <h2>Owner: he𒆙ogi</h2>
+    <h2>Owner: Cuyov</h2>
     <hr/>
     <p><span class="helper">Helpers</span></p>
     <p>
       &#128176; <span class="helper">Meeksters</span> &mdash; Funder<br/>
-      &#128176; <span class="helper">ELi Shwartzuhrobertword </span> &mdash; promoter<br/>
+      &#128176; <span class="helper">ELi Shwartz </span> &mdash; Promoter<br/>
       &#128161; <span class="helper">Bobolpski</span> &mdash; Idea<br/>
       &#127968; <span class="helper">hudthebud</span> &mdash; Home page idea<br/>
       &#127918; <span class="helper">Snubby</span> &mdash; Help with games<br/>
@@ -766,7 +767,7 @@
     <div class="notice-text">NOTICE TO SCHOOLS AND SCHOOL BLOCKERS
 
 -THIS IS A WEBSITE FOR TALKING OUT AND FREE SPEECH
--BLOCKING THIS WEBSITE IS A CASE OF RESTRICTED SPEECH AND DEFIMATION
+-BLOCKING THIS WEBSITE IS A CASE OF RESTRICTED SPEECH AND DEFAMATION
 -BLOCKING COULD LEAD TO A LAWSUIT 
 
 REACH OUT FOR QUESTIONS yogi870450@gmail.com</div>
@@ -929,7 +930,7 @@ REACH OUT FOR QUESTIONS yogi870450@gmail.com</div>
   }
 
   function calcSizes() {
-    const mainH = window.innerHeight - 60 - 38 - 44;
+    const mainH = window.innerHeight - 60 - 44;
     const viewport = document.querySelector('.grid-viewport');
     const gridTrack = document.querySelector('.grid-track');
     const isFolderGrid = currentFolder === 'folders';
@@ -1400,7 +1401,7 @@ if (isFolderGrid) {
   }
 
   document.addEventListener('click', e => {
-    if (!e.target.closest('.search-row'))
+    if (!e.target.closest('.top-search-bar'))
       document.getElementById('suggestions').style.display = 'none';
   });
 
@@ -1516,7 +1517,7 @@ if (isFolderGrid) {
     document.querySelectorAll('.top-icon').forEach(el => {
       el.style.background = s.icon;
     });
-    document.querySelectorAll('.game-label').forEach(el => {
+    document.querySelectorAll('.game-label, .top-right-clock, .top-right-clock span').forEach(el => {
       el.style.color = s.label;
     });
     const si = document.getElementById('search');
@@ -1953,7 +1954,7 @@ if (isFolderGrid) {
 </div>
 
 <!-- TSAI WINDOW -->
-<div id="aiWindow" style="display:none;position:fixed;bottom:60px;right:360px;width:320px;
+<div id="aiWindow" class="draggable" style="display:none;bottom:60px;right:360px;width:320px;
   background:#101820;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.45);
   border:1px solid rgba(143,231,255,0.32);z-index:10000;flex-direction:column;overflow:hidden;">
   <div style="background:linear-gradient(180deg,#1a1a2e,#16213e);color:#fff;padding:12px 16px;
