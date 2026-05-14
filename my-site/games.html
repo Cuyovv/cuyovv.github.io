@@ -14,7 +14,7 @@
     display: flex;
     flex-direction: column;
     user-select: none;
-    cursor: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDEwMCAxMDAiPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZzEiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMDA1MkNDIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMDAzQTk5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHBhdGggZD0iTTcwIDIwIEM3MCAyMCA4NSAxMCA4NSAzMCBDODUgNDUgNzAgNTAgNTUgNTAgQzQwIDUwIDMwIDU1IDMwIDY1IEMzMCA3NSA0NSA4NSA2MCA4NSBDODAgODUgOTAgNzUgOTAgNjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0idXJsKCNnMSkiIHN0cm9rZS13aWR0aD0iMTQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0zNSAzNSBDMzUgMzUgMjAgMjUgMjAgNDUgQzIwIDYwIDM1IDY1IDUwIDY1IEM2NSA2NSA3NSA2MCA3NSA1MCBDNzUgNDAgNjAgMzUgNDUgMzUgQzMwIDM1IDIwIDI4IDIwIDE4IiBmaWxsPSJub25lIiBzdHJva2U9IiM5OTk5OTkiIHN0cm9rZS13aWR0aD0iMTQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==') 15 15, auto;
+    cursor: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImcxIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzAwNTJDQyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzAwM0E5OSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxwYXRoIGQ9Ik0yOCA4IFExOCA1IDEyIDEwIFE4IDE0IDEwIDE4IFExMiAyMCAxOCAxOSBRMjQgMTggMjYgMjAgUTI4IDIyIDI2IDI2IFEyNCAzMCAxOCAzMiBRMTAgMzUgOCAzMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ1cmwoI2cxKSIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMjYgMTAgUTIwIDcgMTQgMTIgUTEwIDE2IDEyIDIwIFExNCAyMiAyMCAyMSBRMjUgMjAgMjcgMjIgUTI5IDI0IDI3IDI4IFEyNSAzMiAyMCAzNCBRMTIgMzcgMTAgMzQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzg4ODg4OCIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIG9wYWNpdHk9IjAuNyIvPjwvc3ZnPg==') 20 20, auto;
   }
   .top-bar {
     background: linear-gradient(180deg, #f0f0f0 0%, #d8d8d8 100%);
@@ -40,7 +40,7 @@
     font-size: 22px;
     background: #e8e8e8;
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    cursor: pointer;
+    cursor: inherit;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .top-icon:hover { transform: scale(1.1); box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
@@ -76,7 +76,7 @@
     z-index: 10; background: rgba(255,255,255,0.5);
     border: none; border-radius: 50%;
     width: 36px; height: 36px; font-size: 18px;
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    cursor: inherit; display: flex; align-items: center; justify-content: center;
     color: #555; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     transition: all 0.2s ease;
   }
@@ -95,7 +95,7 @@
   .game-card {
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    cursor: pointer; padding: 6px 4px 4px; gap: 5px;
+    cursor: inherit; padding: 6px 4px 4px; gap: 5px;
     transition: opacity 0.15s ease;
   }
   .game-card:hover { opacity: 0.95; }
@@ -178,7 +178,7 @@
   .favorite-btn {
     position: absolute; top: 4px; right: 4px; z-index: 3;
     width: 24px; height: 24px; border: none; border-radius: 50%;
-    background: rgba(0,0,0,0.5); color: #fff; cursor: pointer;
+    background: rgba(0,0,0,0.5); color: #fff; cursor: inherit;
     font-size: 14px; line-height: 24px; text-align: center;
     transition: all 0.15s ease;
   }
@@ -208,7 +208,7 @@
   .bottom-btn {
     font-size: 15px; color: #333; font-weight: bold;
     display: flex; align-items: center; gap: 6px;
-    cursor: pointer; padding: 4px 14px; border-radius: 6px;
+    cursor: inherit; padding: 4px 14px; border-radius: 6px;
     background: rgba(255,255,255,0.5); border: 1px solid #ccc;
     transition: all 0.2s ease;
   }
@@ -217,7 +217,7 @@
     width: 30px; height: 30px; border-radius: 50%;
     background: radial-gradient(circle at 40% 35%, #eee, #999);
     border: 2px solid #777; box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    cursor: pointer;
+    cursor: inherit;
     transition: all 0.2s ease;
   }
   #status-text { font-size: 11px; color: #888; }
