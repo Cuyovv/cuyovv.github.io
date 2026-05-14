@@ -65,6 +65,11 @@
     display: flex; align-items: center; gap: 8px;
     font-size: 15px; font-weight: bold; color: #222;
   }
+  .window-header {
+    cursor: grab;
+    user-select: none;
+    touch-action: none;
+  }
   .search-row input {
     width: 100%; padding: 5px 12px;
     border-radius: 999px; border: 1px solid #bbb;
@@ -810,7 +815,7 @@ REACH OUT FOR QUESTIONS yogi870450@gmail.com</div>
 <div id="chatWindow" style="display:none;position:fixed;bottom:60px;right:20px;width:320px;
   background:#101820;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.45);
   border:1px solid rgba(143,231,255,0.32);z-index:10000;flex-direction:column;overflow:hidden;">
-  <div style="background:linear-gradient(135deg,#0b2a3d,#111c24 58%,#8fe7ff);color:#fff;padding:12px 16px;
+  <div id="chatHeader" class="window-header" style="background:linear-gradient(135deg,#0b2a3d,#111c24 58%,#8fe7ff);color:#fff;padding:12px 16px;
     display:flex;align-items:center;justify-content:space-between;border-radius:14px 14px 0 0;">
     <span style="font-weight:bold;font-size:15px;">&#127760; Hep𒆙ObalChat</span>
     <button onclick="document.getElementById('chatWindow').style.display='none'"
@@ -1957,7 +1962,7 @@ if (isFolderGrid) {
 <div id="aiWindow" class="draggable" style="display:none;bottom:60px;right:360px;width:320px;
   background:#101820;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.45);
   border:1px solid rgba(143,231,255,0.32);z-index:10000;flex-direction:column;overflow:hidden;">
-  <div style="background:linear-gradient(180deg,#1a1a2e,#16213e);color:#fff;padding:12px 16px;
+  <div id="aiHeader" class="window-header" style="background:linear-gradient(180deg,#1a1a2e,#16213e);color:#fff;padding:12px 16px;
     display:flex;align-items:center;justify-content:space-between;border-radius:14px 14px 0 0;">
     <span style="font-weight:bold;font-size:15px;">&#129302; TSAI</span>
     <button onclick="document.getElementById('aiWindow').style.display='none'"
