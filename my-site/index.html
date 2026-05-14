@@ -15,17 +15,73 @@
     <script src="https://kit.fontawesome.com/0224058aa7.js" crossorigin="anonymous"></script>
     <style>
         body {
-            background: url(https://cdn.schooltool.com/global/auth/1.6.1/images/st-icon.svg) no-repeat -50px,
-                        linear-gradient(139.66deg, #0066BA 18.59%, #003764 65.46%);
+            background:
+                        radial-gradient(circle at 50% -20%, rgba(57,255,20,0.2), transparent 34%),
+                        linear-gradient(145deg, #050806 0%, #0a100d 48%, #111827 100%);
             background-size: contain;
             font-family: Roboto, Arial, sans-serif;
             display: flex;
             align-items: center;
             padding-top: 40px;
             padding-bottom: 40px;
-            color: #232323;
+            color: #eefdf1;
             line-height: 1.75rem;
             min-height: 100vh;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(rgba(57,255,20,0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(57,255,20,0.025) 1px, transparent 1px);
+            background-size: 48px 48px;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,0.82), transparent 78%);
+        }
+        .signin {
+            background: linear-gradient(180deg, rgba(18,28,22,0.96), rgba(8,13,10,0.96));
+            border: 1px solid rgba(57,255,20,0.32);
+            border-radius: 18px;
+            box-shadow: 0 24px 70px rgba(0,0,0,0.62), 0 0 34px rgba(57,255,20,0.16);
+            overflow: hidden;
+            backdrop-filter: blur(16px);
+        }
+        .form-signin {
+            padding: 2rem;
+        }
+        .form-control {
+            background: #070b09 !important;
+            color: #eefdf1 !important;
+            border: 1px solid rgba(57,255,20,0.32) !important;
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.035) inset, 0 0 22px rgba(57,255,20,0.06) !important;
+        }
+        .form-control:focus {
+            border-color: #39ff14 !important;
+            box-shadow: 0 0 0 3px rgba(57,255,20,0.16), 0 0 24px rgba(57,255,20,0.14) !important;
+        }
+        .form-floating > label,
+        .password-link a,
+        .news a,
+        .signin-footer,
+        .signin-footer a {
+            color: #8fa99a !important;
+        }
+        .btn-primary,
+        .ssoBtn {
+            background: linear-gradient(145deg, #39ff14, #00d632) !important;
+            color: #071008 !important;
+            border: 1px solid rgba(191,255,201,0.7) !important;
+            border-radius: 12px !important;
+            box-shadow: 0 0 24px rgba(57,255,20,0.28) !important;
+            font-weight: 700;
+        }
+        .ssoBtn p {
+            color: #071008 !important;
+            font-weight: 700;
+        }
+        .divider p {
+            color: #8fa99a !important;
         }
         .banner-panel {
             display: flex;
@@ -33,9 +89,10 @@
             align-items: center;
             justify-content: center;
             padding: 2rem;
-            border-left: 1px solid #dee2e6;
+            border-left: 1px solid rgba(57,255,20,0.2);
             min-height: 400px;
             gap: 16px;
+            background: radial-gradient(circle at 50% 28%, rgba(57,255,20,0.14), transparent 52%);
         }
         .banner-panel img {
             max-width: 180px;
@@ -44,13 +101,14 @@
         .banner-panel h2 {
             font-size: 1.4rem;
             font-weight: 700;
-            color: #1a3a6e;
+            color: #39ff14;
             letter-spacing: 2px;
             margin: 0;
+            text-shadow: 0 0 16px rgba(57,255,20,0.36);
         }
         .banner-panel p {
             font-size: 13px;
-            color: #888;
+            color: #8fa99a;
             margin: 0;
         }
         #game-frame {
