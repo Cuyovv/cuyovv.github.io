@@ -614,6 +614,56 @@
     background: transparent !important;
     border: 1px solid var(--neo-line) !important;
   }
+
+  #schoolNoticePopup {
+    z-index: 10003;
+  }
+
+  .notice-box {
+    max-width: 560px;
+    text-align: center;
+  }
+
+  .notice-warning {
+    font-size: 58px;
+    line-height: 1;
+    margin-bottom: 14px;
+    filter: drop-shadow(0 0 18px rgba(143,231,255,0.32));
+  }
+
+  .notice-text {
+    white-space: pre-line;
+    text-align: center;
+    color: var(--neo-text);
+    font-size: 15px;
+    line-height: 1.7;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  .hold-accept-btn {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  .hold-accept-progress {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 0%;
+    background: linear-gradient(90deg, rgba(143,231,255,0.32), rgba(76,201,255,0.72));
+    transition: width 0.08s linear;
+    pointer-events: none;
+  }
+
+  .hold-accept-label {
+    position: relative;
+    z-index: 1;
+  }
 </style>
 </head>
 <body>
@@ -706,6 +756,23 @@
   </div>
 </div>
 
+<div class="popup-overlay" id="schoolNoticePopup">
+  <div class="popup-box notice-box">
+    <div class="notice-warning">&#9888;&#65039;</div>
+    <div class="notice-text">NOTICE TO SCHOOLS AND SCHOOL BLOCKERS
+
+-THIS IS A WEBSITE FOR TALKING OUT AND FREE SPEECH
+-BLOCKING THIS WEBSITE IS A CASE OF RESTRICTED SPEECH AND DEFIMATION
+-BLOCKING COULD LEAD TO A LAWSUIT 
+
+REACH OUT FOR QUESTIONS yogi870450@gmail.com</div>
+    <button class="hold-accept-btn" id="schoolNoticeAccept" type="button">
+      <span class="hold-accept-progress" id="schoolNoticeProgress"></span>
+      <span class="hold-accept-label" id="schoolNoticeLabel">Hold to accept</span>
+    </button>
+  </div>
+</div>
+
 <div class="popup-overlay" id="biblePopup" onclick="hideBible(event)">
   <div class="popup-box">
     <button class="popup-close" onclick="hideBible()">&#x2715;</button>
@@ -757,6 +824,64 @@
 </div>
 
 <script>
+  const SCHOOL_NOTICE_KEY = 'schoolNoticeAcceptedV1';
+
+  function initSchoolNotice() {
+    const popup = document.getElementById('schoolNoticePopup');
+    const button = document.getElementById('schoolNoticeAccept');
+    const progress = document.getElementById('schoolNoticeProgress');
+    const label = document.getElementById('schoolNoticeLabel');
+    if (!popup || !button || !progress || !label) return;
+
+    if (localStorage.getItem(SCHOOL_NOTICE_KEY) === 'true') return;
+
+    popup.classList.add('show');
+
+    let holdStart = 0;
+    let rafId = 0;
+    const holdMs = 3000;
+
+    function resetHold() {
+      holdStart = 0;
+      cancelAnimationFrame(rafId);
+      progress.style.width = '0%';
+      label.textContent = 'Hold to accept';
+    }
+
+    function acceptNotice() {
+      localStorage.setItem(SCHOOL_NOTICE_KEY, 'true');
+      popup.classList.remove('show');
+      resetHold();
+    }
+
+    function tick(now) {
+      if (!holdStart) return;
+      const elapsed = now - holdStart;
+      const pct = Math.min(100, (elapsed / holdMs) * 100);
+      progress.style.width = pct + '%';
+      label.textContent = 'Keep holding... ' + Math.ceil((holdMs - elapsed) / 1000) + 's';
+      if (elapsed >= holdMs) {
+        acceptNotice();
+        return;
+      }
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function startHold(e) {
+      e.preventDefault();
+      if (holdStart) return;
+      holdStart = performance.now();
+      rafId = requestAnimationFrame(tick);
+    }
+
+    button.addEventListener('pointerdown', startHold);
+    button.addEventListener('pointerup', resetHold);
+    button.addEventListener('pointerleave', resetHold);
+    button.addEventListener('pointercancel', resetHold);
+  }
+
+  document.addEventListener('DOMContentLoaded', initSchoolNotice);
+
   function updateClock() {
     const now = new Date();
     let h = now.getHours(), m = now.getMinutes();
