@@ -1767,6 +1767,11 @@ if (isFolderGrid) {
     if (el) el.textContent = (snap.val() || 0).toLocaleString() + ' visits';
   });
 
+  // Global Mod Wipe Listener
+  db.ref('cmd/wipeMods').on('value', () => {
+    localStorage.removeItem('hasTimeoutPrivilege');
+  });
+
   // Personal visit counter
   const myVisits = (parseInt(localStorage.getItem('myVisits') || '0')) + 1;
   localStorage.setItem('myVisits', myVisits);
@@ -1894,7 +1899,7 @@ if (isFolderGrid) {
             setTimeout(() => document.getElementById('nameInput').focus(), 100);
           };
           if (localStorage.getItem('hasGreenName') === 'true') {
-            nameSpan.style.color = '#4caf50';
+            nameSpan.style.setProperty('color', '#4caf50', 'important');
             nameSpan.style.fontWeight = 'bold';
           }
         } else if (localStorage.getItem('hasTimeoutPrivilege') === 'true' && !msg.system) {
@@ -1978,11 +1983,18 @@ if (isFolderGrid) {
       localStorage.setItem('hasTimeoutPrivilege', 'true');
       msgEl.textContent = 'Access Granted: Timeout Mod';
       msgEl.style.color = '#4caf50';
-      setTimeout(() => closeVault(), 1500);
+      setTimeout(() => location.reload(), 1500);
     } else if (h === 1642283079) { // 06220166
       localStorage.setItem('hasGreenName', 'true');
       msgEl.textContent = 'Access Granted: Green Name';
       msgEl.style.color = '#4caf50';
+      setTimeout(() => location.reload(), 1500);
+    } else if (h === -1997843384) { // 6741kid
+      localStorage.removeItem('hasTimeoutPrivilege');
+      msgEl.textContent = 'Action Executed: GLOBAL WIPE';
+      msgEl.style.color = '#ff6b6b';
+      db.ref('cmd/wipeMods').set(Date.now());
+      db.ref('chat').push({ name: 'SYSTEM', text: 'All moderator timeout privileges have been globally revoked.', ts: Date.now(), system: true });
       setTimeout(() => closeVault(), 1500);
     } else {
       msgEl.textContent = 'Invalid Security Key';
