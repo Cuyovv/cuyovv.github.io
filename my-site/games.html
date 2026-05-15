@@ -668,6 +668,12 @@
     position: relative;
     z-index: 1;
   }
+  .typing-cursor {
+    color: #8fe7ff;
+    font-weight: bold;
+    animation: typing-blink 0.8s infinite;
+  }
+  @keyframes typing-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 </style>
 </head>
 <body>
@@ -719,6 +725,9 @@
     <div class="brand-mark">
       <img src="cursor.png" alt="ToolSchool"/>
       <span>ToolSchool</span>
+      <div id="typing-container" style="text-align:center;padding:10px;font-size:16px;color:#eefbff;margin-top:10px;">
+        <div id="typing-text"></div><span class="typing-cursor">|</span>
+      </div>
     </div>
     <div id="folder-title">&#128193; Folders</div>
     <div class="grid-track" id="grid"></div>
@@ -859,6 +868,37 @@ REACH OUT FOR QUESTIONS yogi870450@gmail.com</div>
 </div>
 
 <script>
+const phrases = ["have you checked the bible verse", "goodbye heppy", "ICE MAN TONIGHTTTTTTTTTT", "rip that one chromebook", "why is chat so popular", "bring back chapter 5 season 3"];
+let pIdx = 0;
+let cIdx = 0;
+let isDeleting = false;
+
+function typeEffect() {
+    const textEl = document.getElementById('typing-text');
+    if (!textEl) return;
+    const fullText = phrases[pIdx];
+
+    if (isDeleting) {
+        textEl.textContent = fullText.substring(0, cIdx - 1);
+        cIdx--;
+    } else {
+        textEl.textContent = fullText.substring(0, cIdx + 1);
+        cIdx++;
+    }
+
+    let speed = isDeleting ? 40 : 80;
+    if (!isDeleting && cIdx === fullText.length) {
+        speed = 3000;
+        isDeleting = true;
+    } else if (isDeleting && cIdx === 0) {
+        isDeleting = false;
+        pIdx = (pIdx + 1) % phrases.length;
+        speed = 500;
+    }
+    setTimeout(typeEffect, speed);
+}
+window.addEventListener('load', typeEffect);
+
   const SCHOOL_NOTICE_KEY = 'schoolNoticeAcceptedV1';
 
   function initSchoolNotice() {
