@@ -2005,6 +2005,38 @@ if (isFolderGrid) {
     closeTimeout();
   }
 
+  // Peak Update Vote Logic
+  window.castVote = function(choice) {
+    if (localStorage.getItem('votedPeakUpdate')) return;
+    db.ref('votes/peakUpdate/' + choice).transaction(c => (c || 0) + 1);
+    localStorage.setItem('votedPeakUpdate', choice);
+    displayVoteResults();
+  };
+
+  function displayVoteResults() {
+    const btnContainer = document.getElementById('vote-buttons');
+    const resContainer = document.getElementById('vote-results');
+    if (btnContainer) btnContainer.style.display = 'none';
+    if (resContainer) resContainer.style.display = 'flex';
+
+    db.ref('votes/peakUpdate').on('value', snap => {
+      const data = snap.val() || { yes: 0, no: 0 };
+      const total = (data.yes || 0) + (data.no || 0);
+      const yesPct = total > 0 ? Math.round((data.yes || 0) / total * 100) : 50;
+      const noPct = 100 - yesPct;
+      document.getElementById('yes-pct').textContent = yesPct;
+      document.getElementById('no-pct').textContent = noPct;
+      document.getElementById('yes-bar').style.width = yesPct + '%';
+      document.getElementById('no-bar').style.width = noPct + '%';
+    });
+  }
+
+  if (localStorage.getItem('votedPeakUpdate')) {
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(displayVoteResults, 500);
+    });
+  }
+
   makeDraggable('chatWindow', 'chatHeader');
 </script>
 
@@ -2104,6 +2136,23 @@ if (isFolderGrid) {
     -ADDED SOME ADMIN STUFF (THATS WHAT VAULT IS)
   -NEW AND IMPROVED UI!!! (ALONG WITH CURSOR)
 -SOME OTHER SMALL STUFF</p>
+    <div id="vote-container" style="margin-bottom: 20px; padding: 12px; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px solid var(--neo-line-soft);">
+      <h3 style="font-size: 16px; margin-bottom: 10px; color: var(--neo-text);">Peak Update?</h3>
+      <div id="vote-buttons" style="display: flex; gap: 10px; justify-content: center;">
+        <button onclick="castVote('yes')" style="background: #4caf50 !important; color: white !important; border: none !important; padding: 8px 24px !important; border-radius: 8px !important; cursor: pointer !important; font-weight: bold !important; width: auto !important;">Yes</button>
+        <button onclick="castVote('no')" style="background: #f44336 !important; color: white !important; border: none !important; padding: 8px 24px !important; border-radius: 8px !important; cursor: pointer !important; font-weight: bold !important; width: auto !important;">No</button>
+      </div>
+      <div id="vote-results" style="display: none; flex-direction: column; gap: 6px;">
+        <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold;">
+          <span style="color: #4caf50;">Yes: <span id="yes-pct">0</span>%</span>
+          <span style="color: #ff6b6b;">No: <span id="no-pct">0</span>%</span>
+        </div>
+        <div style="height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden; display: flex; border: 1px solid rgba(143,231,255,0.1);">
+          <div id="yes-bar" style="height: 100%; background: #4caf50; width: 0%; transition: width 0.5s ease;"></div>
+          <div id="no-bar" style="height: 100%; background: #f44336; width: 0%; transition: width 0.5s ease;"></div>
+        </div>
+      </div>
+    </div>
     <button onclick="document.getElementById('announcementPopup').classList.remove('show')"
       style="width:100%;padding:10px;background:#8fe7ff;color:#061018;border:none;border-radius:8px;font-size:15px;cursor:pointer;font-weight:bold;">
       Close
