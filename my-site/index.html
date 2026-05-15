@@ -53,12 +53,6 @@
             color: #888;
             margin: 0;
         }
-        .typing-cursor {
-            color: #1a3a6e;
-            font-weight: bold;
-            animation: typing-blink 0.8s infinite;
-        }
-        @keyframes typing-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
         #game-frame {
             display: none;
             position: fixed;
@@ -117,44 +111,11 @@
                 <span>SchoolTool</span><sup>&reg;</sup> Version 23.3-03<br/>
                 &copy; 2026 Mindex
                 &bull; <a href="https://www.mindex.com/privacy-policy" target="_blank">Privacy Policy</a>
-                <h2>ToolSchool</h2>
-                <div id="typing-text"></div><span class="typing-cursor">|</span>
                 &bull; <a href="https://www.mindex.com/terms-and-conditions" target="_blank">Terms &amp; Conditions</a>
             </p>
         </footer>
     </main>
     <script>
-        const phrases = ["have you checked the bible verse", "goodbye heppy", "ICE MAN TONIGHTTTTTTTTTT", "rip that one chromebook", "why is chat so popular", "bring back chapter 5 season 3"];
-        let pIdx = 0;
-        let cIdx = 0;
-        let isDeleting = false;
-
-        function typeEffect() {
-            const textEl = document.getElementById('typing-text');
-            if (!textEl) return;
-            const fullText = phrases[pIdx];
-
-            if (isDeleting) {
-                textEl.textContent = fullText.substring(0, cIdx - 1);
-                cIdx--;
-            } else {
-                textEl.textContent = fullText.substring(0, cIdx + 1);
-                cIdx++;
-            }
-
-            let speed = isDeleting ? 40 : 80;
-            if (!isDeleting && cIdx === fullText.length) {
-                speed = 3000;
-                isDeleting = true;
-            } else if (isDeleting && cIdx === 0) {
-                isDeleting = false;
-                pIdx = (pIdx + 1) % phrases.length;
-                speed = 500;
-            }
-            setTimeout(typeEffect, speed);
-        }
-        window.addEventListener('load', typeEffect);
-
         function goToGames() {
             document.querySelector('main').style.display = 'none';
             document.body.style.background = '#fff';
