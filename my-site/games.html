@@ -408,7 +408,6 @@
 
   #search,
   #msgInput,
-  #aiInput,
   #nameInput {
     background: #070b0f !important;
     color: var(--neo-text) !important;
@@ -584,23 +583,19 @@
   }
 
   #chatWindow > div:first-child,
-  #aiWindow > div:first-child {
     background: linear-gradient(135deg, #0b2a3d, #111c24 58%, #8fe7ff) !important;
     border-bottom: 1px solid var(--neo-line) !important;
   }
 
   #chatMessages,
-  #aiMessages {
     background: rgba(4,8,6,0.5) !important;
   }
 
   #chatWindow > div:last-child,
-  #aiWindow > div:last-child {
     border-top: 1px solid var(--neo-line-soft) !important;
   }
 
   #chatMessages span[style*="background"],
-  #aiMessages div,
   #chatMessages div[style*="background"] {
     background: rgba(143,231,255,0.12) !important;
     color: var(--neo-text) !important;
@@ -683,12 +678,10 @@
       <div class="top-icon" onclick="showOwner()">&#11088;</div>
       <div class="top-icon" onclick="openBible()">&#10013;</div>
       <div class="top-icon" onclick="openSoundboard()">&#127925;</div>
-      <div class="top-icon" onclick="openBrowser()">&#127760;</div>
       <div class="top-icon" onclick="openChat()">&#128101;</div>
       <div class="top-icon" onclick="openSettings()">&#9881;&#65039;</div>
       <div class="top-icon" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSfwUUnBPkc3PfjexfSQICEHXzGbpKe2VP6P8zuwc4s9kM0Gxg/viewform?usp=header','_blank')">&#10133;</div>
       <div class="top-icon" onclick="window.open('https://discord.gg/ZUeXWHkA','_blank')"><img class="top-icon-img" src="OIP.png" alt="Discord"/></div>
-      <div class="top-icon" onclick="openAI()">&#129302;</div>
       <div class="top-icon" onclick="openCommit()">&#128295;</div>
       <div class="top-icon" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLScjuLYhuMm_w5qZNgqPL2BrLbbHttpVFeIReIf0JTLOd2y5DA/viewform?usp=publish-editor','_blank')">&#9888;</div>
       <div class="top-icon" onclick="window.open('https://cash.app/$JayceThomson7','_blank')" style="background:#4cc9ff;color:#fff;font-size:16px;font-weight:bold;">$</div>
@@ -1259,8 +1252,9 @@ if (isFolderGrid) {
       loadedGameFiles.add(filename);
       const text = await res.text();
       const match = text.match(/<title>(.*?)<\/title>/i);
+      if (!match) return; // Skip files with no title (likely broken or redirected error pages)
       const slug = filename.replace(/\.html$/i, '');
-      const name = match ? match[1].trim() : ('Game ' + slug);
+      const name = match[1].trim();
       const card = document.createElement('div');
       card.className = 'game-card';
       card.dataset.name = name.toLowerCase();
@@ -2012,7 +2006,6 @@ if (isFolderGrid) {
   }
 
   makeDraggable('chatWindow', 'chatHeader');
-  makeDraggable('aiWindow', 'aiHeader');
 </script>
 
 <!-- SETTINGS POPUP -->
@@ -2110,32 +2103,6 @@ if (isFolderGrid) {
     <button onclick="document.getElementById('announcementPopup').classList.remove('show')"
       style="width:100%;padding:10px;background:#8fe7ff;color:#061018;border:none;border-radius:8px;font-size:15px;cursor:pointer;font-weight:bold;">
       Close
-    </button>
-  </div>
-</div>
-
-<!-- TSAI WINDOW -->
-<div id="aiWindow" class="draggable" style="display:none;bottom:60px;right:360px;width:320px;
-  background:#101820;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.45);
-  border:1px solid rgba(143,231,255,0.32);z-index:10000;flex-direction:column;overflow:hidden;">
-  <div id="aiHeader" class="window-header" style="background:linear-gradient(180deg,#1a1a2e,#16213e);color:#fff;padding:12px 16px;
-    display:flex;align-items:center;justify-content:space-between;border-radius:14px 14px 0 0;">
-    <span style="font-weight:bold;font-size:15px;">&#129302; TSAI</span>
-    <button onclick="document.getElementById('aiWindow').style.display='none'"
-      style="background:none;border:none;color:#fff;font-size:18px;cursor:pointer;">&#x2715;</button>
-  </div>
-  <div id="aiMessages" style="overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px;height:300px;">
-    <div style="background:rgba(255,255,255,0.06);color:#eefbff;padding:8px 12px;border-radius:12px;font-size:13px;max-width:240px;border:1px solid rgba(143,231,255,0.16);">
-      Hi! I'm TSAI, ToolSchool's AI. Ask me anything!
-    </div>
-  </div>
-  <div style="padding:8px;border-top:1px solid #ddd;display:flex;gap:6px;">
-    <input id="aiInput" type="text" placeholder="Ask TSAI..."
-      style="flex:1;padding:7px 10px;border-radius:20px;border:1px solid rgba(143,231,255,0.32);font-size:13px;outline:none;"
-      onkeydown="if(event.key==='Enter')sendAI()"/>
-    <button onclick="sendAI()"
-      style="background:#8fe7ff;color:#061018;border:none;border-radius:20px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:bold;">
-      Send
     </button>
   </div>
 </div>
