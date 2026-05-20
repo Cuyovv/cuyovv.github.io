@@ -6,11 +6,14 @@
 <title>Games</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  html {
+    min-height: 100%;
+  }
   body {
     font-family: Arial, sans-serif;
     background: #d0d0d8;
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
     user-select: none;
@@ -84,6 +87,61 @@
     position: relative;
     overflow: hidden;
     background: linear-gradient(180deg, #e0e0e8 0%, #c8c8d4 100%);
+    min-height: calc(100vh - 104px);
+  }
+
+  @media (max-width: 900px) {
+    .top-bar,
+    .bottom-bar {
+      padding: 8px 16px;
+    }
+    .top-search-bar {
+      max-width: none;
+    }
+    .grid-track {
+      padding: 0 24px;
+    }
+    .arrow {
+      width: 32px;
+      height: 32px;
+      font-size: 16px;
+    }
+    .top-icon {
+      width: 34px;
+      height: 34px;
+      font-size: 18px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .top-bar {
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: flex-start;
+    }
+    .top-left-group {
+      flex: 1 1 100%;
+      min-width: 0;
+    }
+    .top-right-clock {
+      flex: 1 1 100%;
+      justify-content: flex-start;
+      gap: 6px;
+      font-size: 13px;
+      padding-top: 4px;
+    }
+    .bottom-bar {
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+    .bottom-btn {
+      padding: 6px 10px;
+      font-size: 14px;
+    }
+    .game-label {
+      font-size: 10px;
+    }
   }
   .arrow {
     position: absolute; top: 50%; transform: translateY(-50%);
@@ -1039,16 +1097,20 @@ window.addEventListener('load', typeEffect);
   }
 
   function calcSizes() {
-    const mainH = window.innerHeight - 60 - 44;
+    const headerHeight = document.querySelector('.top-bar').offsetHeight;
+    const footerHeight = document.querySelector('.bottom-bar').offsetHeight;
+    const mainH = Math.max(0, window.innerHeight - headerHeight - footerHeight);
     const viewport = document.querySelector('.grid-viewport');
     const gridTrack = document.querySelector('.grid-track');
     const isFolderGrid = currentFolder === 'folders';
     let iconSize, colWidth;
+    const viewportWidth = viewport.offsetWidth;
+    const paddingSide = Math.max(16, Math.min(44, Math.floor(viewportWidth * 0.08)));
 
-if (isFolderGrid) {
-      const horizontalPad = Math.max(8, Math.min(24, Math.floor(viewport.offsetWidth * 0.02)));
-      const brandSpace = Math.max(210, Math.min(260, Math.floor(mainH * 0.36)));
-      const viewWidth = Math.max(0, viewport.offsetWidth - horizontalPad * 2);
+    if (isFolderGrid) {
+      const horizontalPad = Math.max(8, Math.min(24, Math.floor(viewportWidth * 0.04)));
+      const brandSpace = Math.max(180, Math.min(240, Math.floor(mainH * 0.32)));
+      const viewWidth = Math.max(0, viewportWidth - horizontalPad * 2);
       const viewHeight = Math.max(0, mainH - brandSpace - 24);
       const gap = Math.max(8, Math.min(18, Math.floor(viewWidth * 0.012)));
       iconSize = Math.floor(Math.min((viewWidth - gap * 5) / 6 - 6, viewHeight - 28));
@@ -1063,13 +1125,15 @@ if (isFolderGrid) {
     } else {
       const rowH = mainH / 3;
       iconSize = Math.floor(rowH - 26);
+      iconSize = Math.min(iconSize, Math.floor(viewportWidth * 0.46));
+      iconSize = Math.max(72, Math.min(220, iconSize));
       colWidth = iconSize + 24;
       gridTrack.style.gridTemplateRows = 'repeat(3, 1fr)';
       gridTrack.style.gridTemplateColumns = '';
       gridTrack.style.gridAutoColumns = colWidth + 'px';
-      gridTrack.style.columnGap = '';
-      gridTrack.style.rowGap = '';
-      gridTrack.style.padding = '0 44px';
+      gridTrack.style.columnGap = Math.max(10, Math.min(20, Math.floor(iconSize * 0.08))) + 'px';
+      gridTrack.style.rowGap = Math.max(10, Math.min(18, Math.floor(iconSize * 0.05))) + 'px';
+      gridTrack.style.padding = '0 ' + paddingSide + 'px';
     }
 
     document.querySelectorAll('.icon-wrap').forEach(el => {
@@ -1077,7 +1141,7 @@ if (isFolderGrid) {
       el.style.height = iconSize + 'px';
     });
     document.querySelectorAll('.game-label').forEach(el => {
-      el.style.width = (iconSize + 8) + 'px';
+      el.style.width = Math.min(iconSize + 8, viewportWidth - 24) + 'px';
     });
     return { iconSize, colWidth };
   }
