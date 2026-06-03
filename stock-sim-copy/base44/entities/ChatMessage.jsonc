@@ -1,0 +1,22 @@
+{
+  "name": "ChatMessage",
+  "type": "object",
+  "properties": {
+    "player_name": {
+      "type": "string",
+      "description": "Display name of the sender"
+    },
+    "message": {
+      "type": "string",
+      "description": "Chat message content"
+    },
+    "theme": {
+      "type": "string",
+      "description": "Theme key of the sender for color"
+    }
+  },
+  "required": [
+    "player_name",
+    "message"
+  ]
+}

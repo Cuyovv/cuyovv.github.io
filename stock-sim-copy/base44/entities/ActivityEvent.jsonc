@@ -1,0 +1,29 @@
+{
+  "name": "ActivityEvent",
+  "type": "object",
+  "properties": {
+    "player_name": {
+      "type": "string"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "prestige",
+        "big_trade",
+        "achievement",
+        "milestone"
+      ]
+    },
+    "message": {
+      "type": "string"
+    },
+    "theme": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "player_name",
+    "event_type",
+    "message"
+  ]
+}
