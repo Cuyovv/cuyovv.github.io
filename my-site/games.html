@@ -771,13 +771,14 @@
       <div class="top-icon" onclick="openBible()">&#10013;</div>
       <div class="top-icon" onclick="openSoundboard()">&#127925;</div>
       <div class="top-icon" onclick="openChat()">&#128101;</div>
+      <div class="top-icon" onclick="openOmegle()">&#128241;</div>
       <div class="top-icon" onclick="openSettings()">&#9881;&#65039;</div>
       <div class="top-icon" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSfwUUnBPkc3PfjexfSQICEHXzGbpKe2VP6P8zuwc4s9kM0Gxg/viewform?usp=header','_blank')">&#10133;</div>
       <div class="top-icon" onclick="window.open('https://discord.gg/ZUeXWHkA','_blank')"><img class="top-icon-img" src="OIP.png" alt="Discord"/></div>
+        <div class="top-icon" onclick="window.open('https://neuravexis.com','_blank')"><img class="top-icon-img" src="watermark-removed-Gemini_Generated_Image_idj1l0idj1l0idj1.png" alt="Neuravexis"/></div>
       <div class="top-icon" onclick="openCommit()">&#128295;</div>
       <div class="top-icon" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLScjuLYhuMm_w5qZNgqPL2BrLbbHttpVFeIReIf0JTLOd2y5DA/viewform?usp=publish-editor','_blank')">&#9888;</div>
       <div class="top-icon" onclick="window.open('https://cash.app/$JayceThomson7','_blank')" style="background:#4cc9ff;color:#fff;font-size:16px;font-weight:bold;">$</div>
-      <div class="top-icon" onclick="openVault()" title="Secret Vault">&#128274;</div>
     </div>
     <div class="top-divider"></div>
     <div class="top-search-bar">
@@ -882,22 +883,6 @@ REACH OUT FOR QUESTIONS yogi870450@gmail.com</div>
   </div>
 </div>
 
-<!-- VAULT POPUP -->
-<div class="popup-overlay" id="vaultPopup" onclick="closeVault(event)">
-  <div class="popup-box" style="max-width:320px;">
-    <button class="popup-close" onclick="closeVault()">&#x2715;</button>
-    <div style="font-size:36px;margin-bottom:8px;">&#128452;</div>
-    <h2 style="margin-bottom:16px;">Secret Vault</h2>
-    <input id="vaultInput" type="text" placeholder="Enter code..."
-      style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid rgba(143,231,255,0.32);font-size:14px;outline:none;margin-bottom:12px;"/>
-    <button onclick="checkVaultCode()"
-      style="width:100%;padding:9px;background:#8fe7ff;color:#061018;border:none;border-radius:8px;font-size:14px;cursor:pointer;font-weight:bold;">
-      Unlock
-    </button>
-    <div id="vaultMessage" style="margin-top:10px;font-size:12px;display:none;font-weight:bold;"></div>
-  </div>
-</div>
-
 <!-- TIMEOUT POPUP -->
 <div class="popup-overlay" id="timeoutPopup" onclick="closeTimeout(event)">
   <div class="popup-box" style="max-width:280px;">
@@ -959,6 +944,66 @@ REACH OUT FOR QUESTIONS yogi870450@gmail.com</div>
       onkeydown="if(event.key==='Enter')sendMsg()"/>
     <button onclick="sendMsg()"
       style="background:linear-gradient(145deg, var(--neo-green), var(--neo-green-2));color:#061018;border:none;border-radius:20px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:bold;box-shadow:0 0 12px var(--neo-shadow);">
+      Send
+    </button>
+  </div>
+</div>
+
+<!-- OMEGLE WINDOW -->
+<div id="omegleWindow" style="display:none;position:fixed;bottom:60px;right:360px;width:500px;height:600px;
+  background:#101820;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.45);
+  border:1px solid rgba(143,231,255,0.32);z-index:10000;flex-direction:column;overflow:hidden;">
+  <div class="resize-handle top-left"></div>
+  <div class="resize-handle top-right"></div>
+  <div class="resize-handle bottom-left"></div>
+  <div class="resize-handle bottom-right"></div>
+  <div id="omegleHeader" class="window-header" style="background:linear-gradient(135deg,#1a3a2a,#142420 58%,#4cc9ff);color:#fff;padding:10px 14px;
+    display:flex;align-items:center;justify-content:space-between;border-radius:14px 14px 0 0;font-size:13px;">
+    <span style="font-weight:bold;">📱 Stranger Connect</span>
+    <div style="display:flex;gap:4px;">
+      <button id="omegleAudioBtn" onclick="toggleOmegleAudio()" 
+        style="background:rgba(76,201,255,0.3);border:1px solid rgba(76,201,255,0.5);color:#8fe7ff;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:11px;font-weight:bold;" title="Toggle Audio">🔊</button>
+      <button id="omegleVideoBtn" onclick="toggleOmegleVideo()" 
+        style="background:rgba(76,201,255,0.3);border:1px solid rgba(76,201,255,0.5);color:#8fe7ff;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:11px;font-weight:bold;" title="Toggle Video">📹</button>
+      <button onclick="disconnectOmegle()" 
+        style="background:rgba(255,100,100,0.3);border:1px solid rgba(255,100,100,0.5);color:#ff9999;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:11px;font-weight:bold;" title="Skip">Skip</button>
+      <button onclick="document.getElementById('omegleWindow').style.display='none'"
+        style="background:none;border:none;color:#fff;font-size:16px;cursor:pointer;padding:0 4px;" title="Close">✕</button>
+    </div>
+  </div>
+
+  <!-- Video Area -->
+  <div style="display:flex;gap:8px;padding:10px;background:rgba(0,0,0,0.4);height:280px;overflow:hidden;border-bottom:1px solid rgba(143,231,255,0.2);">
+    <!-- Remote Video -->
+    <div style="flex:1;position:relative;background:#000;border-radius:10px;overflow:hidden;border:1px solid rgba(143,231,255,0.2);">
+      <video id="omegleRemoteVideo" style="width:100%;height:100%;object-fit:cover;" autoplay muted></video>
+      <div id="omegleRemoteStatus" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:#8fe7ff;font-size:12px;">
+        <div>Waiting for video...</div>
+      </div>
+    </div>
+    <!-- Local Video -->
+    <div style="width:120px;position:relative;background:#1a1a1a;border-radius:10px;overflow:hidden;border:1px solid rgba(143,231,255,0.3);">
+      <video id="omegleLocalVideo" style="width:100%;height:100%;object-fit:cover;transform:scaleX(-1);" autoplay muted></video>
+      <div style="position:absolute;bottom:4px;left:4px;font-size:9px;color:#999;background:rgba(0,0,0,0.6);padding:2px 4px;border-radius:4px;">You</div>
+    </div>
+  </div>
+
+  <!-- Status and Messages -->
+  <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+    <div id="omegleStatus" style="font-size:12px;color:#8fe7ff;text-align:center;padding:8px;background:rgba(0,0,0,0.3);font-weight:bold;border-bottom:1px solid rgba(143,231,255,0.15);">Connecting to stranger...</div>
+    
+    <div id="omegleMessages" style="overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:6px;flex:1;min-height:60px;"></div>
+    
+    <div id="omegleTypingIndicator" style="display:none;font-size:11px;color:#8fe7ff;padding:4px 10px;font-style:italic;border-top:1px solid rgba(143,231,255,0.15);">Stranger is typing...</div>
+  </div>
+
+  <!-- Message Input -->
+  <div style="padding:10px;border-top:1px solid rgba(143,231,255,0.2);display:flex;gap:6px;flex-shrink:0;align-items:center;background:rgba(0,0,0,0.2);">
+    <input id="omegleMsgInput" type="text" maxlength="200" placeholder="Message..."
+      style="flex:1;padding:8px 12px;border-radius:20px;border:1px solid rgba(143,231,255,0.3);background:rgba(7,16,24,0.8);font-size:12px;outline:none;color:#eefbff;"
+      onkeydown="if(event.key==='Enter')sendOmegleMsg()"/>
+    <button onclick="sendOmegleMsg()"
+      style="background:linear-gradient(145deg, #4cc9ff, #8fe7ff);color:#061018;border:none;border-radius:20px;padding:8px 16px;cursor:pointer;font-size:12px;font-weight:bold;box-shadow:0 0 12px rgba(76,201,255,0.4);">
       Send
     </button>
   </div>
@@ -1888,6 +1933,7 @@ window.addEventListener('load', typeEffect);
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.4.7/dist/peerjs.min.js"></script>
 <script>
   const firebaseConfig = { databaseURL: "https://toolschool-ea8c6-default-rtdb.firebaseio.com" };
 
@@ -2168,52 +2214,6 @@ window.addEventListener('load', typeEffect);
     });
   }
 
-  // Vault & Mod Logic
-  function _vh(s) {
-    let h = 0;
-    for (let i = 0; i < s.length; i++) {
-      h = ((h << 5) - h) + s.charCodeAt(i);
-      h |= 0;
-    }
-    return h;
-  }
-  function openVault() {
-    document.getElementById('vaultPopup').classList.add('show');
-    document.getElementById('vaultInput').value = '';
-    document.getElementById('vaultMessage').style.display = 'none';
-    setTimeout(() => document.getElementById('vaultInput').focus(), 100);
-  }
-  function closeVault(e) {
-    if (!e || e.target === document.getElementById('vaultPopup'))
-      document.getElementById('vaultPopup').classList.remove('show');
-  }
-  function checkVaultCode() {
-    const code = document.getElementById('vaultInput').value.trim();
-    const msgEl = document.getElementById('vaultMessage');
-    msgEl.style.display = 'block';
-
-    if (code === '106471') {
-      localStorage.setItem('hasTimeoutPrivilege', 'true');
-      msgEl.textContent = 'Access Granted: Timeout Mod';
-      msgEl.style.color = '#4caf50';
-      setTimeout(() => location.reload(), 1500);
-    } else if (code === '06220166') {
-      localStorage.setItem('hasGreenName', 'true');
-      msgEl.textContent = 'Access Granted: Green Name';
-      msgEl.style.color = '#4caf50';
-      setTimeout(() => location.reload(), 1500);
-    } else if (code === '6741kid') {
-      localStorage.removeItem('hasTimeoutPrivilege');
-      msgEl.textContent = 'Action Executed: GLOBAL MOD WIPE';
-      msgEl.style.color = '#ff6b6b';
-      db.ref('cmd/wipeMods').set(Date.now());
-      db.ref('chat').push({ name: 'SYSTEM', text: 'All moderator timeout privileges have been globally revoked.', ts: Date.now(), system: true });
-      setTimeout(() => closeVault(), 1500);
-    } else {
-      msgEl.textContent = 'Invalid Security Key';
-      msgEl.style.color = '#ff6b6b';
-    }
-  }
   let timeoutTarget = null;
   function openTimeoutMenu(name) {
     timeoutTarget = name;
@@ -2406,6 +2406,415 @@ window.addEventListener('load', typeEffect);
       chatIsFullscreen = false;
     }
   };
+
+  // OMEGLE FUNCTIONALITY - WITH VIDEO, VOICE & CHAT
+  let omegleSessionId = null;
+  let omeglePairedWith = null;
+  let omegleMessagesRef = null;
+  let omegleIsListening = false;
+  let omeglePartnerName = null;
+  let omeglePartnerTyping = false;
+  let peer = null;
+  let peerConnection = null;
+  let localStream = null;
+  let omegleAudioEnabled = true;
+  let omegleVideoEnabled = true;
+  let omegleCallActive = false;
+
+  function generateSessionId() {
+    return Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+  }
+
+  function initPeerJS() {
+    return new Promise((resolve) => {
+      if (peer) {
+        resolve();
+        return;
+      }
+      peer = new Peer({
+        config: {
+          iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:stun1.l.google.com:19302' }
+          ]
+        }
+      });
+
+      peer.on('open', () => {
+        console.log('Peer ID:', peer.id);
+        resolve();
+      });
+
+      peer.on('call', handleIncomingCall);
+      peer.on('error', err => {
+        console.error('PeerJS error:', err);
+        updateOmegleStatus('Connection error');
+      });
+    });
+  }
+
+  function openOmegle() {
+    omegleSessionId = generateSessionId();
+    document.getElementById('omegleWindow').style.display = 'flex';
+    document.getElementById('omegleMsgInput').focus();
+    updateOmegleStatus('Initializing...');
+    
+    initPeerJS().then(() => {
+      if (!omegleIsListening) {
+        addToOmegleWaitingList();
+        omegleIsListening = true;
+      }
+    });
+  }
+
+  function addToOmegleWaitingList() {
+    const waitingRef = db.ref('omegle/waiting');
+    
+    waitingRef.once('value', snap => {
+      const waitingUsers = snap.val() || {};
+      const waitingIds = Object.keys(waitingUsers).filter(id => id !== omegleSessionId);
+      
+      if (waitingIds.length > 0) {
+        const partnerId = waitingIds[0];
+        const partnerData = waitingUsers[partnerId];
+        pairUsers(omegleSessionId, partnerId, partnerData.peerId, partnerData.name);
+      } else {
+        // Add to waiting list with peer ID
+        if (!peer || !peer.id) {
+          updateOmegleStatus('Waiting for connection...');
+          setTimeout(() => addToOmegleWaitingList(), 500);
+          return;
+        }
+
+        db.ref('omegle/waiting').child(omegleSessionId).set({
+          name: 'Stranger',
+          peerId: peer.id,
+          joinedAt: Date.now()
+        });
+
+        db.ref('omegle/pairs').child(omegleSessionId).on('value', snap => {
+          const pair = snap.val();
+          if (pair && pair.partnerId && !omeglePairedWith) {
+            omeglePairedWith = pair.partnerId;
+            omeglePartnerName = pair.partnerName || 'Stranger';
+            const partnerPeerId = pair.partnerPeerId;
+            db.ref('omegle/waiting').child(omegleSessionId).remove();
+            setupOmegleMessaging();
+            initiateOmegleCall(partnerPeerId);
+          }
+        });
+      }
+    });
+  }
+
+  function pairUsers(userId, partnerId, partnerPeerId, partnerName) {
+    omeglePairedWith = partnerId;
+    omeglePartnerName = partnerName;
+    
+    // Remove partner from waiting list first
+    db.ref('omegle/waiting').child(partnerId).remove();
+    
+    db.ref('omegle/pairs').child(userId).set({
+      partnerId: partnerId,
+      partnerName: partnerName,
+      partnerPeerId: partnerPeerId,
+      pairedAt: Date.now()
+    });
+
+    db.ref('omegle/pairs').child(partnerId).set({
+      partnerId: userId,
+      partnerName: 'Stranger',
+      partnerPeerId: peer.id,
+      pairedAt: Date.now()
+    });
+
+    setupOmegleMessaging();
+    initiateOmegleCall(partnerPeerId);
+  }
+
+  function setupOmegleMessaging() {
+    const chatRoomId = [omegleSessionId, omeglePairedWith].sort().join('_');
+    omegleMessagesRef = db.ref('omegle/chats').child(chatRoomId);
+    
+    updateOmegleStatus('Connected • Initializing video...');
+    
+    omegleMessagesRef.limitToLast(50).on('child_added', snap => {
+      const msg = snap.val();
+      if (!msg) return;
+      
+      const messagesDiv = document.getElementById('omegleMessages');
+      const isMe = msg.sender === omegleSessionId;
+      
+      const div = document.createElement('div');
+      div.style.cssText = 'display:flex;flex-direction:column;align-items:' + (isMe ? 'flex-end' : 'flex-start') + ';';
+      
+      if (msg.text) {
+        const textSpan = document.createElement('span');
+        textSpan.style.cssText = 'background:' + (isMe ? 'rgba(143,231,255,0.2)' : 'rgba(76,201,255,0.15)') + ';color:#eefbff;' +
+          'padding:8px 12px;border-radius:14px;font-size:12px;max-width:240px;word-wrap:break-word;border:1px solid ' + 
+          (isMe ? 'rgba(143,231,255,0.3)' : 'rgba(76,201,255,0.2)') + ';';
+        textSpan.textContent = msg.text;
+        div.appendChild(textSpan);
+      }
+      
+      messagesDiv.appendChild(div);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    });
+  }
+
+  function initiateOmegleCall(partnerPeerId) {
+    navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 } }, audio: true })
+      .then(stream => {
+        localStream = stream;
+        const videoEl = document.getElementById('omegleLocalVideo');
+        if (videoEl) videoEl.srcObject = stream;
+        
+        if (!peer || !partnerPeerId) {
+          console.error('Peer not ready or partner ID missing');
+          return;
+        }
+
+        const call = peer.call(partnerPeerId, stream);
+        peerConnection = call;
+        
+        call.on('stream', remoteStream => {
+          const remoteVideoEl = document.getElementById('omegleRemoteVideo');
+          if (remoteVideoEl) remoteVideoEl.srcObject = remoteStream;
+          
+          const statusEl = document.getElementById('omegleRemoteStatus');
+          if (statusEl) statusEl.style.display = 'none';
+          
+          updateOmegleStatus('Connected • Video active');
+          omegleCallActive = true;
+        });
+
+        call.on('close', () => {
+          console.log('Call closed');
+          disconnectOmegle();
+        });
+
+        call.on('error', err => {
+          console.error('Call error:', err);
+          updateOmegleStatus('Call error: ' + err.type);
+        });
+      })
+      .catch(err => {
+        console.error('Media access error:', err);
+        if (err.name === 'NotAllowedError') {
+          updateOmegleStatus('Camera/mic permission denied');
+        } else if (err.name === 'NotFoundError') {
+          updateOmegleStatus('No camera/mic found');
+        } else {
+          updateOmegleStatus('Media error: ' + err.message);
+        }
+      });
+  }
+
+  function handleIncomingCall(call) {
+    navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 } }, audio: true })
+      .then(stream => {
+        localStream = stream;
+        const videoEl = document.getElementById('omegleLocalVideo');
+        if (videoEl) videoEl.srcObject = stream;
+        
+        call.answer(stream);
+        peerConnection = call;
+        
+        call.on('stream', remoteStream => {
+          const remoteVideoEl = document.getElementById('omegleRemoteVideo');
+          if (remoteVideoEl) remoteVideoEl.srcObject = remoteStream;
+          
+          const statusEl = document.getElementById('omegleRemoteStatus');
+          if (statusEl) statusEl.style.display = 'none';
+          
+          updateOmegleStatus('Connected • Video active');
+          omegleCallActive = true;
+        });
+
+        call.on('close', () => {
+          console.log('Call closed');
+          disconnectOmegle();
+        });
+
+        call.on('error', err => {
+          console.error('Call error:', err);
+        });
+      })
+      .catch(err => {
+        console.error('Media access error:', err);
+        updateOmegleStatus('Camera/mic access denied');
+      });
+  }
+
+  function toggleOmegleAudio() {
+    if (!localStream) return;
+    omegleAudioEnabled = !omegleAudioEnabled;
+    localStream.getAudioTracks().forEach(track => track.enabled = omegleAudioEnabled);
+    const btn = document.getElementById('omegleAudioBtn');
+    btn.style.background = omegleAudioEnabled ? 'rgba(76,201,255,0.3)' : 'rgba(255,100,100,0.3)';
+    btn.style.borderColor = omegleAudioEnabled ? 'rgba(76,201,255,0.5)' : 'rgba(255,100,100,0.5)';
+    btn.style.color = omegleAudioEnabled ? '#8fe7ff' : '#ff9999';
+  }
+
+  function toggleOmegleVideo() {
+    if (!localStream) return;
+    omegleVideoEnabled = !omegleVideoEnabled;
+    localStream.getVideoTracks().forEach(track => track.enabled = omegleVideoEnabled);
+    const btn = document.getElementById('omegleVideoBtn');
+    btn.style.background = omegleVideoEnabled ? 'rgba(76,201,255,0.3)' : 'rgba(255,100,100,0.3)';
+    btn.style.borderColor = omegleVideoEnabled ? 'rgba(76,201,255,0.5)' : 'rgba(255,100,100,0.5)';
+    btn.style.color = omegleVideoEnabled ? '#8fe7ff' : '#ff9999';
+  }
+
+  function sendOmegleMsg() {
+    const input = document.getElementById('omegleMsgInput');
+    const text = input.value.trim();
+    
+    if (!text || !omeglePairedWith || !omegleSessionId) return;
+    
+    const chatRoomId = [omegleSessionId, omeglePairedWith].sort().join('_');
+    
+    db.ref('omegle/chats').child(chatRoomId).push({
+      sender: omegleSessionId,
+      text: text,
+      ts: Date.now()
+    });
+    
+    input.value = '';
+    input.focus();
+  }
+
+  function updateOmegleStatus(status) {
+    const statusEl = document.getElementById('omegleStatus');
+    if (statusEl) statusEl.textContent = status;
+  }
+
+  function disconnectOmegle() {
+    // If not connected to anyone, just reset and search again
+    if (!omegleSessionId || !omeglePairedWith) {
+      document.getElementById('omegleMessages').innerHTML = '';
+      updateOmegleStatus('Connecting to stranger...');
+      
+      const remoteStatusEl = document.getElementById('omegleRemoteStatus');
+      if (remoteStatusEl) {
+        remoteStatusEl.style.display = 'flex';
+        remoteStatusEl.style.justifyContent = 'center';
+        remoteStatusEl.style.alignItems = 'center';
+      }
+      
+      omeglePairedWith = null;
+      omeglePartnerName = null;
+      omegleIsListening = false;
+      omegleCallActive = false;
+      
+      // Stop media tracks
+      if (localStream) {
+        localStream.getTracks().forEach(track => {
+          track.stop();
+        });
+        localStream = null;
+      }
+      
+      if (peerConnection) {
+        peerConnection.close();
+        peerConnection = null;
+      }
+      
+      const localVideoEl = document.getElementById('omegleLocalVideo');
+      const remoteVideoEl = document.getElementById('omegleRemoteVideo');
+      if (localVideoEl) localVideoEl.srcObject = null;
+      if (remoteVideoEl) remoteVideoEl.srcObject = null;
+      
+      // Reset button states
+      resetOmegleControls();
+      
+      // Search for new partner
+      addToOmegleWaitingList();
+      return;
+    }
+
+    // Disconnect from current partner
+    const chatRoomId = [omegleSessionId, omeglePairedWith].sort().join('_');
+    
+    try {
+      if (omeglePairedWith) {
+        db.ref('omegle/pairs').child(omeglePairedWith).remove().catch(err => console.error('Error removing pair:', err));
+      }
+      db.ref('omegle/pairs').child(omegleSessionId).remove().catch(err => console.error('Error removing session pair:', err));
+      
+      if (omegleMessagesRef) {
+        omegleMessagesRef.off();
+      }
+    } catch (err) {
+      console.error('Error disconnecting:', err);
+    }
+
+    // Stop media tracks
+    if (localStream) {
+      localStream.getTracks().forEach(track => {
+        track.stop();
+      });
+      localStream = null;
+    }
+    
+    if (peerConnection) {
+      peerConnection.close();
+      peerConnection = null;
+    }
+    
+    // Clear UI
+    document.getElementById('omegleMessages').innerHTML = '';
+    updateOmegleStatus('Connecting to stranger...');
+    
+    const remoteStatusEl = document.getElementById('omegleRemoteStatus');
+    if (remoteStatusEl) {
+      remoteStatusEl.style.display = 'flex';
+      remoteStatusEl.style.justifyContent = 'center';
+      remoteStatusEl.style.alignItems = 'center';
+    }
+    
+    const typingEl = document.getElementById('omegleTypingIndicator');
+    if (typingEl) typingEl.style.display = 'none';
+    
+    const localVideoEl = document.getElementById('omegleLocalVideo');
+    const remoteVideoEl = document.getElementById('omegleRemoteVideo');
+    if (localVideoEl) localVideoEl.srcObject = null;
+    if (remoteVideoEl) remoteVideoEl.srcObject = null;
+    
+    // Reset state
+    omeglePairedWith = null;
+    omeglePartnerName = null;
+    omegleMessagesRef = null;
+    omegleCallActive = false;
+    
+    resetOmegleControls();
+    
+    // Search for new partner
+    addToOmegleWaitingList();
+  }
+
+  function resetOmegleControls() {
+    omegleAudioEnabled = true;
+    omegleVideoEnabled = true;
+    
+    const audioBtn = document.getElementById('omegleAudioBtn');
+    const videoBtn = document.getElementById('omegleVideoBtn');
+    
+    if (audioBtn) {
+      audioBtn.style.background = 'rgba(76,201,255,0.3)';
+      audioBtn.style.borderColor = 'rgba(76,201,255,0.5)';
+      audioBtn.style.color = '#8fe7ff';
+    }
+    if (videoBtn) {
+      videoBtn.style.background = 'rgba(76,201,255,0.3)';
+      videoBtn.style.borderColor = 'rgba(76,201,255,0.5)';
+      videoBtn.style.color = '#8fe7ff';
+    }
+  }
+
+  makeDraggable('omegleWindow', 'omegleHeader');
+  makeResizable('omegleWindow');
+
 </script>
 
 <!-- SETTINGS POPUP -->
