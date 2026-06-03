@@ -1,15 +1,18 @@
 const http = require('http');
+const https = require('https');
 const fs = require('fs');
 const path = require('path');
+const url = require('url');
 
 const PORT = 8787;
 const DIST_DIR = path.join(__dirname, 'stock-sim-copy', 'dist');
+const BASE44_API = 'https://base44.com';
 
 const server = http.createServer((req, res) => {
   // Add CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   if (req.method === 'OPTIONS') {
     res.writeHead(200);
@@ -17,6 +20,40 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // Proxy API requests to Base44
+  if (req.url.startsWith('/api/')) {
+    const proxyUrl = BASE44_API + req.url;
+    const isHttps = proxyUrl.startsWith('https');
+    const protocol = isHttps ? https : http;
+    const parsedUrl = new url.URL(proxyUrl);
+
+    const proxyOptions = {
+      hostname: parsedUrl.hostname,
+      port: parsedUrl.port,
+      path: parsedUrl.pathname + parsedUrl.search,
+      method: req.method,
+      headers: {
+        ...req.headers,
+        host: parsedUrl.hostname,
+      }
+    };
+
+    const proxyReq = protocol.request(proxyOptions, (proxyRes) => {
+      res.writeHead(proxyRes.statusCode, proxyRes.headers);
+      proxyRes.pipe(res);
+    });
+
+    proxyReq.on('error', (err) => {
+      console.error('Proxy error:', err);
+      res.writeHead(502, { 'Content-Type': 'text/plain' });
+      res.end('Bad Gateway: ' + err.message);
+    });
+
+    req.pipe(proxyReq);
+    return;
+  }
+
+  // Serve static files
   let filePath = path.join(DIST_DIR, req.url === '/' ? 'index.html' : req.url);
   
   // Prevent directory traversal
@@ -86,4 +123,5 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, () => {
   console.log(`Stock Sim server running at http://localhost:${PORT}`);
+  console.log(`Proxying /api/ requests to ${BASE44_API}`);
 });
